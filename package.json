@@ -12,6 +12,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "pretest": "xo",
     "test": "ava --tap"
   },
   "files": [
@@ -39,6 +40,11 @@
     "ava": "^0.11.0",
     "tempfile": "^1.1.1",
     "xo": "^0.12.1"
+  },
+  "xo": {
+    "rules": {
+      "consistent-return": 0
+    }
   },
   "license": "MIT"
 }

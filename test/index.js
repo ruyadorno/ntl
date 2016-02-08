@@ -1,10 +1,10 @@
 var spawn = require('child_process').spawn;
+var path = require('path');
 var fs = require('fs');
 var test = require('ava').test;
 var tempfile = require('tempfile');
 var ntl = require('../');
 var pkg = require('../package');
-var mockPkg = require('./fixtures/package');
 
 // Mocked deps
 var noop = function () {};
@@ -71,7 +71,7 @@ test.cb(function shouldDisplayHelp(t) {
 });
 
 test.cb(function shouldSelectDefaultTask(t) {
-	var testExec = function (name, args, props) {
+	var testExec = function (name, args) {
 		t.is(name + ' ' + args.join(' '), 'npm run start');
 		t.end();
 	};
@@ -80,38 +80,38 @@ test.cb(function shouldSelectDefaultTask(t) {
 });
 
 test.cb(function shouldSelectTask(t) {
-	var testExec = function (name, args, props) {
+	var testExec = function (name, args) {
 		t.is(name + ' ' + args.join(' '), 'npm run build');
 		t.end();
 	};
 	var prompt = ntl(p, testExec, log, cwd, tasks, options);
-	prompt.rl.input.emit('keypress', null, { name : 'down' });
-	prompt.rl.input.emit('keypress', null, { name : 'down' });
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
 	prompt.rl.emit('line');
 });
 
 test.cb(function shouldSelectPrefixedTasksWithAllFlag(t) {
-	var testExec = function (name, args, props) {
+	var testExec = function (name, args) {
 		t.is(name + ' ' + args.join(' '), 'npm run pretest');
 		t.end();
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, { all: true });
-	prompt.rl.input.emit('keypress', null, { name : 'up' });
+	var prompt = ntl(p, testExec, log, cwd, tasks, {all: true});
+	prompt.rl.input.emit('keypress', null, {name: 'up'});
 	prompt.rl.emit('line');
 });
 
 test.cb(function shouldSelectMultipleTasksUsingFlag(t) {
 	var count = 0;
-	var testExec = function (name, args, props) {
-		t.ok(args[1] in {start: 1, debug:1});
+	var testExec = function (name, args) {
+		t.ok(args[1] in {start: 1, debug: 1});
 		if (++count > 1) {
 			t.end();
 		}
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, { multiple: true });
-	prompt.rl.input.emit('keypress', ' ', { name : 'space' });
-	prompt.rl.input.emit('keypress', null, { name : 'down' });
-	prompt.rl.input.emit('keypress', ' ', { name : 'space' });
+	var prompt = ntl(p, testExec, log, cwd, tasks, {multiple: true});
+	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
 	prompt.rl.emit('line');
 });
 
@@ -122,7 +122,7 @@ test.cb(function shouldNotFailOnNoTasksAvailable(t) {
 			t.end();
 		}
 	};
-	var prompt = ntl(p, exec, testLog, cwd, obj, options);
+	ntl(p, exec, testLog, cwd, obj, options);
 });
 
 // --- cli integration tests
@@ -130,7 +130,7 @@ test.cb(function shouldNotFailOnNoTasksAvailable(t) {
 test.cb(function shouldWorkFromCli(t) {
 	var content = '';
 	var run = spawn('node', ['../../cli.js'], {
-		cwd: __dirname + '/fixtures',
+		cwd: path.join(__dirname, '/fixtures'),
 		stdin: p.stdin,
 		stdout: p.stdout,
 		stderr: p.stderr
@@ -146,7 +146,7 @@ test.cb(function shouldWorkFromCli(t) {
 			t.fail();
 		}
 		var values = content.split('\n');
-		t.is('build', values[values.length-2]);
+		t.is('build', values[values.length - 2]);
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -172,7 +172,7 @@ test.cb(function shouldWorkFromCliWithPath(t) {
 			t.fail();
 		}
 		var values = content.split('\n');
-		t.is('build', values[values.length-2]);
+		t.is('build', values[values.length - 2]);
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -198,7 +198,7 @@ test.cb(function shouldWorkFromCliWithParams(t) {
 			t.fail();
 		}
 		var values = content.split('\n');
-		t.is('prestart', values[values.length-2]);
+		t.is('prestart', values[values.length - 2]);
 		t.end();
 	});
 	run.stdin.write('j');
