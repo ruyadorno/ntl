@@ -1,7 +1,10 @@
+var spawn = require('child_process').spawn;
 var fs = require('fs');
 var test = require('ava').test;
-var ntl = require('./');
-var pkg = require('./package');
+var tempfile = require('tempfile');
+var ntl = require('../');
+var pkg = require('../package');
+var mockPkg = require('./fixtures/package');
 
 // Mocked deps
 var noop = function () {};
@@ -24,18 +27,16 @@ var tasks = {
 var options = obj;
 
 test.beforeEach(function beforeEachTest() {
-	fs.writeFileSync('./stdin', '');
+	var stdin = tempfile();
+	fs.writeFileSync(stdin, '');
 	p = {
-		stdin: fs.createReadStream('./stdin'),
-		stdout: fs.createWriteStream('./stdout'),
-		stderr: fs.createWriteStream('./stderr')
+		stdin: fs.createReadStream(stdin),
+		stdout: fs.createWriteStream(tempfile()),
+		stderr: fs.createWriteStream(tempfile())
 	};
 });
 
 test.afterEach(function afterEachTest() {
-	try { fs.unlinkSync('./stdin'); } catch (e) {}
-	try { fs.unlinkSync('./stdout'); } catch (e) {}
-	try { fs.unlinkSync('./stderr'); } catch (e) {}
 	p = null;
 });
 
@@ -122,5 +123,88 @@ test.cb(function shouldNotFailOnNoTasksAvailable(t) {
 		}
 	};
 	var prompt = ntl(p, exec, testLog, cwd, obj, options);
+});
+
+// --- cli integration tests
+
+test.cb(function shouldWorkFromCli(t) {
+	var content = '';
+	var run = spawn('node', ['../../cli.js'], {
+		cwd: __dirname + '/fixtures',
+		stdin: p.stdin,
+		stdout: p.stdout,
+		stderr: p.stderr
+	});
+	run.stdout.on('data', function (data) {
+		content += data.toString();
+	});
+	run.stderr.on('data', function (data) {
+		console.error(data.toString());
+	});
+	run.on('close', function (code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split('\n');
+		t.is('build', values[values.length-2]);
+		t.end();
+	});
+	run.stdin.write('\n');
+	run.stdin.end();
+});
+
+test.cb(function shouldWorkFromCliWithPath(t) {
+	var content = '';
+	var run = spawn('node', ['../cli.js', './fixtures'], {
+		cwd: cwd,
+		stdin: p.stdin,
+		stdout: p.stdout,
+		stderr: p.stderr
+	});
+	run.stdout.on('data', function (data) {
+		content += data.toString();
+	});
+	run.stderr.on('data', function (data) {
+		console.error(data.toString());
+	});
+	run.on('close', function (code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split('\n');
+		t.is('build', values[values.length-2]);
+		t.end();
+	});
+	run.stdin.write('\n');
+	run.stdin.end();
+});
+
+test.cb(function shouldWorkFromCliWithParams(t) {
+	var content = '';
+	var run = spawn('node', ['../cli.js', './fixtures', '--all', '-m'], {
+		cwd: cwd,
+		stdin: p.stdin,
+		stdout: p.stdout,
+		stderr: p.stderr
+	});
+	run.stdout.on('data', function (data) {
+		content += data.toString();
+	});
+	run.stderr.on('data', function (data) {
+		console.error(data.toString());
+	});
+	run.on('close', function (code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split('\n');
+		t.is('prestart', values[values.length-2]);
+		t.end();
+	});
+	run.stdin.write('j');
+	run.stdin.write('j');
+	run.stdin.write(' ');
+	run.stdin.write('\n');
+	run.stdin.end();
 });
 

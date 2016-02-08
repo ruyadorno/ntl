@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "ava": "^0.11.0",
+    "tempfile": "^1.1.1",
     "xo": "^0.12.1"
   },
   "license": "MIT"

@@ -1,4 +1,4 @@
-# ntl [![Build Status](https://travis-ci.org/ruyadorno/ntl.svg?branch=master)](https://travis-ci.org/ruyadorno/ntl)
+# ntl [![NPM version][https://badge.fury.io/js/ntl.svg]][https://npmjs.org/package/ntl] [![Build Status](https://travis-ci.org/ruyadorno/ntl.svg?branch=master)](https://travis-ci.org/ruyadorno/ntl)
 
 > Npm Task List
 
@@ -20,7 +20,7 @@ $ npm install -g ntl
 ntl
 ```
 
-You can also specify a folder containing a `package.json` file:
+You can also specify a project folder containing a `package.json` file:
 
 ```sh
 ntl ./my-node-project

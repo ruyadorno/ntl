@@ -1,0 +1,14 @@
+{
+  "name": "foo",
+  "version": "1.0.0",
+  "description": "Lorem ipsum dolor sit amet",
+  "scripts": {
+    "build": "echo \"build\"",
+    "debug": "echo \"debug\"",
+    "prestart": "echo \"prestart\"",
+    "start": "echo \"start\"",
+    "test": "echo \"test\""
+  },
+  "license": "MIT"
+}
+
