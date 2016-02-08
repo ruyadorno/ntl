@@ -1,0 +1,42 @@
+{
+  "name": "ntl",
+  "version": "1.0.0",
+  "description": "Npm Task List: Interactive cli menu to list/run npm tasks",
+  "repository": "ruyadorno/ntl",
+  "author": {
+    "name": "Ruy Adorno",
+    "url": "http://ruyadorno.com"
+  },
+  "bin": "cli.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "ava --tap"
+  },
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "keywords": [
+    "npm",
+    "task",
+    "list",
+    "interactive",
+    "inquirer",
+    "cli-app",
+    "cli",
+    "ntl",
+    "runner",
+    "menu"
+  ],
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "pkginfo": "~0.3.1"
+  },
+  "devDependencies": {
+    "ava": "^0.11.0",
+    "xo": "^0.12.1"
+  },
+  "license": "MIT"
+}
