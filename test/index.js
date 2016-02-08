@@ -9,7 +9,6 @@ var pkg = require('../package');
 // Mocked deps
 var noop = function () {};
 var obj = Object.freeze({});
-var p;
 var exec = noop;
 var log = {
 	info: noop
@@ -26,18 +25,18 @@ var tasks = {
 };
 var options = obj;
 
-test.beforeEach(function beforeEachTest() {
+test.beforeEach(function beforeEachTest(t) {
 	var stdin = tempfile();
 	fs.writeFileSync(stdin, '');
-	p = {
+	t.context.p = {
 		stdin: fs.createReadStream(stdin),
 		stdout: fs.createWriteStream(tempfile()),
 		stderr: fs.createWriteStream(tempfile())
 	};
 });
 
-test.afterEach(function afterEachTest() {
-	p = null;
+test.afterEach(function afterEachTest(t) {
+	t.context.p = null;
 });
 
 test.cb(function shouldDisplayWelcomeTitle(t) {
@@ -47,7 +46,7 @@ test.cb(function shouldDisplayWelcomeTitle(t) {
 			t.end();
 		}
 	};
-	ntl(p, exec, testLog, cwd, tasks, options);
+	ntl(t.context.p, exec, testLog, cwd, tasks, options);
 });
 
 test.cb(function shouldDisplayVersion(t) {
@@ -57,7 +56,7 @@ test.cb(function shouldDisplayVersion(t) {
 			t.end();
 		}
 	};
-	ntl(p, exec, testLog, cwd, tasks, {version: true});
+	ntl(t.context.p, exec, testLog, cwd, tasks, {version: true});
 });
 
 test.cb(function shouldDisplayHelp(t) {
@@ -67,7 +66,7 @@ test.cb(function shouldDisplayHelp(t) {
 			t.end();
 		}
 	};
-	ntl(p, exec, testLog, cwd, tasks, {version: true});
+	ntl(t.context.p, exec, testLog, cwd, tasks, {version: true});
 });
 
 test.cb(function shouldSelectDefaultTask(t) {
@@ -75,7 +74,7 @@ test.cb(function shouldSelectDefaultTask(t) {
 		t.is(name + ' ' + args.join(' '), 'npm run start');
 		t.end();
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, options);
+	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, options);
 	prompt.rl.emit('line');
 });
 
@@ -84,7 +83,7 @@ test.cb(function shouldSelectTask(t) {
 		t.is(name + ' ' + args.join(' '), 'npm run build');
 		t.end();
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, options);
+	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, options);
 	prompt.rl.input.emit('keypress', null, {name: 'down'});
 	prompt.rl.input.emit('keypress', null, {name: 'down'});
 	prompt.rl.emit('line');
@@ -95,7 +94,7 @@ test.cb(function shouldSelectPrefixedTasksWithAllFlag(t) {
 		t.is(name + ' ' + args.join(' '), 'npm run pretest');
 		t.end();
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, {all: true});
+	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, {all: true});
 	prompt.rl.input.emit('keypress', null, {name: 'up'});
 	prompt.rl.emit('line');
 });
@@ -108,7 +107,7 @@ test.cb(function shouldSelectMultipleTasksUsingFlag(t) {
 			t.end();
 		}
 	};
-	var prompt = ntl(p, testExec, log, cwd, tasks, {multiple: true});
+	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, {multiple: true});
 	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
 	prompt.rl.input.emit('keypress', null, {name: 'down'});
 	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
@@ -122,7 +121,7 @@ test.cb(function shouldNotFailOnNoTasksAvailable(t) {
 			t.end();
 		}
 	};
-	ntl(p, exec, testLog, cwd, obj, options);
+	ntl(t.context.p, exec, testLog, cwd, obj, options);
 });
 
 // --- cli integration tests
@@ -131,9 +130,9 @@ test.cb(function shouldWorkFromCli(t) {
 	var content = '';
 	var run = spawn('node', ['../../cli.js'], {
 		cwd: path.join(__dirname, '/fixtures'),
-		stdin: p.stdin,
-		stdout: p.stdout,
-		stderr: p.stderr
+		stdin: t.context.p.stdin,
+		stdout: t.context.p.stdout,
+		stderr: t.context.p.stderr
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
@@ -157,9 +156,9 @@ test.cb(function shouldWorkFromCliWithPath(t) {
 	var content = '';
 	var run = spawn('node', ['../cli.js', './fixtures'], {
 		cwd: cwd,
-		stdin: p.stdin,
-		stdout: p.stdout,
-		stderr: p.stderr
+		stdin: t.context.p.stdin,
+		stdout: t.context.p.stdout,
+		stderr: t.context.p.stderr
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
@@ -183,9 +182,9 @@ test.cb(function shouldWorkFromCliWithParams(t) {
 	var content = '';
 	var run = spawn('node', ['../cli.js', './fixtures', '--all', '-m'], {
 		cwd: cwd,
-		stdin: p.stdin,
-		stdout: p.stdout,
-		stderr: p.stderr
+		stdin: t.context.p.stdin,
+		stdout: t.context.p.stdout,
+		stderr: t.context.p.stderr
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
