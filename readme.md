@@ -4,6 +4,7 @@
 
 Interactive cli menu to list and run npm tasks.
 
+![demo gif](http://i.imgur.com/ZjjQ7Vi.gif?1)
 
 ## Install
 
