@@ -99,6 +99,16 @@ test.cb(function shouldSelectPrefixedTasksWithAllFlag(t) {
 	prompt.rl.emit('line');
 });
 
+test.cb(function shouldDisplayScriptContentsWithInfoFlag(t) {
+	var testExec = function (name, args) {
+		t.is(name + ' ' + args.join(' '), 'npm run test');
+		t.end();
+	};
+	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, {info: true});
+	prompt.rl.input.emit('keypress', null, {name: 'up'});
+	prompt.rl.emit('line');
+});
+
 test.cb(function shouldSelectMultipleTasksUsingFlag(t) {
 	var count = 0;
 	var testExec = function (name, args) {

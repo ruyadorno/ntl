@@ -10,7 +10,8 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 			'\nOptions:\n  -v --version   Displays app version number\n' +
 			'  -h --help      Shows this help message\n' +
 			'  -a --all       Includes pre and post scripts on the list\n' +
-			'  -m --multiple  Allows a selection of multiple tasks to run at once'
+			'  -m --multiple  Allows a selection of multiple tasks to run at once' +
+			'  -i --info      Displays the contents of each script'
 		);
 	}
 
@@ -62,7 +63,14 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 			input: p.stdin,
 			output: p.stdout
 		});
-		var promptChoices = Object.keys(tasks).filter(filterPrefixes);
+		var promptChoices = Object.keys(tasks)
+			.filter(filterPrefixes)
+			.map(function (key) {
+				return {
+					name: key + (options.info ? ': ' + tasks[key] : ''),
+					value: key
+				};
+			});
 		var promptTypes = {
 			base: {
 				type: 'list',
