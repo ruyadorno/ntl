@@ -3,11 +3,12 @@
 'use strict';
 
 var argv = require('minimist')(process.argv.slice(2), {
-	boolean: ['all', 'help', 'multiple', 'version'],
+	boolean: ['all', 'help', 'multiple', 'info', 'version'],
 	alias: {
 		a: 'all',
 		h: 'help',
 		m: 'multiple',
+		i: 'info',
 		v: 'version'
 	}
 });
