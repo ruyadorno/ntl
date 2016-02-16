@@ -140,10 +140,7 @@ test.cb(function shouldNotFailOnNoTasksAvailable(t) {
 test.cb(function shouldWorkFromCli(t) {
 	var content = '';
 	var run = spawn('node', ['../../cli.js'], {
-		cwd: path.join(__dirname, '/fixtures'),
-		stdin: t.context.p.stdin,
-		stdout: t.context.p.stdout,
-		stderr: t.context.p.stderr
+		cwd: path.join(__dirname, '/fixtures')
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
@@ -166,10 +163,7 @@ test.cb(function shouldWorkFromCli(t) {
 test.cb(function shouldWorkFromCliWithPath(t) {
 	var content = '';
 	var run = spawn('node', ['../cli.js', './fixtures'], {
-		cwd: cwd,
-		stdin: t.context.p.stdin,
-		stdout: t.context.p.stdout,
-		stderr: t.context.p.stderr
+		cwd: cwd
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
@@ -192,10 +186,7 @@ test.cb(function shouldWorkFromCliWithPath(t) {
 test.cb(function shouldWorkFromCliWithParams(t) {
 	var content = '';
 	var run = spawn('node', ['../cli.js', './fixtures', '--all', '-m'], {
-		cwd: cwd,
-		stdin: t.context.p.stdin,
-		stdout: t.context.p.stdout,
-		stderr: t.context.p.stderr
+		cwd: cwd
 	});
 	run.stdout.on('data', function (data) {
 		content += data.toString();
