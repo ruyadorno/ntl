@@ -17,7 +17,12 @@ var cwd = (function getCwd(dir) {
 	return dir ? dir : process.cwd();
 })(argv._[0]);
 var tasks = (function getTasks(t) {
-	require('pkginfo')(t, {dir: cwd, include: ['scripts']});
+	try {
+		require('pkginfo')(t, {dir: cwd, include: ['scripts']});
+	} catch (e) {
+		console.error('No package.json found');
+		process.exit(1);
+	}
 	return t;
 })({exports: {}});
 

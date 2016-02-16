@@ -2,6 +2,7 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var fs = require('fs');
 var test = require('ava').test;
+var tempdir = require('tempdir');
 var tempfile = require('tempfile');
 var ntl = require('../');
 var pkg = require('../package');
@@ -215,5 +216,33 @@ test.cb(function shouldWorkFromCliWithParams(t) {
 	run.stdin.write(' ');
 	run.stdin.write('\n');
 	run.stdin.end();
+});
+
+test.cb(function shouldExitWithErrorCodeOnNoPackageJson(t) {
+	tempdir().then(function (foldername) {
+		var run = spawn('node', [path.join(__dirname, '..', 'cli.js')], {
+			cwd: foldername
+		});
+		run.on('close', function (code) {
+			t.is(code, 1);
+			t.end();
+		});
+	}).catch(function (e) {
+		console.error(e);
+	});
+});
+
+test.cb(function shouldExitWithErrorMsgOnNoPackageJson(t) {
+	tempdir().then(function (foldername) {
+		var run = spawn('node', [path.join(__dirname, '..', 'cli.js')], {
+			cwd: foldername
+		});
+		run.stderr.on('data', function (data) {
+			t.is(data.toString(), 'No package.json found\n');
+			t.end();
+		});
+	}).catch(function (e) {
+		console.error(e);
+	});
 });
 
