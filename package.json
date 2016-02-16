@@ -13,7 +13,7 @@
   },
   "scripts": {
     "pretest": "xo",
-    "test": "ava --tap"
+    "test": "ava"
   },
   "files": [
     "index.js",
@@ -46,6 +46,13 @@
     "rules": {
       "consistent-return": 0
     }
+  },
+  "ava": {
+    "files": [
+      "test/index.js"
+    ],
+    "tap": true,
+    "verbose": true
   },
   "license": "MIT"
 }

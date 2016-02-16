@@ -1,3 +1,9 @@
+require('babel-core/register')({
+	ignore: function (filename) {
+		return !(filename.indexOf('tempdir/index.js') > -1);
+	}
+});
+
 var spawn = require('child_process').spawn;
 var path = require('path');
 var fs = require('fs');
