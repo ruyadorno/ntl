@@ -37,10 +37,11 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 		var values = answer.task;
 		values = Array.isArray(values) ? values : [values];
 		values.forEach(function (answer) {
-			exec('npm', [
+			exec([
+				'npm',
 				'run',
 				answer
-			], {
+			].join(' '), {
 				cwd: cwd,
 				stdio: [
 					p.stdin,

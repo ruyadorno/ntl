@@ -77,8 +77,8 @@ test.cb(function shouldDisplayHelp(t) {
 });
 
 test.cb(function shouldSelectDefaultTask(t) {
-	var testExec = function (name, args) {
-		t.is(name + ' ' + args.join(' '), 'npm run start');
+	var testExec = function (name) {
+		t.is(name, 'npm run start');
 		t.end();
 	};
 	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, options);
@@ -86,8 +86,8 @@ test.cb(function shouldSelectDefaultTask(t) {
 });
 
 test.cb(function shouldSelectTask(t) {
-	var testExec = function (name, args) {
-		t.is(name + ' ' + args.join(' '), 'npm run build');
+	var testExec = function (name) {
+		t.is(name, 'npm run build');
 		t.end();
 	};
 	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, options);
@@ -97,8 +97,8 @@ test.cb(function shouldSelectTask(t) {
 });
 
 test.cb(function shouldSelectPrefixedTasksWithAllFlag(t) {
-	var testExec = function (name, args) {
-		t.is(name + ' ' + args.join(' '), 'npm run pretest');
+	var testExec = function (name) {
+		t.is(name, 'npm run pretest');
 		t.end();
 	};
 	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, {all: true});
@@ -107,8 +107,8 @@ test.cb(function shouldSelectPrefixedTasksWithAllFlag(t) {
 });
 
 test.cb(function shouldDisplayScriptContentsWithInfoFlag(t) {
-	var testExec = function (name, args) {
-		t.is(name + ' ' + args.join(' '), 'npm run test');
+	var testExec = function (name) {
+		t.is(name, 'npm run test');
 		t.end();
 	};
 	var prompt = ntl(t.context.p, testExec, log, cwd, tasks, {info: true});
@@ -118,8 +118,8 @@ test.cb(function shouldDisplayScriptContentsWithInfoFlag(t) {
 
 test.cb(function shouldSelectMultipleTasksUsingFlag(t) {
 	var count = 0;
-	var testExec = function (name, args) {
-		t.ok(args[1] in {start: 1, debug: 1});
+	var testExec = function (name) {
+		t.ok(name.split(' ')[2] in {start: 1, debug: 1});
 		if (++count > 1) {
 			t.end();
 		}

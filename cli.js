@@ -12,7 +12,7 @@ var argv = require('minimist')(process.argv.slice(2), {
 		v: 'version'
 	}
 });
-var exec = require('child_process').spawnSync;
+var exec = require('child_process').execSync;
 var cwd = (function getCwd(dir) {
 	return dir ? dir : process.cwd();
 })(argv._[0]);
