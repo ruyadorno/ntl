@@ -243,3 +243,14 @@ test.cb(function shouldExitWithErrorMsgOnNoPackageJson(t) {
 	});
 });
 
+test.cb(function shouldExitWithCodeZeroOnPressedESC(t) {
+	var run = spawn('node', ['../cli.js', './fixtures'], {
+		cwd: cwd
+	});
+	run.on('close', function (code) {
+		t.is(code, 0);
+		t.end();
+	});
+	run.stdin.write('\u001b');
+	run.stdin.end();
+});
