@@ -86,11 +86,19 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 				choices: promptChoices
 			}
 		};
+
 		return prompt(
 			options.multiple ? promptTypes.multiple : promptTypes.base,
 			onPrompt
 		);
 	}
+
+	p.stdin.setEncoding('utf8');
+	p.stdin.on('data', function (chunk) {
+		if (chunk === '\u001b') { // ESC
+			p.exit(0);
+		}
+	});
 
 	if (options.help) {
 		printHelp();
