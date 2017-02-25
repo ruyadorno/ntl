@@ -86,6 +86,14 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 				choices: promptChoices
 			}
 		};
+
+		p.stdin.setEncoding('utf8');
+		p.stdin.on('data', function (chunk) {
+			if (chunk === '\u001b') { // ESC
+				p.exit(0);
+			}
+		});
+
 		return prompt(
 			options.multiple ? promptTypes.multiple : promptTypes.base,
 			onPrompt
@@ -100,4 +108,3 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 		return showList();
 	}
 };
-
