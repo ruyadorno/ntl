@@ -67,8 +67,17 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 		var promptChoices = Object.keys(tasks)
 			.filter(filterPrefixes)
 			.map(function (key) {
+				var name = key;
+				var regExc = /#(.+)/.exec(tasks[key]);
+				var comment = regExc && regExc.pop();
+
+				if (comment) {
+					name += ' - ' + comment.trim();
+				} else {
+					name += (options.info ? ': ' + tasks[key] : '');
+				}
 				return {
-					name: key + (options.info ? ': ' + tasks[key] : ''),
+					name: name,
 					value: key
 				};
 			});
