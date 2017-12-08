@@ -67,8 +67,19 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 		var promptChoices = Object.keys(tasks)
 			.filter(filterPrefixes)
 			.map(function (key) {
+				var name = key;
+				var idxComment = tasks[key].lastIndexOf('#');
+				if (idxComment !== -1) {
+					var comment = tasks[key].slice(idxComment + 1).trim();
+					if (comment) {
+						name += '(' + comment + ')';
+					}
+					name += (options.info ? ': ' + tasks[key].slice(0, idxComment) : '');
+				} else {
+					name += (options.info ? ': ' + tasks[key] : '');
+				}
 				return {
-					name: key + (options.info ? ': ' + tasks[key] : ''),
+					name: name,
 					value: key
 				};
 			});
