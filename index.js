@@ -72,7 +72,7 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 				var comment = regExc && regExc.pop();
 
 				if (comment) {
-					name += '(' + comment.trim() + ')';
+					name += ' - ' + comment.trim();
 				} else {
 					name += (options.info ? ': ' + tasks[key] : '');
 				}
