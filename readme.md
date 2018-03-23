@@ -34,6 +34,7 @@ cli options can also be invoked as their shorter alias:
 
 - `-a` -> `--all`
 - `-m` -> `--multiple`
+- `-m` -> `--size`
 - `-i` -> `--info`
 - `-h` -> `--help`
 - `-v` -> `--version`
@@ -51,6 +52,7 @@ Options:
   -h --help      Shows this help message
   -a --all       Includes pre and post scripts on the list
   -m --multiple  Allows a selection of multiple tasks to run at once
+	-s --size      Sets the amount of tasks to show in the list without scrolling
   -i --info      Displays the contents of each script
 ```
 
