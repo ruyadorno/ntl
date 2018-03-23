@@ -11,6 +11,7 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 			'  -h --help      Shows this help message\n' +
 			'  -a --all       Includes pre and post scripts on the list\n' +
 			'  -m --multiple  Allows a selection of multiple tasks to run at once\n' +
+			'  -s --size      Sets the amount of tasks to show in the list without scrolling\n' +
 			'  -i --info      Displays the contents of each script'
 		);
 	}
@@ -75,12 +76,14 @@ module.exports = function (p, exec, log, cwd, tasks, options) {
 		var promptTypes = {
 			base: {
 				type: 'list',
+				pageSize: options.size || null,
 				name: 'task',
 				message: 'Select a task to run:',
 				choices: promptChoices
 			},
 			multiple: {
 				type: 'checkbox',
+				pageSize: options.size || null,
 				name: 'task',
 				message: 'Select tasks to run:',
 				choices: promptChoices
