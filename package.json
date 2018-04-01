@@ -9,10 +9,10 @@
   },
   "bin": "cli.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
-    "pretest": "xo",
+    "pretest": "eslint src/*.js",
     "test": "ava"
   },
   "files": [
@@ -32,20 +32,18 @@
     "menu"
   ],
   "dependencies": {
-    "inquirer": "^0.12.0",
-    "minimist": "^1.2.0",
-    "pkginfo": "~0.3.1"
+    "ipt": "^2.0.0",
+    "pkginfo": "~0.3.1",
+    "simple-output": "^1.0.1",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "ava": "^0.11.0",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "prettier": "^1.11.1",
     "tempdir": "^1.0.0",
-    "tempfile": "^1.1.1",
-    "xo": "^0.12.1"
-  },
-  "xo": {
-    "rules": {
-      "consistent-return": 0
-    }
+    "tempfile": "^1.1.1"
   },
   "ava": {
     "files": [
