@@ -64,7 +64,7 @@ if (!tasks || Object.keys(tasks).length < 1) {
 
 // defines the items that will be printed to the user
 const input = (argv.info
-	? Object.kesy(tasks).map(i => ({ name: `${i}: ${tasks[i]}`, value: i }))
+	? Object.keys(tasks).map(i => ({ name: `${i}: ${tasks[i]}`, value: i }))
 	: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
