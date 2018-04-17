@@ -71,7 +71,10 @@ const input = (argv.info
 	i =>
 		argv.all
 			? true
-			: ["pre", "post"].every(prefix => i.slice(0, prefix.length) !== prefix)
+			: ["pre", "post"].every(prefix => argv.info
+					? i.name.slice(0, prefix.length) !== prefix
+					: i.slice(0, prefix.length) !== prefix
+			)
 );
 
 out.success("Npm Task List - v" + pkg.version);
