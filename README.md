@@ -53,7 +53,7 @@ cli options can also be invoked as their shorter alias:
 
 - `-a` -> `--all`
 - `-m` -> `--multiple`
-- `-m` -> `--size`
+- `-s` -> `--size`
 - `-i` -> `--info`
 - `-h` -> `--help`
 - `-v` -> `--version`
