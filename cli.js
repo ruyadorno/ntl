@@ -7,6 +7,7 @@ const ipt = require("ipt");
 const out = require("simple-output");
 
 let tasks;
+let descriptions;
 const sep = require("os").EOL;
 const { execSync } = require("child_process");
 const { argv } = yargs
@@ -17,6 +18,8 @@ const { argv } = yargs
 	.describe("A", "Starts in autocomplete mode")
 	.alias("d", "debug")
 	.describe("d", "Prints to stderr any internal error")
+	.alias("D", "descriptions")
+	.describe("D", "Displays the descriptions of each script")
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
@@ -27,7 +30,7 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "d", "h", "i", "m", "v"])
+	.boolean(["a", "A", "d", "D", "h", "i", "m", "v"])
 	.number(["s"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
@@ -62,19 +65,43 @@ if (!tasks || Object.keys(tasks).length < 1) {
 	process.exit(0);
 }
 
+// get package.json descriptions value
+if (argv.descriptions) {
+	try {
+		descriptions = { exports: {} };
+		require("pkginfo")(descriptions, { dir: cwd, include: ["ntl"] });
+		descriptions = descriptions.exports.ntl.descriptions;
+	} catch (e) {
+		error(e, "No descriptions for your npm scripts found");
+	}
+}
+
 // defines the items that will be printed to the user
 const input = (argv.info
 	? Object.keys(tasks).map(i => ({ name: `${i}: ${tasks[i]}`, value: i }))
-	: Object.keys(tasks)
+	: argv.descriptions
+		? Object.keys(tasks).map(i => {
+			return {
+				name: `${i}: ${descriptions[i]}`,
+				value: i
+			}
+		})
+		: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
 	i =>
 		argv.all
 			? true
-			: ["pre", "post"].every(prefix => argv.info
+			: ["pre", "post"].every(prefix => argv.info || argv.descriptions
 					? i.name.slice(0, prefix.length) !== prefix
 					: i.slice(0, prefix.length) !== prefix
 			)
+).filter(
+	// filter out tasks without a description
+	i =>
+		argv.descriptions
+			? descriptions[i.value] !== undefined
+			: true
 );
 
 out.success("Npm Task List - v" + pkg.version);

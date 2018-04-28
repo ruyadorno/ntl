@@ -9,6 +9,13 @@
     "start": "echo \"start\"",
     "test": "echo \"test\""
   },
+  "ntl": {
+    "descriptions": {
+      "build": "Build task",
+      "prestart": "Pre start task",
+      "start": "Start task"
+    }
+  },
   "license": "MIT"
 }
 

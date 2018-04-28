@@ -55,6 +55,7 @@ cli options can also be invoked as their shorter alias:
 - `-m` -> `--multiple`
 - `-s` -> `--size`
 - `-i` -> `--info`
+- `-D` -> `--descriptions`
 - `-h` -> `--help`
 - `-v` -> `--version`
 
@@ -70,6 +71,7 @@ Options:
   -a, --all           Includes pre and post scripts on the list        [boolean]
   -A, --autocomplete  Starts in autocomplete mode                      [boolean]
   -d, --debug         Prints to stderr any internal error              [boolean]
+  -D, --descriptions  Displays the descriptions of each script         [boolean]
   -h, --help          Shows this help message                          [boolean]
   -i, --info          Displays the contents of each script             [boolean]
   -m, --multiple      Allows the selection of multiple items           [boolean]
