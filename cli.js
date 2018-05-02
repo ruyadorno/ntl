@@ -16,10 +16,10 @@ const { argv } = yargs
 	.describe("a", "Includes pre and post scripts on the list")
 	.alias("A", "autocomplete")
 	.describe("A", "Starts in autocomplete mode")
-	.alias("d", "debug")
+	.alias("D", "debug")
 	.describe("d", "Prints to stderr any internal error")
-	.alias("D", "descriptions")
-	.describe("D", "Displays the descriptions of each script")
+	.alias("d", "descriptions")
+	.describe("d", "Displays the descriptions of each script")
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
@@ -30,7 +30,7 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "d", "D", "h", "i", "m", "v"])
+	.boolean(["a", "A", "D", "d", "h", "i", "m", "v"])
 	.number(["s"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 

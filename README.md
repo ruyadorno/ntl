@@ -70,8 +70,8 @@ Usage:
 Options:
   -a, --all           Includes pre and post scripts on the list        [boolean]
   -A, --autocomplete  Starts in autocomplete mode                      [boolean]
-  -d, --debug         Prints to stderr any internal error              [boolean]
-  -D, --descriptions  Displays the descriptions of each script         [boolean]
+  -D, --debug         Prints to stderr any internal error              [boolean]
+  -d, --descriptions  Displays the descriptions of each script         [boolean]
   -h, --help          Shows this help message                          [boolean]
   -i, --info          Displays the contents of each script             [boolean]
   -m, --multiple      Allows the selection of multiple items           [boolean]
