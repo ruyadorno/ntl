@@ -18,7 +18,7 @@ const { argv } = yargs
 	.alias("A", "autocomplete")
 	.describe("A", "Starts in autocomplete mode")
 	.alias("D", "debug")
-	.describe("d", "Prints to stderr any internal error")
+	.describe("D", "Prints to stderr any internal error")
 	.alias("d", "descriptions")
 	.describe("d", "Displays the descriptions of each script")
 	.help("h")
