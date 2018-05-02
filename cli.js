@@ -79,7 +79,7 @@ if (argv.descriptions) {
 
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
-	? Object.keys(tasks).map(i => ({ name: `${i}: ${argv.descriptions ? descriptions[i] : tasks[i]}`, value: i }))
+	? Object.keys(tasks).map(i => ({ name: `${i} — ${argv.descriptions ? descriptions[i] : tasks[i]}`, value: i }))
 	: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
