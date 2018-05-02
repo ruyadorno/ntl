@@ -2,6 +2,7 @@
 
 "use strict";
 
+const path = require('path');
 const yargs = require("yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
@@ -38,7 +39,7 @@ const { argv } = yargs
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const pkg = require("./package");
-const cwd = argv._[0] || process.cwd();
+const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, size } = argv;
 
 function error(e, msg) {
