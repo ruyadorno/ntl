@@ -83,7 +83,7 @@ const longestScriptName = (scripts) => Object.keys(scripts).reduce((acc, curr) =
 
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
-	? Object.keys(tasks).map(i => ({ name: `${i.padStart(argv.descriptionsOnly ? longestScriptName(descriptions) : longestScriptName(tasks))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : tasks[i]}`, value: i }))
+	? Object.keys(tasks).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : tasks))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : tasks[i]}`, value: i }))
 	: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
