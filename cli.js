@@ -5,6 +5,7 @@
 const yargs = require("yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
+const pkgInfo = require("pkginfo");
 
 let tasks;
 let descriptions;
@@ -53,7 +54,7 @@ process.stdin.on("keypress", (ch, key) => {
 // get package.json scripts value
 try {
 	tasks = { exports: {} };
-	require("pkginfo")(tasks, { dir: cwd, include: ["scripts"] });
+	pkgInfo(tasks, { dir: cwd, include: ["scripts"] });
 	tasks = tasks.exports.scripts;
 } catch (e) {
 	error(e, "No package.json found");
@@ -69,7 +70,7 @@ if (!tasks || Object.keys(tasks).length < 1) {
 if (argv.descriptions) {
 	try {
 		descriptions = { exports: {} };
-		require("pkginfo")(descriptions, { dir: cwd, include: ["ntl"] });
+		pkgInfo(descriptions, { dir: cwd, include: ["ntl"] });
 		descriptions = descriptions.exports.ntl.descriptions;
 	} catch (e) {
 		error(e, "No descriptions for your npm scripts found");
