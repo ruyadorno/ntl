@@ -73,7 +73,7 @@ if (argv.descriptions) {
 	try {
 		descriptions = { exports: {} };
 		pkgInfo(descriptions, { dir: cwd, include: ["ntl"] });
-		descriptions = descriptions.exports.ntl.descriptions;
+		descriptions = descriptions.exports.ntl.descriptions || {};
 	} catch (e) {
 		console.warn("No descriptions for your npm scripts found");
 	}
