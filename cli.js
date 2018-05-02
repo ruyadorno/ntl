@@ -21,6 +21,8 @@ const { argv } = yargs
 	.describe("D", "Prints to stderr any internal error")
 	.alias("d", "descriptions")
 	.describe("d", "Displays the descriptions of each script")
+	.alias("l", "limit")
+	.describe("l", "Limits output to scripts with a description")
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
@@ -31,7 +33,7 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "D", "d", "h", "i", "m", "v"])
+	.boolean(["a", "A", "D", "d", "l", "h", "i", "m", "v"])
 	.number(["s"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
@@ -73,13 +75,13 @@ if (argv.descriptions) {
 		pkgInfo(descriptions, { dir: cwd, include: ["ntl"] });
 		descriptions = descriptions.exports.ntl.descriptions;
 	} catch (e) {
-		error(e, "No descriptions for your npm scripts found");
+		console.warn("No descriptions for your npm scripts found");
 	}
 }
 
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
-	? Object.keys(tasks).map(i => ({ name: `${i} — ${argv.descriptions ? descriptions[i] : tasks[i]}`, value: i }))
+	? Object.keys(tasks).map(i => ({ name: `${i} — ${argv.descriptions && descriptions[i] ? descriptions[i] : tasks[i]}`, value: i }))
 	: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
@@ -93,7 +95,7 @@ const input = (argv.info || argv.descriptions
 ).filter(
 	// filter out tasks without a description
 	i =>
-		argv.descriptions
+		argv.descriptions && argv.limit
 			? descriptions[i.value] !== undefined
 			: true
 );

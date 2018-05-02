@@ -72,6 +72,7 @@ Options:
   -A, --autocomplete  Starts in autocomplete mode                      [boolean]
   -D, --debug         Prints to stderr any internal error              [boolean]
   -d, --descriptions  Displays the descriptions of each script         [boolean]
+  -l, --limit         Limits output to scripts with a description      [boolean]
   -h, --help          Shows this help message                          [boolean]
   -i, --info          Displays the contents of each script             [boolean]
   -m, --multiple      Allows the selection of multiple items           [boolean]
