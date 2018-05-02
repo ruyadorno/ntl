@@ -47,6 +47,26 @@ ntl ./my-node-project
 
 <br />
 
+## Using task descriptions
+
+You can define descriptions for your tasks in your `package.json` file by defining a `ntl` section, e.g:
+
+```json
+{
+  "ntl": {
+    "descriptions": {
+      "build": "Builds the project",
+      "coverage": "Run test outputing code coverage",
+      "test": "Run project's tests"
+    }
+  }
+}
+```
+
+These descriptions will be shown anytime you run ntl using the option: `ntl -d`
+
+<br />
+
 ## More info
 
 cli options can also be invoked as their shorter alias:
