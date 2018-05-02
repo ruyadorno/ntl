@@ -55,6 +55,7 @@ cli options can also be invoked as their shorter alias:
 - `-m` -> `--multiple`
 - `-s` -> `--size`
 - `-i` -> `--info`
+- `-d` -> `--descriptions`
 - `-h` -> `--help`
 - `-v` -> `--version`
 
@@ -67,14 +68,16 @@ Usage:
   ntl [<path>]
 
 Options:
-  -a, --all           Includes pre and post scripts on the list        [boolean]
-  -A, --autocomplete  Starts in autocomplete mode                      [boolean]
-  -d, --debug         Prints to stderr any internal error              [boolean]
-  -h, --help          Shows this help message                          [boolean]
-  -i, --info          Displays the contents of each script             [boolean]
-  -m, --multiple      Allows the selection of multiple items           [boolean]
-  -s, --size          Amount of lines to display at once                [number]
-  -v, --version       Show version number                              [boolean]
+  -a, --all                Includes pre and post scripts on the list   [boolean]
+  -A, --autocomplete       Starts in autocomplete mode                 [boolean]
+  -D, --debug              Prints to stderr any internal error         [boolean]
+  -d, --descriptions       Displays the descriptions of each script    [boolean]
+  -o, --descriptions-only  Limits output to scripts with a description [boolean]
+  -h, --help               Shows this help message                     [boolean]
+  -i, --info               Displays the contents of each script        [boolean]
+  -m, --multiple           Allows the selection of multiple items      [boolean]
+  -s, --size               Amount of lines to display at once           [number]
+  -v, --version            Show version number                         [boolean]
 
 Visit https://github.com/ruyadorno/ntl for more info
 ```

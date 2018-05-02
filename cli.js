@@ -5,8 +5,10 @@
 const yargs = require("yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
+const pkgInfo = require("pkginfo");
 
 let tasks;
+let descriptions;
 const sep = require("os").EOL;
 const { execSync } = require("child_process");
 const { argv } = yargs
@@ -15,8 +17,12 @@ const { argv } = yargs
 	.describe("a", "Includes pre and post scripts on the list")
 	.alias("A", "autocomplete")
 	.describe("A", "Starts in autocomplete mode")
-	.alias("d", "debug")
-	.describe("d", "Prints to stderr any internal error")
+	.alias("D", "debug")
+	.describe("D", "Prints to stderr any internal error")
+	.alias("d", "descriptions")
+	.describe("d", "Displays the descriptions of each script")
+	.alias("o", "descriptions-only")
+	.describe("o", "Limits output to scripts with a description")
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
@@ -27,7 +33,7 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "d", "h", "i", "m", "v"])
+	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v"])
 	.number(["s"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
@@ -50,7 +56,7 @@ process.stdin.on("keypress", (ch, key) => {
 // get package.json scripts value
 try {
 	tasks = { exports: {} };
-	require("pkginfo")(tasks, { dir: cwd, include: ["scripts"] });
+	pkgInfo(tasks, { dir: cwd, include: ["scripts"] });
 	tasks = tasks.exports.scripts;
 } catch (e) {
 	error(e, "No package.json found");
@@ -62,19 +68,38 @@ if (!tasks || Object.keys(tasks).length < 1) {
 	process.exit(0);
 }
 
+// get package.json descriptions value
+if (argv.descriptions) {
+	try {
+		descriptions = { exports: {} };
+		pkgInfo(descriptions, { dir: cwd, include: ["ntl"] });
+		descriptions = descriptions.exports.ntl.descriptions;
+	} catch (e) {
+		console.warn("No descriptions for your npm scripts found");
+	}
+}
+
+const longestScriptName = (scripts) => Object.keys(scripts).reduce((acc, curr) => curr.length > acc.length ? curr : acc).length;
+
 // defines the items that will be printed to the user
-const input = (argv.info
-	? Object.keys(tasks).map(i => ({ name: `${i}: ${tasks[i]}`, value: i }))
+const input = (argv.info || argv.descriptions
+	? Object.keys(tasks).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : tasks))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : tasks[i]}`, value: i }))
 	: Object.keys(tasks)
 ).filter(
 	// filter out prefixed tasks
 	i =>
 		argv.all
 			? true
-			: ["pre", "post"].every(prefix => argv.info
+			: ["pre", "post"].every(prefix => argv.info || argv.descriptions
 					? i.name.slice(0, prefix.length) !== prefix
 					: i.slice(0, prefix.length) !== prefix
 			)
+).filter(
+	// filter out tasks without a description
+	i =>
+		argv.descriptions && argv.descriptionsOnly
+			? descriptions[i.value] !== undefined
+			: true
 );
 
 out.success("Npm Task List - v" + pkg.version);
