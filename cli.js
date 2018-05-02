@@ -21,8 +21,8 @@ const { argv } = yargs
 	.describe("D", "Prints to stderr any internal error")
 	.alias("d", "descriptions")
 	.describe("d", "Displays the descriptions of each script")
-	.alias("l", "limit")
-	.describe("l", "Limits output to scripts with a description")
+	.alias("o", "descriptions-only")
+	.describe("o", "Limits output to scripts with a description")
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
@@ -33,7 +33,7 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "D", "d", "l", "h", "i", "m", "v"])
+	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v"])
 	.number(["s"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
@@ -95,7 +95,7 @@ const input = (argv.info || argv.descriptions
 ).filter(
 	// filter out tasks without a description
 	i =>
-		argv.descriptions && argv.limit
+		argv.descriptions && argv.descriptionsOnly
 			? descriptions[i.value] !== undefined
 			: true
 );
