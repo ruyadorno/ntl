@@ -150,3 +150,13 @@ test.cb(function shouldExitWithErrorMsgOnNoPackageJson(t) {
 			console.error(e);
 		});
 });
+
+test.cb(function shouldExitWithErrorMsgOnMalformedPackageJson(t) {
+	var run = spawn("node", [path.join(__dirname, "..", "cli.js")], {
+		cwd: path.join(__dirname, "/fixtures/malformed")
+	});
+	run.stderr.on("data", function(data) {
+		t.is(data.toString(), "✖  package.json contains malformed JSON\n");
+		t.end();
+	});
+});
