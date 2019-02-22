@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "ipt": "^2.0.0",
-    "pkginfo": "^0.4.1",
+    "read-pkg": "^4.0.1",
     "simple-output": "^1.0.1",
     "yargs": "^11.0.0"
   },

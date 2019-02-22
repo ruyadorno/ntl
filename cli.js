@@ -6,7 +6,7 @@ const path = require('path');
 const yargs = require("yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
-const pkgInfo = require("pkginfo");
+const readPkg = require('read-pkg');
 
 let tasks;
 let descriptions;
@@ -56,11 +56,10 @@ process.stdin.on("keypress", (ch, key) => {
 
 // get package.json scripts value
 try {
-	tasks = { exports: {} };
-	pkgInfo(tasks, { dir: cwd, include: ["scripts"] });
-	tasks = tasks.exports.scripts;
+	tasks = readPkg.sync({ cwd: cwd }).scripts;
 } catch (e) {
-	error(e, "No package.json found");
+	const [errorType] = Object.values(e);
+	error(e, errorType === "JSONError" ? "package.json contains malformed JSON" : "No package.json found");
 }
 
 // validates that there are actually npm scripts
