@@ -105,6 +105,7 @@ const input = (argv.info || argv.descriptions
 			? descriptions[i.value] !== undefined
 			: true
 );
+	.filter(i => (argv.exclude.includes(i) ? false : true));
 
 out.success("Npm Task List - v" + pkg.version);
 
