@@ -29,6 +29,8 @@ const { argv } = yargs
 	.describe("h", "Shows this help message")
 	.alias("i", "info")
 	.describe("i", "Displays the contents of each script")
+	.alias("e", "exclude")
+	.describe("e", "Excludes specific scripts")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
 	.alias("s", "size")
@@ -36,6 +38,7 @@ const { argv } = yargs
 	.alias("v", "version")
 	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v"])
 	.number(["s"])
+	.array(["e"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const pkg = require("./package");
