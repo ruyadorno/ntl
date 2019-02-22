@@ -109,7 +109,32 @@ test.cb(function shouldWorkFromCliWithParams(t) {
 			t.fail();
 		}
 		var values = content.split("\n");
-		t.is("prestart", values[values.length - 2]);
+		t.is("debugger", values[values.length -2]);
+		t.end();
+	});
+	run.stdin.write("j");
+	run.stdin.write("j");
+	run.stdin.write(" ");
+	run.stdin.write("\n");
+	run.stdin.end();
+});
+
+test.cb(function shouldWorkFromCliExcludedScript(t) {
+	var content = "";
+	var run = spawn("node", ["../cli.js", "./fixtures", "--exclude", "debug*"], {
+		cwd: cwd
+	});
+	run.stdout.on("data", function(data) {
+		content += data.toString();
+	});
+	run.stderr.on("data", function(data) {
+		console.error(data.toString());
+	});
+	run.on("close", function(code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		t.is(/debug./gm.test(content), false);
 		t.end();
 	});
 	run.stdin.write("j");
