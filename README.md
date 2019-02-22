@@ -49,13 +49,7 @@ ntl ./my-node-project
 
 ## Exclude scripts
 
-You can define a list of scrpits to be excluded from the interactive menu:
-
-```
-ntl --exclude coverall tasks
-```
-
-*package.json*
+Example *package.json*:
 ```json
 {
   "scripts": {
@@ -67,6 +61,26 @@ ntl --exclude coverall tasks
 }
 ```
 
+You can define a list of scripts to be excluded from the interactive menu:
+
+```
+$ ntl --exclude coverall tasks
+✔  Npm Task List - v3.0.0
+? Select a task to run: (Use arrow keys)
+❯ test
+  test:watch
+  coveralls
+```
+
+You can also use a wildcard character to exclude multiple scripts with one string:
+
+```
+$ ntl --exclude "test*"
+✔  Npm Task List - v3.0.0
+? Select a task to run: (Use arrow keys)
+❯ coveralls
+  tasks
+```
 
 <br />
 
