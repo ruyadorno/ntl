@@ -47,6 +47,43 @@ ntl ./my-node-project
 
 <br />
 
+## Exclude scripts
+
+Example *package.json*:
+```json
+{
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watchAll",
+    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "tasks": "ntl --exclude coverall tasks"
+  }
+}
+```
+
+You can define a list of scripts to be excluded from the interactive menu:
+
+```
+$ ntl --exclude coverall tasks
+✔  Npm Task List - v3.0.0
+? Select a task to run: (Use arrow keys)
+❯ test
+  test:watch
+  coveralls
+```
+
+You can also use a wildcard character to exclude multiple scripts with one string:
+
+```
+$ ntl --exclude "test*"
+✔  Npm Task List - v3.0.0
+? Select a task to run: (Use arrow keys)
+❯ coveralls
+  tasks
+```
+
+<br />
+
 ## Using task descriptions
 
 You can define descriptions for your tasks in your `package.json` file by defining a `ntl` section, e.g:
@@ -76,6 +113,7 @@ cli options can also be invoked as their shorter alias:
 - `-s` -> `--size`
 - `-i` -> `--info`
 - `-d` -> `--descriptions`
+- `-e` -> `--exclude`
 - `-h` -> `--help`
 - `-v` -> `--version`
 
@@ -92,6 +130,7 @@ Options:
   -A, --autocomplete       Starts in autocomplete mode                 [boolean]
   -D, --debug              Prints to stderr any internal error         [boolean]
   -d, --descriptions       Displays the descriptions of each script    [boolean]
+  -e, --exclude            Excludes specific scripts                     [array]
   -o, --descriptions-only  Limits output to scripts with a description [boolean]
   -h, --help               Shows this help message                     [boolean]
   -i, --info               Displays the contents of each script        [boolean]
