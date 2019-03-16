@@ -31,7 +31,7 @@
     "menu"
   ],
   "dependencies": {
-    "ipt": "^2.1.0",
+    "ipt": "^2.1.1",
     "read-pkg": "^4.0.1",
     "simple-output": "^1.0.1",
     "yargs": "^11.0.0"
