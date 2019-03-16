@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "pretest": "eslint src/*.js",
+    "pretest": "eslint cli.js test/index.js",
     "test": "ava"
   },
   "files": [
@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "ava": "^0.11.0",
-    "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint": "^5.15.2",
+    "eslint-config-prettier": "^4.1.0",
     "prettier": "^1.11.1",
     "tempdir": "^1.0.0",
     "tempfile": "^1.1.1"
