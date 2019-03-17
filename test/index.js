@@ -1,13 +1,10 @@
-require("babel-core/register")({
-	ignore: function(filename) {
-		return !(filename.indexOf("tempdir/index.js") > -1);
-	}
-});
+"use strict";
 
 var spawn = require("child_process").spawn;
 var path = require("path");
 var fs = require("fs");
-var test = require("ava").test;
+
+var test = require("ava");
 var tempdir = require("tempdir");
 var tempfile = require("tempfile");
 var pkg = require("../package");
@@ -31,7 +28,7 @@ var tasks = {
 };
 var options = obj;
 
-test.beforeEach(function beforeEachTest(t) {
+test.beforeEach(t => {
 	var stdin = tempfile();
 	fs.writeFileSync(stdin, "");
 	t.context.p = {
@@ -41,13 +38,13 @@ test.beforeEach(function beforeEachTest(t) {
 	};
 });
 
-test.afterEach(function afterEachTest(t) {
+test.afterEach(t => {
 	t.context.p = null;
 });
 
 // --- cli integration tests
 
-test.cb(function shouldWorkFromCli(t) {
+test.cb('should work from cli', t => {
 	var content = "";
 	var run = spawn("node", ["../../cli.js"], {
 		cwd: path.join(__dirname, "/fixtures")
@@ -70,10 +67,10 @@ test.cb(function shouldWorkFromCli(t) {
 	run.stdin.end();
 });
 
-test.cb(function shouldWorkFromCliWithPath(t) {
+test.cb('should work from cli with path', t => {
 	var content = "";
 	var run = spawn("node", ["../cli.js", "./fixtures"], {
-		cwd: cwd
+		cwd: path.join(__dirname)
 	});
 	run.stdout.on("data", function(data) {
 		content += data.toString();
@@ -93,10 +90,10 @@ test.cb(function shouldWorkFromCliWithPath(t) {
 	run.stdin.end();
 });
 
-test.cb(function shouldWorkFromCliWithParams(t) {
+test.cb('should work from cli with params', t => {
 	var content = "";
 	var run = spawn("node", ["../cli.js", "./fixtures", "--all", "-m"], {
-		cwd: cwd
+		cwd: path.join(__dirname)
 	});
 	run.stdout.on("data", function(data) {
 		content += data.toString();
@@ -119,10 +116,10 @@ test.cb(function shouldWorkFromCliWithParams(t) {
 	run.stdin.end();
 });
 
-test.cb(function shouldWorkFromCliExcludedScript(t) {
+test.cb('should work from cli excluded script', t => {
 	var content = "";
 	var run = spawn("node", ["../cli.js", "./fixtures", "--exclude", "debug*"], {
-		cwd: cwd
+		cwd: path.join(__dirname)
 	});
 	run.stdout.on("data", function(data) {
 		content += data.toString();
@@ -144,7 +141,7 @@ test.cb(function shouldWorkFromCliExcludedScript(t) {
 	run.stdin.end();
 });
 
-test.cb(function shouldExitWithErrorCodeOnNoPackageJson(t) {
+test.cb('should exit with error code on no package json', t => {
 	tempdir()
 		.then(function(foldername) {
 			var run = spawn("node", [path.join(__dirname, "..", "cli.js")], {
@@ -160,7 +157,7 @@ test.cb(function shouldExitWithErrorCodeOnNoPackageJson(t) {
 		});
 });
 
-test.cb(function shouldExitWithErrorMsgOnNoPackageJson(t) {
+test.cb('should exit with error msg on no package json', t => {
 	tempdir()
 		.then(function(foldername) {
 			var run = spawn("node", [path.join(__dirname, "..", "cli.js")], {
@@ -176,7 +173,7 @@ test.cb(function shouldExitWithErrorMsgOnNoPackageJson(t) {
 		});
 });
 
-test.cb(function shouldExitWithErrorMsgOnMalformedPackageJson(t) {
+test.cb('should exit with error msg on malformed package.json', t => {
 	var run = spawn("node", [path.join(__dirname, "..", "cli.js")], {
 		cwd: path.join(__dirname, "/fixtures/malformed")
 	});
