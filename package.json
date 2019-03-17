@@ -13,7 +13,7 @@
   },
   "scripts": {
     "pretest": "eslint cli.js test/index.js",
-    "test": "ava"
+    "test": "ava --tap"
   },
   "files": [
     "cli.js"
