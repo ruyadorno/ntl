@@ -104,7 +104,7 @@ const input = (argv.info || argv.descriptions
 ).filter(
 	// filter excluded scripts
 	i =>
-		!argv.exclude || !argv.exclude.some(e => new RegExp(e + (e.includes('*') ? '' : '$'), 'i').test(i))
+		!argv.exclude || !argv.exclude.some(e => new RegExp(e + (e.includes('*') ? '' : '$'), 'i').test(argv.info || argv.descriptions ? i.value : i))
 );
 
 out.success("Npm Task List - v" + pkg.version);
