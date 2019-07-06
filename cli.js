@@ -44,7 +44,6 @@ const { argv } = yargs
 const pkg = require("./package");
 const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, size } = argv;
-console.log(readPkg.sync());
 try {
 	var packageManager = readPkg.sync().ntl['package-manager'] || 'npm';
 } catch (error) {
