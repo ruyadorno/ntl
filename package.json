@@ -1,8 +1,8 @@
 {
-  "name": "ntl",
-  "version": "3.2.4",
-  "description": "Npm Task List: Interactive cli menu to list/run npm tasks",
-  "repository": "ruyadorno/ntl",
+  "name": "ytl",
+  "version": "1.0.0",
+  "description": "Yarn Task List: Interactive cli menu to list/run npm tasks with yarn",
+  "repository": "Muldoser/ytl",
   "author": {
     "name": "Ruy Adorno",
     "url": "http://ruyadorno.com"
@@ -19,6 +19,7 @@
     "cli.js"
   ],
   "keywords": [
+    "yarn",
     "npm",
     "task",
     "list",
@@ -27,6 +28,7 @@
     "cli-app",
     "cli",
     "ntl",
+    "ytl",
     "runner",
     "menu"
   ],

@@ -60,7 +60,7 @@ test.cb('should work from cli', t => {
 			t.fail();
 		}
 		var values = content.split("\n");
-		t.is("build", values[values.length - 2]);
+		t.regex(values[values.length - 2], /Done in .*s./g);
 		t.end();
 	});
 	run.stdin.write("\n");
@@ -83,7 +83,7 @@ test.cb('should work from cli with path', t => {
 			t.fail();
 		}
 		var values = content.split("\n");
-		t.is("build", values[values.length - 2]);
+		t.regex(values[values.length - 2], /Done in .*s./g);
 		t.end();
 	});
 	run.stdin.write("\n");
@@ -106,7 +106,7 @@ test.cb('should work from cli with params', t => {
 			t.fail();
 		}
 		var values = content.split("\n");
-		t.is("debugger", values[values.length -2]);
+		t.regex(values[values.length -2], /Done in .*s./g);
 		t.end();
 	});
 	run.stdin.write("j");
@@ -164,7 +164,7 @@ test.cb('should exit with error msg on no package json', t => {
 				cwd: foldername
 			});
 			run.stderr.on("data", function(data) {
-				t.is(data.toString(), "✖  No package.json found\n");
+				t.regex(data.toString(), /.  No package.json found.*/g);
 				t.end();
 			});
 		})
@@ -178,7 +178,7 @@ test.cb('should exit with error msg on malformed package.json', t => {
 		cwd: path.join(__dirname, "/fixtures/malformed")
 	});
 	run.stderr.on("data", function(data) {
-		t.is(data.toString(), "✖  package.json contains malformed JSON\n");
+		t.regex(data.toString(), /.  package.json contains malformed JSON.*/g);
 		t.end();
 	});
 });

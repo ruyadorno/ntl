@@ -10,7 +10,7 @@
     "start": "echo \"start\"",
     "test": "echo \"test\""
   },
-  "ntl": {
+  "ytl": {
     "descriptions": {
       "build": "Build task",
       "prestart": "Pre start task",

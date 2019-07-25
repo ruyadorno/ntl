@@ -13,7 +13,7 @@ let descriptions;
 const sep = require("os").EOL;
 const { execSync } = require("child_process");
 const { argv } = yargs
-	.usage("Usage:\n  ntl [<path>]")
+	.usage("Usage:\n  ytl [<path>]")
 	.alias("a", "all")
 	.describe("a", "Includes pre and post scripts on the list")
 	.alias("A", "autocomplete")
@@ -39,7 +39,7 @@ const { argv } = yargs
 	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v"])
 	.number(["s"])
 	.array(["e"])
-	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
+	.epilog("Visit https://github.com/Muldoser/ytl for more info");
 
 const pkg = require("./package");
 const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
@@ -74,7 +74,7 @@ if (!tasks || Object.keys(tasks).length < 1) {
 // get package.json descriptions value
 if (argv.descriptions) {
 	try {
-		descriptions = readPkg.sync({ cwd: cwd }).ntl.descriptions;
+		descriptions = readPkg.sync({ cwd: cwd }).ytl.descriptions;
 	} catch (e) {
 		error(e, "No descriptions for your npm scripts found");
 	}
@@ -118,7 +118,7 @@ ipt(input, {
 })
 	.then(keys => {
 		keys.forEach(key => {
-			execSync(`npm run ${key}`, {
+			execSync(`yarn run ${key}`, {
 				cwd,
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});
