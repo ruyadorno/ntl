@@ -1,13 +1,16 @@
 {
   "name": "ntl",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "Npm Task List: Interactive cli menu to list/run npm tasks",
   "repository": "ruyadorno/ntl",
   "author": {
     "name": "Ruy Adorno",
     "url": "http://ruyadorno.com"
   },
-  "bin": "cli.js",
+  "bin": {
+    "ntl": "cli.js",
+    "npm-tasklist": "cli.js"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
