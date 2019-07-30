@@ -44,6 +44,11 @@ const { argv } = yargs
 const pkg = require("./package");
 const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, size } = argv;
+try {
+	var packageManager = readPkg.sync().ntl['package-manager'] || 'npm';
+} catch (error) {
+	var packageManager = 'npm';
+}
 
 function error(e, msg) {
 	out.error(argv.debug ? e : msg);
@@ -111,14 +116,14 @@ out.success("Npm Task List - v" + pkg.version);
 
 // creates interactive interface using ipt
 ipt(input, {
-	message: "Select a task to run:",
+	message: `Select a task to run (using ${packageManager}):`,
 	autocomplete,
 	multiple,
 	size
 })
 	.then(keys => {
 		keys.forEach(key => {
-			execSync(`npm run ${key}`, {
+			execSync(`${packageManager} run ${key}`, {
 				cwd,
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});
