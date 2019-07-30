@@ -29,6 +29,11 @@ just run it at once using **npx**:
 npx ntl
 ```
 
+There's also a longhand command you can run if you experience conflicts:
+```sh
+npx npm-tasklist
+```
+
 <br />
 
 ## Usage
@@ -43,6 +48,12 @@ You can also specify a project folder containing a `package.json` file:
 
 ```sh
 ntl ./my-node-project
+```
+
+Longhand project folder example:
+
+```sh
+npm-tasklist ./my-node-project
 ```
 
 <br />
