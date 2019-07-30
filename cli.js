@@ -8,8 +8,7 @@ const ipt = require("ipt");
 const out = require("simple-output");
 const readPkg = require('read-pkg');
 
-let tasks;
-let descriptions;
+let cwdPkg;
 const sep = require("os").EOL;
 const { execSync } = require("child_process");
 const { argv } = yargs
@@ -44,11 +43,7 @@ const { argv } = yargs
 const pkg = require("./package");
 const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, size } = argv;
-try {
-	var packageManager = readPkg.sync().ntl['package-manager'] || 'npm';
-} catch (error) {
-	var packageManager = 'npm';
-}
+const defaultRunner = 'npm';
 
 function error(e, msg) {
 	out.error(argv.debug ? e : msg);
@@ -62,26 +57,29 @@ process.stdin.on("keypress", (ch, key) => {
 	}
 });
 
-// get package.json scripts value
+// get cwd package.json values
 try {
-	tasks = readPkg.sync({ cwd: cwd }).scripts;
+	cwdPkg = readPkg.sync({ cwd: cwd }) || {};
 } catch (e) {
 	const [errorType] = Object.values(e);
 	error(e, errorType === "JSONError" ? "package.json contains malformed JSON" : "No package.json found");
 }
 
+// Retrieve config values from cwd package.json
+const { ntl, scripts } = cwdPkg;
+const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
+const { descriptions = {} } = (ntl || {});
+
 // validates that there are actually npm scripts
-if (!tasks || Object.keys(tasks).length < 1) {
-	out.info("No npm scripts available in cwd");
+if (!scripts || Object.keys(scripts).length < 1) {
+	out.info(`No ${runner} scripts available in cwd`);
 	process.exit(0);
 }
 
 // get package.json descriptions value
 if (argv.descriptions) {
-	try {
-		descriptions = readPkg.sync({ cwd: cwd }).ntl.descriptions;
-	} catch (e) {
-		error(e, "No descriptions for your npm scripts found");
+	if (Object.keys(descriptions || {}).length < 1) {
+		out.warn(`No descriptions for your ${runner} scripts found`);
 	}
 }
 
@@ -89,10 +87,10 @@ const longestScriptName = (scripts) => Object.keys(scripts).reduce((acc, curr) =
 
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
-	? Object.keys(tasks).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : tasks))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : tasks[i]}`, value: i }))
-	: Object.keys(tasks)
+	? Object.keys(scripts).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : scripts))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : scripts[i]}`, value: i }))
+	: Object.keys(scripts)
 ).filter(
-	// filter out prefixed tasks
+	// filter out prefixed scripts
 	i =>
 		argv.all
 			? true
@@ -101,7 +99,7 @@ const input = (argv.info || argv.descriptions
 					: i.slice(0, prefix.length) !== prefix
 			)
 ).filter(
-	// filter out tasks without a description
+	// filter out scripts without a description
 	i =>
 		argv.descriptions && argv.descriptionsOnly
 			? descriptions[i.value] !== undefined
@@ -115,15 +113,16 @@ const input = (argv.info || argv.descriptions
 out.success("Npm Task List - v" + pkg.version);
 
 // creates interactive interface using ipt
+const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
 ipt(input, {
-	message: `Select a task to run (using ${packageManager}):`,
 	autocomplete,
+	message,
 	multiple,
 	size
 })
 	.then(keys => {
 		keys.forEach(key => {
-			execSync(`${packageManager} run ${key}`, {
+			execSync(`${runner} run ${key}`, {
 				cwd,
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});

@@ -1,0 +1,23 @@
+{
+  "name": "foo",
+  "version": "1.0.0",
+  "description": "Lorem ipsum dolor sit amet",
+  "scripts": {
+    "build": "echo \"build\"",
+    "debug": "echo \"debug\"",
+    "debugger": "echo \"debugger\"",
+    "prestart": "echo \"prestart\"",
+    "start": "echo \"start\"",
+    "test": "echo \"test\""
+  },
+  "ntl": {
+    "runner": "echo",
+    "descriptions": {
+      "build": "Build task",
+      "prestart": "Pre start task",
+      "start": "Start task"
+    }
+  },
+  "license": "MIT"
+}
+

@@ -182,3 +182,80 @@ test.cb('should exit with error msg on malformed package.json', t => {
 		t.end();
 	});
 });
+
+test.cb('should print warn msg if using descriptions option but none found on package.json', t => {
+	var content = "";
+	var run = spawn("node", [path.join(__dirname, "..", "cli.js"), "--descriptions"], {
+		cwd: path.join(__dirname, "/fixtures/missing-descriptions")
+	});
+	run.stdout.on("data", function(data) {
+		content += data.toString();
+	});
+	run.stderr.on("data", function(data) {
+		console.error(data.toString());
+		t.fail();
+	});
+	run.on("close", function(code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split("\n");
+		var expected = values[0];
+		t.is("⚠  No descriptions for your echo scripts found", expected);
+		t.end();
+	});
+	run.stdin.write("\n");
+	run.stdin.end();
+});
+
+test.cb('should work with custom runner env variable', t => {
+	var content = "";
+	var run = spawn("node", ["../cli.js", "./fixtures"], {
+		cwd: path.join(__dirname),
+		env: {
+			NTL_RUNNER: 'echo',
+			...process.env
+		}
+	});
+	run.stdout.on("data", function(data) {
+		content += data.toString();
+	});
+	run.stderr.on("data", function(data) {
+		console.error(data.toString());
+	});
+	run.on("close", function(code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split("\n");
+		var expected = values[values.length - 2];
+		t.is("run build", expected);
+		t.end();
+	});
+	run.stdin.write("\n");
+	run.stdin.end();
+});
+
+test.cb('should work with custom runner property', t => {
+	var content = "";
+	var run = spawn("node", ["../cli.js", "./fixtures/custom-runner"], {
+		cwd: path.join(__dirname)
+	});
+	run.stdout.on("data", function(data) {
+		content += data.toString();
+	});
+	run.stderr.on("data", function(data) {
+		console.error(data.toString());
+	});
+	run.on("close", function(code) {
+		if (code !== 0) {
+			t.fail();
+		}
+		var values = content.split("\n");
+		var expected = values[values.length - 2];
+		t.is("run build", expected);
+		t.end();
+	});
+	run.stdin.write("\n");
+	run.stdin.end();
+});

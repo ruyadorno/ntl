@@ -58,6 +58,26 @@ npm-tasklist ./my-node-project
 
 <br />
 
+## Custom runner
+
+If you want to use a custom runner, e.g: `yarn` you can either use a environment variable:
+
+```sh
+NTL_RUNNER=yarn ntl
+```
+
+OR you can also define a `runner` property in the `ntl` configuration within your `package.json`:
+
+```json
+{
+  "ntl": {
+    "runner": "yarn"
+  }
+}
+```
+
+<br />
+
 ## Exclude scripts
 
 Example *package.json*:
