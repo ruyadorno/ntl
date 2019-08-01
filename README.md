@@ -30,8 +30,9 @@ npx ntl
 ```
 
 There's also a longhand command you can run if you experience conflicts:
+
 ```sh
-npx npm-tasklist
+npx -p ntl npm-tasklist
 ```
 
 <br />
@@ -80,7 +81,8 @@ OR you can also define a `runner` property in the `ntl` configuration within you
 
 ## Exclude scripts
 
-Example *package.json*:
+Example _package.json_:
+
 ```json
 {
   "scripts": {
@@ -177,4 +179,3 @@ Visit https://github.com/ruyadorno/ntl for more info
 ## License
 
 [MIT](LICENSE) © 2018 [Ruy Adorno](http://ruyadorno.com)
-
