@@ -133,7 +133,7 @@ You can define descriptions for your tasks in your `package.json` file by defini
 }
 ```
 
-These descriptions will be shown anytime you run ntl using the option: `ntl -d`
+These descriptions will be shown anytime you run `ntl`
 
 <br />
 
@@ -145,7 +145,7 @@ cli options can also be invoked as their shorter alias:
 - `-m` -> `--multiple`
 - `-s` -> `--size`
 - `-i` -> `--info`
-- `-d` -> `--descriptions`
+- `-d` -> `--descriptions` deprecated is now default
 - `-e` -> `--exclude`
 - `-h` -> `--help`
 - `-v` -> `--version`

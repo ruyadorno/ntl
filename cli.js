@@ -88,16 +88,13 @@ const longestScriptName = (scripts) => Object.keys(scripts).reduce((acc, curr) =
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
 	? Object.keys(scripts).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : scripts))} › ${argv.descriptions && descriptions[i] ? descriptions[i] : scripts[i]}`, value: i }))
-	: Object.keys(scripts)
+	: Object.keys(scripts).map(i => ({ name: `${i.padStart(longestScriptName(argv.descriptionsOnly ? descriptions : scripts))} › ${descriptions[i] ? descriptions[i] : scripts[i]}`, value: i }))
 ).filter(
 	// filter out prefixed scripts
 	i =>
 		argv.all
 			? true
-			: ["pre", "post"].every(prefix => argv.info || argv.descriptions
-					? i.name.slice(0, prefix.length) !== prefix
-					: i.slice(0, prefix.length) !== prefix
-			)
+			: ["pre", "post"].every(prefix => i.name.slice(0, prefix.length) !== prefix)
 ).filter(
 	// filter out scripts without a description
 	i =>
@@ -107,7 +104,7 @@ const input = (argv.info || argv.descriptions
 ).filter(
 	// filter excluded scripts
 	i =>
-		!argv.exclude || !argv.exclude.some(e => new RegExp(e + (e.includes('*') ? '' : '$'), 'i').test(argv.info || argv.descriptions ? i.value : i))
+		!argv.exclude || !argv.exclude.some(e => new RegExp(e + (e.includes('*') ? '' : '$'), 'i').test(i.value))
 );
 
 out.success("Npm Task List - v" + pkg.version);
