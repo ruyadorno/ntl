@@ -162,6 +162,7 @@ function repeat(cwdStore) {
 	const lastCommand = cwdStore.get("lastCommand");
 
 	if (!lastCommand) {
+		out.error("No previous command available");
 		return false;
 	}
 
