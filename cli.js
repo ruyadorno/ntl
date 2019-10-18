@@ -20,7 +20,7 @@ const { argv } = yargs
 	.alias("D", "debug")
 	.describe("D", "Prints to stderr any internal error")
 	.alias("d", "descriptions")
-	.describe("d", "Displays the descriptions of each script")
+	.describe("d", "Deprecated: Displays the descriptions of each script")
 	.alias("o", "descriptions-only")
 	.describe("o", "Limits output to scripts with a description")
 	.help("h")

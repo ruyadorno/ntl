@@ -145,7 +145,7 @@ cli options can also be invoked as their shorter alias:
 - `-m` -> `--multiple`
 - `-s` -> `--size`
 - `-i` -> `--info`
-- `-d` -> `--descriptions` deprecated is now default
+- `-d` -> `--descriptions` deprecated, the described behavior is now default
 - `-e` -> `--exclude`
 - `-h` -> `--help`
 - `-v` -> `--version`
