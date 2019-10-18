@@ -120,6 +120,10 @@ run();
 function run() {
 	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
 
+	if (rerun && repeat()) {
+		return;
+	}
+
 	// creates interactive interface using ipt
 	ipt(input, {
 		autocomplete,
@@ -138,4 +142,8 @@ function run() {
 		.catch(err => {
 			error(err, "Error building interactive interface");
 		});
+}
+
+function repeat() {
+	return rerun;
 }
