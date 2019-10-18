@@ -141,6 +141,8 @@ function run() {
 	})
 		.then(keys => {
 			keys.forEach(key => {
+				// what should be desired behaviour on multiple commands?
+				cwdStore.set("lastCommand", key);
 				executeCommand(key);
 			});
 		})
