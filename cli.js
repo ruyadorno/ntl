@@ -35,14 +35,16 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v"])
+	.describe("rerun", "Rerun the last command selected via ntl in working repository")
+	.alias("r", "rerun")
+	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v","rerun"])
 	.number(["s"])
 	.array(["e"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const pkg = require("./package");
 const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
-const { autocomplete, multiple, size } = argv;
+const { autocomplete, multiple, size, rerun } = argv;
 const defaultRunner = 'npm';
 
 function error(e, msg) {
@@ -112,22 +114,28 @@ const input = (argv.info || argv.descriptions
 
 out.success("Npm Task List - v" + pkg.version);
 
-// creates interactive interface using ipt
-const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
-ipt(input, {
-	autocomplete,
-	message,
-	multiple,
-	size
-})
-	.then(keys => {
-		keys.forEach(key => {
-			execSync(`${runner} run ${key}`, {
-				cwd,
-				stdio: [process.stdin, process.stdout, process.stderr]
-			});
-		});
+// execute script
+run();
+
+function run() {
+	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
+
+	// creates interactive interface using ipt
+	ipt(input, {
+		autocomplete,
+		message,
+		multiple,
+		size
 	})
-	.catch(err => {
-		error(err, "Error building interactive interface");
-	});
+		.then(keys => {
+			keys.forEach(key => {
+				execSync(`${runner} run ${key}`, {
+					cwd,
+					stdio: [process.stdin, process.stdout, process.stderr]
+				});
+			});
+		})
+		.catch(err => {
+			error(err, "Error building interactive interface");
+		});
+}
