@@ -165,6 +165,7 @@ function repeat(cwdStore) {
 		return false;
 	}
 
-	console.log(lastCommand);
+	executeCommand(lastCommand);
+
 	return true;
 }
