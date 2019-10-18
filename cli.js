@@ -117,7 +117,6 @@ const input = (argv.info || argv.descriptions
 // execute script
 run();
 
-
 function run() {
 	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
 
@@ -140,15 +139,20 @@ function run() {
 		size
 	})
 		.then(keys => {
-			keys.forEach(key => {
-				// what should be desired behaviour on multiple commands?
-				cwdStore.set("lastCommand", key);
-				executeCommand(key);
-			});
+
+			// what should be desired behaviour on multiple commands?
+			cwdStore.set("lastCommand", keys);
+			executeCommands(keys);
 		})
 		.catch(err => {
 			error(err, "Error building interactive interface");
 		});
+}
+
+function executeCommands(keys) {
+	keys.forEach(key => {
+		executeCommand(key);
+	});
 }
 
 function executeCommand(key) {
@@ -166,7 +170,7 @@ function repeat(cwdStore) {
 		return false;
 	}
 
-	executeCommand(lastCommand);
+	executeCommands(lastCommand);
 
 	return true;
 }
