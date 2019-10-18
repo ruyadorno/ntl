@@ -112,7 +112,6 @@ const input = (argv.info || argv.descriptions
 		!argv.exclude || !argv.exclude.some(e => new RegExp(e + (e.includes('*') ? '' : '$'), 'i').test(argv.info || argv.descriptions ? i.value : i))
 );
 
-out.success("Npm Task List - v" + pkg.version);
 
 // execute script
 run();
@@ -123,6 +122,8 @@ function run() {
 	if (rerun && repeat()) {
 		return;
 	}
+
+	out.success("Npm Task List - v" + pkg.version);
 
 	// creates interactive interface using ipt
 	ipt(input, {
