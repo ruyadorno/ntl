@@ -7,6 +7,7 @@ const yargs = require("yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
 const readPkg = require('read-pkg');
+const Conf = require("conf");
 
 let cwdPkg;
 const sep = require("os").EOL;
@@ -119,7 +120,12 @@ run();
 function run() {
 	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
 
-	if (rerun && repeat()) {
+	const cwdStore = new Conf({
+		configName: ".ntl",
+		cwd,
+	});
+
+	if (rerun && repeat(cwdStore)) {
 		return;
 	}
 
@@ -145,6 +151,13 @@ function run() {
 		});
 }
 
-function repeat() {
-	return rerun;
+function repeat(cwdStore) {
+	const lastCommand = cwdStore.get("lastCommand");
+
+	if (!lastCommand) {
+		return false;
+	}
+
+	console.log(lastCommand);
+	return true;
 }
