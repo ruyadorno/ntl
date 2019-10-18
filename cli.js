@@ -141,7 +141,7 @@ function run() {
 		.then(keys => {
 
 			// what should be desired behaviour on multiple commands?
-			cwdStore.set("lastCommand", keys);
+			cwdStore.set("lastCommands", keys);
 			executeCommands(keys);
 		})
 		.catch(err => {
@@ -163,14 +163,14 @@ function executeCommand(key) {
 }
 
 function repeat(cwdStore) {
-	const lastCommand = cwdStore.get("lastCommand");
+	const lastCommands = cwdStore.get("lastCommands");
 
-	if (!lastCommand) {
+	if (!lastCommands) {
 		out.error("No previous command available");
 		return false;
 	}
 
-	executeCommands(lastCommand);
+	executeCommands(lastCommands);
 
 	return true;
 }
