@@ -117,6 +117,7 @@ const input = (argv.info || argv.descriptions
 // execute script
 run();
 
+
 function run() {
 	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ''}:`;
 
@@ -140,15 +141,19 @@ function run() {
 	})
 		.then(keys => {
 			keys.forEach(key => {
-				execSync(`${runner} run ${key}`, {
-					cwd,
-					stdio: [process.stdin, process.stdout, process.stderr]
-				});
+				executeCommand(key);
 			});
 		})
 		.catch(err => {
 			error(err, "Error building interactive interface");
 		});
+}
+
+function executeCommand(key) {
+	execSync(`${runner} run ${key}`, {
+		cwd,
+		stdio: [process.stdin, process.stdout, process.stderr]
+	});
 }
 
 function repeat(cwdStore) {
