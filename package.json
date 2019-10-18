@@ -42,6 +42,7 @@
     "menu"
   ],
   "dependencies": {
+    "conf": "^6.1.0",
     "ipt": "^3.0.0",
     "read-pkg": "^5.2.0",
     "simple-output": "^2.0.0",
