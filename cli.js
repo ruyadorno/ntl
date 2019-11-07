@@ -41,7 +41,7 @@ const { argv } = yargs
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const pkg = require("./package");
-const cwd = argv._[0] ? path.join(process.cwd(), argv._[0]) : process.cwd();
+const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, size } = argv;
 const defaultRunner = 'npm';
 
