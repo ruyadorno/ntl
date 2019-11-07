@@ -5,8 +5,16 @@
   "repository": "ruyadorno/ntl",
   "author": {
     "name": "Ruy Adorno",
+    "twitter": "ruyadorno",
     "url": "http://ruyadorno.com"
   },
+  "contributors": [
+    {
+      "name": "Michael Kühnel",
+      "twitter": "mkuehnel",
+      "url": "https://michael-kuehnel.de"
+    }
+  ],
   "bin": {
     "ntl": "cli.js",
     "npm-tasklist": "cli.js"
@@ -15,8 +23,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "pretest": "eslint cli.js test/index.js",
-    "test": "ava --tap"
+    "pretest": "eslint cli.js test",
+    "test": "tap"
   },
   "files": [
     "cli.js"
@@ -40,16 +48,16 @@
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "cross-spawn": "^7.0.1",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
+    "minipass": "^3.1.1",
     "prettier": "^1.18.2",
-    "tempdir": "^2.0.0",
-    "tempfile": "^3.0.0"
+    "require-inject": "^1.4.4",
+    "tap": "^14.9.1"
   },
-  "ava": {
-    "babel": false,
-    "compileEnhancements": false
+  "tap": {
+    "100": true
   },
   "license": "MIT"
 }
