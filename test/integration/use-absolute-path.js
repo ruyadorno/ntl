@@ -16,7 +16,6 @@ test("ntl run using an absolute path argument", t => {
 		})
 	});
 
-	spawn("tree", [cwd], { cwd: __dirname }).stdout.pipe(process.stdout);
 	const run = spawn("node", ["../../cli.js", cwd], { cwd: __dirname });
 	run.stderr.on("data", data => {
 		console.error(data.toString());
