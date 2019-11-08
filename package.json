@@ -50,8 +50,8 @@
   },
   "devDependencies": {
     "cross-spawn": "^7.0.1",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
     "minipass": "^3.1.1",
     "prettier": "^1.18.2",
     "require-inject": "^1.4.4",
