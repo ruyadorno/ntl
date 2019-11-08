@@ -1,8 +1,5 @@
 "use strict";
 
-const path = require("path");
-const fs = require("fs");
-
 const Minipass = require("minipass");
 const { test } = require("tap");
 const spawn = require("cross-spawn");

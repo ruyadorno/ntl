@@ -4,7 +4,7 @@ const Minipass = require("minipass");
 const { test } = require("tap");
 const spawn = require("cross-spawn");
 
-test("ntl run using an absolute path argument", t => {
+test("ntl run and select first item", t => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -13,7 +13,15 @@ test("ntl run using an absolute path argument", t => {
 		})
 	});
 
-	const run = spawn("node", ["../../cli.js", cwd], { cwd: __dirname });
+	const run = spawn("node", ["../../../cli.js"], {
+		cwd,
+		env: Object.assign(
+			{
+				NTL_RUNNER: "echo"
+			},
+			process.env
+		)
+	});
 	run.stderr.on("data", data => {
 		console.error(data.toString());
 		t.fail("should not have stderr output");
@@ -23,7 +31,11 @@ test("ntl run using an absolute path argument", t => {
 	run.stdout.pipe(ministream);
 	ministream.collect().then(res => {
 		const taskOutput = res[res.length - 1].toString().trim();
-		t.equal(taskOutput, "build", "should be able to run task");
+		t.equal(
+			taskOutput,
+			"run build",
+			"should env variable-defined custom runner"
+		);
 		t.end();
 	});
 

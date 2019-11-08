@@ -4,7 +4,7 @@ const Minipass = require("minipass");
 const { test } = require("tap");
 const spawn = require("cross-spawn");
 
-test("ntl run using an absolute path argument", t => {
+test("ntl run using --descriptions option but no description avail", t => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -13,7 +13,7 @@ test("ntl run using an absolute path argument", t => {
 		})
 	});
 
-	const run = spawn("node", ["../../cli.js", cwd], { cwd: __dirname });
+	const run = spawn("node", ["../../../cli.js", "--descriptions"], { cwd });
 	run.stderr.on("data", data => {
 		console.error(data.toString());
 		t.fail("should not have stderr output");
@@ -22,8 +22,11 @@ test("ntl run using an absolute path argument", t => {
 	const ministream = new Minipass();
 	run.stdout.pipe(ministream);
 	ministream.collect().then(res => {
-		const taskOutput = res[res.length - 1].toString().trim();
-		t.equal(taskOutput, "build", "should be able to run task");
+		const taskOutput = res[0].toString().trim();
+		t.ok(
+			taskOutput.endsWith("No descriptions for your npm scripts found"),
+			"should print warn message"
+		);
 		t.end();
 	});
 

@@ -1,17 +1,22 @@
 "use strict";
 
+const path = require("path");
+
 const Minipass = require("minipass");
 const { test } = require("tap");
 const spawn = require("cross-spawn");
 
 test("ntl run using an absolute path argument", t => {
-	const cwd = t.testdir({
-		"package.json": JSON.stringify({
-			scripts: {
-				build: 'echo "build"'
-			}
+	const cwd = path.relative(
+		__dirname,
+		t.testdir({
+			"package.json": JSON.stringify({
+				scripts: {
+					build: 'echo "build"'
+				}
+			})
 		})
-	});
+	);
 
 	const run = spawn("node", ["../../cli.js", cwd], { cwd: __dirname });
 	run.stderr.on("data", data => {
