@@ -95,8 +95,9 @@ if (argv.descriptions) {
 }
 
 const longestScriptName = scripts =>
-	Object.keys(scripts).reduce((acc, curr) =>
-		curr.length > acc.length ? curr : acc
+	Object.keys(scripts).reduce(
+		(acc, curr) => (curr.length > acc.length ? curr : acc),
+		""
 	).length;
 
 // defines the items that will be printed to the user
