@@ -89,7 +89,7 @@ if (!scripts || Object.keys(scripts).length < 1) {
 
 // get package.json descriptions value
 if (argv.descriptions) {
-	if (Object.keys(descriptions || {}).length < 1) {
+	if (Object.keys(descriptions).length < 1) {
 		out.warn(`No descriptions for your ${runner} scripts found`);
 	}
 }
@@ -102,42 +102,37 @@ const longestScriptName = scripts =>
 
 // defines the items that will be printed to the user
 const input = (argv.info || argv.descriptions
-	? Object.keys(scripts).map(i => ({
-			name: `${i.padStart(
+	? Object.keys(scripts).map(key => ({
+			name: `${key.padStart(
 				longestScriptName(argv.descriptionsOnly ? descriptions : scripts)
 			)} › ${
-				argv.descriptions && descriptions[i] ? descriptions[i] : scripts[i]
+				argv.descriptions && descriptions[key]
+					? descriptions[key]
+					: scripts[key]
 			}`,
-			value: i
+			value: key
 	  }))
-	: Object.keys(scripts)
+	: Object.keys(scripts).map(key => ({ name: key, value: key }))
 )
 	.filter(
 		// filter out prefixed scripts
-		i =>
+		item =>
 			argv.all
 				? true
-				: ["pre", "post"].every(prefix =>
-						argv.info || argv.descriptions
-							? i.name.slice(0, prefix.length) !== prefix
-							: i.slice(0, prefix.length) !== prefix
+				: ["pre", "post"].every(
+						prefix => item.name.slice(0, prefix.length) !== prefix
 				  )
 	)
 	.filter(
-		// filter out scripts without a description
-		i =>
-			argv.descriptions && argv.descriptionsOnly
-				? descriptions[i.value] !== undefined
-				: true
+		// filter out scripts without a description if --descriptions-only option
+		item => (argv.descriptionsOnly ? descriptions[item.value] : true)
 	)
 	.filter(
 		// filter excluded scripts
-		i =>
+		item =>
 			!argv.exclude ||
 			!argv.exclude.some(e =>
-				new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(
-					argv.info || argv.descriptions ? i.value : i
-				)
+				new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
 			)
 	);
 

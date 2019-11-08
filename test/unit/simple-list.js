@@ -17,7 +17,16 @@ test("build a simple list of items", t => {
 		ipt: expected => {
 			t.deepEqual(
 				expected,
-				["test", "build"],
+				[
+					{
+						name: "test",
+						value: "test"
+					},
+					{
+						name: "build",
+						value: "build"
+					}
+				],
 				"should build a list with the task names"
 			);
 			t.end();
