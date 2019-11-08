@@ -57,8 +57,5 @@
     "require-inject": "^1.4.4",
     "tap": "^14.9.1"
   },
-  "tap": {
-    "100": true
-  },
   "license": "MIT"
 }
