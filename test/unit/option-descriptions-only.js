@@ -2,25 +2,9 @@
 
 const { test } = require("tap");
 const requireInject = require("require-inject");
+const { mockYargs } = require("./helpers");
 
 test("build a list using --descriptions-only option", t => {
-	const yargs = new Proxy(
-		{},
-		{
-			get(obj, prop) {
-				if (prop === "epilog") {
-					return () => ({
-						argv: {
-							_: [],
-							descriptionsOnly: true
-						}
-					});
-				} else {
-					return () => yargs;
-				}
-			}
-		}
-	);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
@@ -49,6 +33,9 @@ test("build a list using --descriptions-only option", t => {
 			t.end();
 			return Promise.resolve([]);
 		},
-		yargs
+		yargs: mockYargs({
+			_: [],
+			descriptionsOnly: true
+		})
 	});
 });

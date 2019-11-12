@@ -153,6 +153,10 @@ function run() {
 		return;
 	}
 
+	if (!input || input.length === 0) {
+		return out.error("No tasks remained, maybe try less options?");
+	}
+
 	out.success("Npm Task List - v" + pkg.version);
 
 	// creates interactive interface using ipt
