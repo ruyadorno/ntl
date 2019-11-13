@@ -1,6 +1,5 @@
 "use strict";
 
-const { Passthrough } = require("minipass");
 const { test } = require("tap");
 const requireInject = require("require-inject");
 
@@ -31,6 +30,34 @@ test("build a simple list of items", t => {
 			);
 			t.end();
 			return Promise.resolve([]);
+		},
+		"simple-output": {
+			success: () => null
+		}
+	});
+});
+
+test("select one item from the list", t => {
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					test: "make test",
+					build: "make build"
+				}
+			})
+		},
+		ipt: expected => {
+			return Promise.resolve(["build"]);
+		},
+		child_process: {
+			execSync: cmd => {
+				t.equal(cmd, "npm run build", "should run the selected task");
+				t.end();
+			}
+		},
+		"simple-output": {
+			success: () => null
 		}
 	});
 });

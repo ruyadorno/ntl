@@ -34,9 +34,7 @@ test("build a list using --descriptions-only option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			success: msg => {
-				t.ok(msg.startsWith("Npm Task List"), "should show success msg");
-			}
+			success: msg => null
 		},
 		yargs: mockYargs({
 			_: [],
@@ -75,9 +73,7 @@ test("build a list using --descriptions-only option along with --description", t
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			success: msg => {
-				t.ok(msg.startsWith("Npm Task List"), "should show success msg");
-			}
+			success: msg => null
 		},
 		yargs: mockYargs({
 			_: [],
