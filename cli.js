@@ -2,6 +2,7 @@
 
 "use strict";
 
+const os = require("os");
 const path = require("path");
 const yargs = require("yargs");
 const ipt = require("ipt");
@@ -10,10 +11,13 @@ const readPkg = require("read-pkg");
 const Conf = require("conf");
 
 let cwdPkg;
-const sep = require("os").EOL;
+const sep = os.EOL;
 const { execSync } = require("child_process");
 const { argv } = yargs
-	.usage("Usage:\n  ntl [<path>]")
+	.usage(
+		"Usage:\n  ntl [<path>]             Build an interactive interface and run any script"
+	)
+	.usage("  nt                       Rerun last executed script")
 	.alias("a", "all")
 	.describe("a", "Includes pre and post scripts on the list")
 	.alias("A", "autocomplete")
@@ -36,25 +40,25 @@ const { argv } = yargs
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.describe(
-		"rerun",
-		"Rerun the last command selected via ntl in working repository"
-	)
+	.describe("rerun", "Rerun last executed script")
 	.alias("r", "rerun")
+	.describe("cache", "Define a location for the rerun task cache")
 	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r"])
 	.number(["s"])
 	.array(["e"])
+	.string(["cache"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const pkg = require("./package");
 const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
-const { autocomplete, multiple, size, rerun } = argv;
+const { autocomplete, cache, multiple, size, rerun } = argv;
 const defaultRunner = "npm";
 
-function error(e, msg) {
-	out.error(argv.debug ? e : msg);
-	process.exit(1);
-}
+// Retrieve config values from cwd package.json
+const { ntl, scripts } = getCwdPackage() || {};
+const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
+const { descriptions = {} } = ntl || {};
+const noScriptsFound = !scripts || Object.keys(scripts).length < 1;
 
 // Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
@@ -63,93 +67,112 @@ process.stdin.on("keypress", (ch, key) => {
 	}
 });
 
-// get cwd package.json values
-try {
-	cwdPkg = readPkg.sync({ cwd }) || {};
-} catch (e) {
-	const [errorType] = Object.values(e);
-	error(
-		e,
-		errorType === "JSONError"
-			? "package.json contains malformed JSON"
-			: "No package.json found"
-	);
+function error(e, msg) {
+	out.error(argv.debug ? e : msg);
+	process.exit(1);
 }
 
-// Retrieve config values from cwd package.json
-const { ntl, scripts } = cwdPkg;
-const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
-const { descriptions = {} } = ntl || {};
-
-// validates that there are actually npm scripts
-if (!scripts || Object.keys(scripts).length < 1) {
-	out.info(`No ${runner} scripts available in cwd`);
-	process.exit(0);
-}
-
-// get package.json descriptions value
-if (argv.descriptions) {
-	if (Object.keys(descriptions).length < 1) {
-		out.warn(`No descriptions for your ${runner} scripts found`);
+function getCwdPackage() {
+	try {
+		return readPkg.sync({ cwd });
+	} catch (e) {
+		const [errorType] = Object.values(e);
+		error(
+			e,
+			errorType === "JSONError"
+				? "package.json contains malformed JSON"
+				: "No package.json found"
+		);
 	}
 }
 
-const longestScriptName = scripts =>
-	Object.keys(scripts).reduce(
-		(acc, curr) => (curr.length > acc.length ? curr : acc),
-		""
-	).length;
-
-// defines the items that will be printed to the user
-const input = (argv.info || argv.descriptions
-	? Object.keys(scripts).map(key => ({
-			name: `${key.padStart(
-				longestScriptName(argv.descriptionsOnly ? descriptions : scripts)
-			)} › ${
-				argv.descriptions && descriptions[key]
-					? descriptions[key]
-					: scripts[key]
-			}`,
-			value: key
-	  }))
-	: Object.keys(scripts).map(key => ({ name: key, value: key }))
-)
-	.filter(
-		// filter out prefixed scripts
-		item =>
-			argv.all
-				? true
-				: ["pre", "post"].every(
-						prefix => item.name.slice(0, prefix.length) !== prefix
-				  )
-	)
-	.filter(
-		// filter out scripts without a description if --descriptions-only option
-		item => (argv.descriptionsOnly ? descriptions[item.value] : true)
-	)
-	.filter(
-		// filter excluded scripts
-		item =>
-			!argv.exclude ||
-			!argv.exclude.some(e =>
-				new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
-			)
-	);
-
-// execute script
-run();
-
 function run() {
+	const shouldWarnNoDescriptions =
+		argv.descriptions && Object.keys(descriptions).length < 1;
+	if (shouldWarnNoDescriptions) {
+		out.warn(`No descriptions for your ${runner} scripts found`);
+	}
+
+	function executeCommands(keys) {
+		keys.forEach(key => {
+			execSync(`${runner} run ${key}`, {
+				cwd,
+				stdio: [process.stdin, process.stdout, process.stderr]
+			});
+		});
+	}
+
+	function repeat(rerunCache) {
+		let rerunCachedTasks;
+
+		try {
+			rerunCachedTasks = rerunCache.get("rerunCachedTasks");
+		} catch (e) {
+			// should ignore rerun cache errors
+		}
+
+		if (!rerunCachedTasks) {
+			out.warn("No previous task available");
+			return false;
+		}
+
+		executeCommands(rerunCachedTasks);
+		return true;
+	}
+
+	const longestScriptName = scripts =>
+		Object.keys(scripts).reduce(
+			(acc, curr) => (curr.length > acc.length ? curr : acc),
+			""
+		).length;
+
+	// defines the items that will be printed to the user
+	const input = Object.keys(scripts)
+		.map(key => ({
+			name:
+				argv.info || argv.descriptions
+					? `${key.padStart(
+							longestScriptName(argv.descriptionsOnly ? descriptions : scripts)
+					  )} › ${
+							argv.descriptions && descriptions[key]
+								? descriptions[key]
+								: scripts[key]
+					  }`
+					: key,
+			value: key
+		}))
+		.filter(
+			// filter out prefixed scripts
+			item =>
+				argv.all
+					? true
+					: ["pre", "post"].every(
+							prefix => item.name.slice(0, prefix.length) !== prefix
+					  )
+		)
+		.filter(
+			// filter out scripts without a description if --descriptions-only option
+			item => (argv.descriptionsOnly ? descriptions[item.value] : true)
+		)
+		.filter(
+			// filter excluded scripts
+			item =>
+				!argv.exclude ||
+				!argv.exclude.some(e =>
+					new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
+				)
+		);
+
 	const message = `Select a task to run${
 		runner !== defaultRunner ? ` (using ${runner})` : ""
 	}:`;
 
-	const cwdStore = new Conf({
+	const rerunCache = new Conf({
 		configName: ".ntl",
-		cwd
+		cwd: cache || os.homedir()
 	});
 
-	if (rerun && repeat(cwdStore)) {
+	if (rerun && repeat(rerunCache)) {
 		return;
 	}
 
@@ -167,37 +190,20 @@ function run() {
 		size
 	})
 		.then(keys => {
-			// what should be desired behaviour on multiple commands?
-			cwdStore.set("lastCommands", keys);
 			executeCommands(keys);
+			try {
+				rerunCache.set("rerunCachedTasks", keys);
+			} catch (e) {
+				// should ignore rerun cache errors
+			}
 		})
 		.catch(err => {
 			error(err, "Error building interactive interface");
 		});
 }
 
-function executeCommands(keys) {
-	keys.forEach(key => {
-		executeCommand(key);
-	});
-}
-
-function executeCommand(key) {
-	execSync(`${runner} run ${key}`, {
-		cwd,
-		stdio: [process.stdin, process.stdout, process.stderr]
-	});
-}
-
-function repeat(cwdStore) {
-	const lastCommands = cwdStore.get("lastCommands");
-
-	if (!lastCommands) {
-		out.error("No previous command available");
-		return false;
-	}
-
-	executeCommands(lastCommands);
-
-	return true;
+if (noScriptsFound) {
+	out.info(`No ${runner} scripts available in cwd`);
+} else {
+	run();
 }
