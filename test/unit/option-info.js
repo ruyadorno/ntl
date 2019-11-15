@@ -35,7 +35,7 @@ test("build a list using --info option", t => {
 		"simple-output": {
 			success: msg => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			info: true
 		})

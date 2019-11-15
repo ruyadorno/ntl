@@ -36,7 +36,7 @@ test("build a list using --descriptions-only option", t => {
 		"simple-output": {
 			success: msg => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			descriptionsOnly: true
 		})
@@ -75,7 +75,7 @@ test("build a list using --descriptions-only option along with --description", t
 		"simple-output": {
 			success: msg => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			descriptions: true,
 			descriptionsOnly: true

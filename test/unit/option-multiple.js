@@ -30,7 +30,36 @@ test("build an interface using multiple selectable items", t => {
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
+			_: [],
+			multiple: true
+		})
+	});
+});
+
+test("run multiple commands", t => {
+	t.plan(2);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: "make build",
+					test: "make test"
+				}
+			})
+		},
+		ipt: items => {
+			return Promise.resolve(items.map(item => item.name));
+		},
+		child_process: {
+			execSync: cmd => {
+				t.ok(cmd.startsWith("npm run"), "should run multiple commands");
+			}
+		},
+		"simple-output": {
+			success: () => null
+		},
+		"yargs/yargs": mockYargs({
 			_: [],
 			multiple: true
 		})

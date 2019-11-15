@@ -11,7 +11,7 @@ function mockYargs(argv) {
 			}
 		}
 	);
-	return yargs;
+	return () => yargs;
 }
 
 module.exports = {

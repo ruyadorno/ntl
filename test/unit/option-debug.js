@@ -31,7 +31,7 @@ test("error while use --debug option", t => {
 			},
 			info: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			debug: true
 		})

@@ -33,9 +33,46 @@ test("build a list using --exclude option", t => {
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			exclude: ["test"]
+		})
+	});
+});
+
+test("build a list using --exclude option using *", t => {
+	t.plan(1);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: 'echo "build"',
+					test: 'echo "test"',
+					"test:unit": 'echo "test:unit"',
+					"test:integration": 'echo "test:integration"'
+				}
+			})
+		},
+		ipt: expected => {
+			t.deepEqual(
+				expected,
+				[
+					{
+						name: "build",
+						value: "build"
+					}
+				],
+				"should build a list with only non-excluded items"
+			);
+			t.end();
+			return Promise.resolve([]);
+		},
+		"simple-output": {
+			success: () => null
+		},
+		"yargs/yargs": mockYargs({
+			_: [],
+			exclude: ["test*"]
 		})
 	});
 });

@@ -36,7 +36,7 @@ test("skip build interface using --rerun option", t => {
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true
 		})
@@ -86,7 +86,7 @@ test("no previous command using --rerun option", t => {
 				);
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true
 		})
@@ -119,7 +119,7 @@ test("fails on storing command", t => {
 				t.fail("should not error");
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: []
 		})
 	});
@@ -152,7 +152,7 @@ test("fails on retrieving commands", t => {
 				t.fail("should not error");
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true
 		})
@@ -187,7 +187,7 @@ test("rerun multiple cached tasks", t => {
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true
 		})

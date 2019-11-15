@@ -40,7 +40,7 @@ test("build a list using --descriptions option", t => {
 		"simple-output": {
 			success: msg => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			descriptions: true
 		})

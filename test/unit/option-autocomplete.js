@@ -30,7 +30,7 @@ test("build an interface using autocomplete/fuzzyfinder", t => {
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			autocomplete: true
 		})

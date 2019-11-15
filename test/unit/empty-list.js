@@ -33,7 +33,7 @@ test("build a list of items that gets all items filtered out using --description
 				);
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			descriptionsOnly: true
 		})
@@ -64,7 +64,7 @@ test("build a list of items that gets all items filtered out from --exclude opti
 				);
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			exclude: ["build", "test"]
 		})
@@ -101,7 +101,7 @@ test("build a list of items that gets items filtered out using --descriptions-on
 				);
 			}
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			descriptionsOnly: true,
 			exclude: ["build"]

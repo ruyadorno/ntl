@@ -4,16 +4,18 @@
 
 const os = require("os");
 const path = require("path");
-const yargs = require("yargs");
+const { execSync } = require("child_process");
+
+const yargs = require("yargs/yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
 const readPkg = require("read-pkg");
 const Conf = require("conf");
 
-let cwdPkg;
 const sep = os.EOL;
-const { execSync } = require("child_process");
-const { argv } = yargs
+const defaultRunner = "npm";
+const pkg = require("./package");
+const { argv } = yargs(getMainArgs())
 	.usage(
 		"Usage:\n  ntl [<path>]             Build an interactive interface and run any script"
 	)
@@ -49,12 +51,8 @@ const { argv } = yargs
 	.string(["cache"])
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
-const pkg = require("./package");
 const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, cache, multiple, size, rerun } = argv;
-const defaultRunner = "npm";
-
-// Retrieve config values from cwd package.json
 const { ntl, scripts } = getCwdPackage() || {};
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
@@ -70,6 +68,30 @@ process.stdin.on("keypress", (ch, key) => {
 function error(e, msg) {
 	out.error(argv.debug ? e : msg);
 	process.exit(1);
+}
+
+function getMainArgs() {
+	let i = -1;
+	const result = [];
+	const mainArgs = process.argv.slice(2);
+	while (++i < mainArgs.length) {
+		if (mainArgs[i] === "--") break;
+		result.push(mainArgs[i]);
+	}
+	return result;
+}
+
+function getTrailingOptions() {
+	let sepFound = false;
+	return process.argv.slice(2).reduce((res, i) => {
+		if (i === "--") {
+			sepFound = true;
+		}
+		if (sepFound) {
+			return `${res} ${i}`;
+		}
+		return res;
+	}, "");
 }
 
 function getCwdPackage() {
@@ -95,7 +117,7 @@ function run() {
 
 	function executeCommands(keys) {
 		keys.forEach(key => {
-			execSync(`${runner} run ${key}`, {
+			execSync(`${runner} run ${key}${getTrailingOptions()}`, {
 				cwd,
 				stdio: [process.stdin, process.stdout, process.stderr]
 			});

@@ -30,7 +30,7 @@ test("build an interface using a specific max number of lines to be displayed", 
 		"simple-output": {
 			success: () => null
 		},
-		yargs: mockYargs({
+		"yargs/yargs": mockYargs({
 			_: [],
 			size: 10
 		})
