@@ -44,19 +44,22 @@ const { argv } = yargs(getMainArgs())
 	.alias("v", "version")
 	.describe("rerun", "Rerun last executed script")
 	.alias("r", "rerun")
-	.describe("cache", "Define a location for the rerun task cache")
-	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r"])
+	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r", "no-rerun-cache"])
 	.number(["s"])
 	.array(["e"])
-	.string(["cache"])
+	.string(["rerun-cache"])
+	.describe("rerun-cache", "Define a location for the rerun task cache")
+	.describe("no-rerun-cache", "Never write to or read from cache")
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
-const { autocomplete, cache, multiple, size, rerun } = argv;
+const { autocomplete, multiple, noRerunCache, rerun, rerunCache, size } = argv;
 const { ntl, scripts } = getCwdPackage() || {};
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
 const noScriptsFound = !scripts || Object.keys(scripts).length < 1;
+const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
+const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 
 // Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
@@ -108,38 +111,70 @@ function getCwdPackage() {
 	}
 }
 
+function retrieveCache() {
+	if (avoidCache) {
+		return;
+	}
+
+	return new Conf({
+		configName: "ntl-rerun-cache",
+		cwd: rerunCache || process.env.NTL_RERUN_CACHE
+	});
+}
+
+function hasCachedTasks() {
+	if (!shouldRerun) {
+		return;
+	}
+
+	const cache = retrieveCache();
+
+	function runCachedTask() {
+		let rerunCachedTasks;
+		const warn = () => {
+			out.warn("Unable to retrieve commands to rerun");
+			return false;
+		};
+
+		try {
+			rerunCachedTasks = cache.get(`rerun:${cwd}`);
+		} catch (e) {
+			return warn();
+		}
+
+		if (!rerunCachedTasks || !rerunCachedTasks.length) {
+			return warn();
+		}
+
+		executeCommands(rerunCachedTasks);
+		return true;
+	}
+
+	return runCachedTask();
+}
+
+function setCachedTasks(keys) {
+	try {
+		retrieveCache().set(`rerun:${cwd}`, keys);
+	} catch (e) {
+		// should ignore rerun set cache errors
+	}
+}
+
+function executeCommands(keys) {
+	keys.forEach(key => {
+		execSync(`${runner} run ${key}${getTrailingOptions()}`, {
+			cwd,
+			stdio: [process.stdin, process.stdout, process.stderr]
+		});
+	});
+}
+
 function run() {
 	const shouldWarnNoDescriptions =
 		argv.descriptions && Object.keys(descriptions).length < 1;
 	if (shouldWarnNoDescriptions) {
 		out.warn(`No descriptions for your ${runner} scripts found`);
-	}
-
-	function executeCommands(keys) {
-		keys.forEach(key => {
-			execSync(`${runner} run ${key}${getTrailingOptions()}`, {
-				cwd,
-				stdio: [process.stdin, process.stdout, process.stderr]
-			});
-		});
-	}
-
-	function repeat(rerunCache) {
-		let rerunCachedTasks;
-
-		try {
-			rerunCachedTasks = rerunCache.get("rerunCachedTasks");
-		} catch (e) {
-			// should ignore rerun cache errors
-		}
-
-		if (!rerunCachedTasks) {
-			out.warn("No previous task available");
-			return false;
-		}
-
-		executeCommands(rerunCachedTasks);
-		return true;
 	}
 
 	const longestScriptName = scripts =>
@@ -189,12 +224,7 @@ function run() {
 		runner !== defaultRunner ? ` (using ${runner})` : ""
 	}:`;
 
-	const rerunCache = new Conf({
-		configName: ".ntl",
-		cwd: cache || os.homedir()
-	});
-
-	if (rerun && repeat(rerunCache)) {
+	if (hasCachedTasks()) {
 		return;
 	}
 
@@ -212,12 +242,8 @@ function run() {
 		size
 	})
 		.then(keys => {
+			setCachedTasks(keys);
 			executeCommands(keys);
-			try {
-				rerunCache.set("rerunCachedTasks", keys);
-			} catch (e) {
-				// should ignore rerun cache errors
-			}
 		})
 		.catch(err => {
 			error(err, "Error building interactive interface");

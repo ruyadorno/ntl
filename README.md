@@ -5,9 +5,7 @@
 [![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/ruyadorno/ipt/master/LICENSE)
 [![Join the chat at https://gitter.im/ipipeto/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipipeto/Lobby)
 
-> Npm Task List
-
-Interactive cli menu to list and run npm tasks.
+Interactive cli tool that lists and run `package.json` scripts.
 
 ![demo gif](http://i.imgur.com/ZjjQ7Vi.gif?1)
 

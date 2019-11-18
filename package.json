@@ -1,7 +1,7 @@
 {
   "name": "ntl",
   "version": "4.0.0",
-  "description": "Npm Task List: Interactive cli menu to list/run npm tasks",
+  "description": "Interactive cli tool that lists and run package scripts",
   "repository": "ruyadorno/ntl",
   "author": {
     "name": "Ruy Adorno",
@@ -23,8 +23,10 @@
     "node": ">=10"
   },
   "scripts": {
+    "hello": "echo \"Hello\"",
     "pretest": "eslint cli.js test",
-    "test": "tap"
+    "test": "NTL_NO_RERUN_CACHE=1 tap",
+    "start": "node cli.js"
   },
   "files": [
     "cli.js"
@@ -32,12 +34,17 @@
   "keywords": [
     "npm",
     "task",
+    "scripts",
     "list",
     "interactive",
     "inquirer",
+    "unix",
+    "terminal",
+    "workflow",
     "cli-app",
     "cli",
     "ntl",
+    "ipt",
     "runner",
     "menu"
   ],
