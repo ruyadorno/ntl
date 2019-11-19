@@ -52,15 +52,15 @@
     "conf": "^6.1.0",
     "ipt": "^3.0.0",
     "read-pkg": "^5.2.0",
-    "simple-output": "^2.0.0",
-    "yargs": "^14.2.0"
+    "simple-output": "^2.1.0",
+    "yargs": "^15.0.2"
   },
   "devDependencies": {
     "cross-spawn": "^7.0.1",
     "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.5.0",
+    "eslint-config-prettier": "^6.6.0",
     "minipass": "^3.1.1",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "require-inject": "^1.4.4",
     "tap": "^14.9.1"
   },
