@@ -24,7 +24,7 @@ test("build a list using --descriptions-only option", t => {
 				expected,
 				[
 					{
-						name: "build",
+						name: "build › Run build steps",
 						value: "build"
 					}
 				],

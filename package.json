@@ -67,5 +67,10 @@
   "tap": {
     "100": true
   },
+  "ntl": {
+    "descriptions": {
+      "hello": "Prints a hello message :)"
+    }
+  },
   "license": "MIT"
 }

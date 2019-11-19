@@ -176,4 +176,4 @@ Visit https://github.com/ruyadorno/ntl for more info
 
 ## License
 
-[MIT](LICENSE) © 2018 [Ruy Adorno](http://ruyadorno.com)
+[MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)

@@ -57,7 +57,8 @@ const { autocomplete, multiple, noRerunCache, rerun, rerunCache, size } = argv;
 const { ntl, scripts } = getCwdPackage() || {};
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
-const noScriptsFound = !scripts || Object.keys(scripts).length < 1;
+const scriptKeys = Object.keys(scripts || {});
+const noScriptsFound = !scripts || scriptKeys.length < 1;
 const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 
@@ -171,30 +172,35 @@ function executeCommands(keys) {
 }
 
 function run() {
-	const shouldWarnNoDescriptions =
-		argv.descriptions && Object.keys(descriptions).length < 1;
+	const descriptionsKeys = Object.keys(descriptions);
+	const hasDescriptions =
+		descriptionsKeys.length > 0 && descriptionsKeys.some(key => scripts[key]);
+	const shouldWarnNoDescriptions = argv.descriptions && !hasDescriptions;
 	if (shouldWarnNoDescriptions) {
 		out.warn(`No descriptions for your ${runner} scripts found`);
 	}
 
-	const longestScriptName = scripts =>
-		Object.keys(scripts).reduce(
-			(acc, curr) => (curr.length > acc.length ? curr : acc),
-			""
-		).length;
+	const longestScriptName = scriptKeys.reduce(
+		(acc, curr) => (curr.length > acc.length ? curr : acc),
+		""
+	).length;
+
+	const getLongName = (name, message = "", pad) =>
+		`${name.padStart(longestScriptName)} › ${message}`;
 
 	// defines the items that will be printed to the user
-	const input = Object.keys(scripts)
+	const input = scriptKeys
 		.map(key => ({
 			name:
 				argv.info || argv.descriptions
-					? `${key.padStart(
-							longestScriptName(argv.descriptionsOnly ? descriptions : scripts)
-					  )} › ${
+					? getLongName(
+							key,
 							argv.descriptions && descriptions[key]
 								? descriptions[key]
 								: scripts[key]
-					  }`
+					  )
+					: hasDescriptions
+					? getLongName(key, descriptions[key])
 					: key,
 			value: key
 		}))
