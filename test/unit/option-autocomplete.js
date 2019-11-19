@@ -28,6 +28,7 @@ test("build an interface using autocomplete/fuzzyfinder", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({

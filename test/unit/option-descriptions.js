@@ -38,6 +38,7 @@ test("build a list using default options", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({
@@ -80,6 +81,7 @@ test("build a list in which descriptions key is missing", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({
@@ -122,6 +124,7 @@ test("build a list using --descriptions option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({

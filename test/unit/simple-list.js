@@ -32,6 +32,7 @@ test("build a simple list of items", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		}
 	});
@@ -57,6 +58,7 @@ test("select one item from the list", t => {
 			}
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		}
 	});

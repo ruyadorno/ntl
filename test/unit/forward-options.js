@@ -32,6 +32,7 @@ test("forward an option past -- ", t => {
 			}
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		}
 	});
@@ -71,6 +72,7 @@ test("forward many options past -- ", t => {
 			}
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		}
 	});

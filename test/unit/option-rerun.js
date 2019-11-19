@@ -49,6 +49,7 @@ test("skip build interface using --rerun option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({
@@ -91,6 +92,7 @@ test("skip build interface using NTL_RERUN env variable", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({
@@ -135,6 +137,7 @@ test("no previous command using --rerun option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: () => null
 		},
@@ -168,6 +171,7 @@ test("fails on storing command", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: msg => {
 				t.fail("should not warn");
@@ -202,6 +206,7 @@ test("fails on retrieving commands", t => {
 		},
 		ipt: expected => Promise.resolve([]),
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: msg => {
 				console.error(msg);
@@ -247,6 +252,7 @@ test("rerun multiple cached tasks", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({
@@ -284,6 +290,7 @@ test("use custom NTL_RERUN_CACHE option", t => {
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: () => null
 		},
@@ -316,6 +323,7 @@ test("use custom --rerun-cache option", t => {
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: () => null
 		},
@@ -349,6 +357,7 @@ test("--no-rerun-cache option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: () => null
 		},
@@ -385,6 +394,7 @@ test("NTL_NO_RERUN_CACHE env variable", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			warn: () => null
 		},

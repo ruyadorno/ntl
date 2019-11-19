@@ -34,6 +34,7 @@ test("build a list using --descriptions-only option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({
@@ -73,6 +74,7 @@ test("build a list using --descriptions-only option along with --description", t
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({

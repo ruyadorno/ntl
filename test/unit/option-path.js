@@ -29,6 +29,7 @@ test("build a list from a specific path", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({

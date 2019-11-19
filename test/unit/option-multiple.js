@@ -28,6 +28,7 @@ test("build an interface using multiple selectable items", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({
@@ -57,6 +58,7 @@ test("run multiple commands", t => {
 			}
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({

@@ -16,6 +16,7 @@ test("press esc key", t => {
 	const ntl = requireInject("../../cli", {
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
+			node: () => null,
 			success: () => null,
 			error: msg => {
 				t.equal(

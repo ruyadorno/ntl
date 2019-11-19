@@ -28,6 +28,7 @@ test("build an interface using a specific max number of lines to be displayed", 
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: () => null
 		},
 		"yargs/yargs": mockYargs({

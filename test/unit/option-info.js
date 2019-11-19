@@ -33,6 +33,7 @@ test("build a list using --info option", t => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
+			node: () => null,
 			success: msg => null
 		},
 		"yargs/yargs": mockYargs({
