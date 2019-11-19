@@ -1,8 +1,7 @@
 "use strict";
 
-const Minipass = require("minipass");
 const { test } = require("tap");
-const spawn = require("cross-spawn");
+const { readLastLine, run } = require("./helpers");
 
 test("ntl run using --multiple option", t => {
 	const cwd = t.testdir({
@@ -14,15 +13,9 @@ test("ntl run using --multiple option", t => {
 		})
 	});
 
-	const run = spawn("node", ["../../../cli.js", "--multiple"], { cwd });
-	run.stderr.on("data", data => {
-		console.error(data.toString());
-		t.fail("should not have stderr output");
-	});
-
-	const ministream = new Minipass();
-	run.stdout.pipe(ministream);
-	ministream.collect().then(res => {
+	const cp = run({ cwd }, ["--multiple"]);
+	cp.assertNotStderrData(t);
+	cp.getStdoutResult().then(res => {
 		const taskOutput = res.toString().trim();
 		t.contains(
 			taskOutput,
@@ -37,9 +30,9 @@ test("ntl run using --multiple option", t => {
 		t.end();
 	});
 
-	run.stdin.write(" ");
-	run.stdin.write("j");
-	run.stdin.write(" ");
-	run.stdin.write("\n");
-	run.stdin.end();
+	cp.stdin.write(" ");
+	cp.stdin.write("j");
+	cp.stdin.write(" ");
+	cp.stdin.write("\n");
+	cp.stdin.end();
 });

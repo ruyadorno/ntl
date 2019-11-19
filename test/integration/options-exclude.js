@@ -1,8 +1,7 @@
 "use strict";
 
-const Minipass = require("minipass");
 const { test } = require("tap");
-const spawn = require("cross-spawn");
+const { readLastLine, run } = require("./helpers");
 
 test("ntl run using --exclude option", t => {
 	const cwd = t.testdir({
@@ -14,20 +13,13 @@ test("ntl run using --exclude option", t => {
 		})
 	});
 
-	const run = spawn("node", ["../../../cli.js", "--exclude", "build"], { cwd });
-	run.stderr.on("data", data => {
-		console.error(data.toString());
-		t.fail("should not have stderr output");
-	});
-
-	const ministream = new Minipass();
-	run.stdout.pipe(ministream);
-	ministream.collect().then(res => {
-		const taskOutput = res[res.length - 1].toString().trim();
-		t.equal(taskOutput, "test", "should not list excluded tasks");
+	const cp = run({ cwd }, ["--exclude", "build"]);
+	cp.assertNotStderrData(t);
+	cp.getStdoutResult().then(res => {
+		t.equal(readLastLine(res), "test", "should not list excluded tasks");
 		t.end();
 	});
 
-	run.stdin.write("\n");
-	run.stdin.end();
+	cp.stdin.write("\n");
+	cp.stdin.end();
 });

@@ -1,8 +1,7 @@
 "use strict";
 
-const Minipass = require("minipass");
 const { test } = require("tap");
-const spawn = require("cross-spawn");
+const { readLastLine, run } = require("./helpers");
 
 test("ntl run using --descriptions-only option", t => {
 	const cwd = t.testdir({
@@ -19,22 +18,13 @@ test("ntl run using --descriptions-only option", t => {
 		})
 	});
 
-	const run = spawn("node", ["../../../cli.js", "--descriptions-only"], {
-		cwd
-	});
-	run.stderr.on("data", data => {
-		console.error(data.toString());
-		t.fail("should not have stderr output");
-	});
-
-	const ministream = new Minipass();
-	run.stdout.pipe(ministream);
-	ministream.collect().then(res => {
-		const taskOutput = res[res.length - 1].toString().trim();
-		t.equal(taskOutput, "test", "should run test that has descriptions");
+	const cp = run({ cwd }, ["--descriptions-only"]);
+	cp.assertNotStderrData(t);
+	cp.getStdoutResult().then(res => {
+		t.equal(readLastLine(res), "test", "should run test that has descriptions");
 		t.end();
 	});
 
-	run.stdin.write("\n");
-	run.stdin.end();
+	cp.stdin.write("\n");
+	cp.stdin.end();
 });
