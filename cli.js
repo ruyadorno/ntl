@@ -238,7 +238,7 @@ function run() {
 		return out.error("No tasks remained, maybe try less options?");
 	}
 
-	out.success("Npm Task List - v" + pkg.version);
+	out.node("Node Task List - v" + pkg.version);
 
 	// creates interactive interface using ipt
 	ipt(input, {

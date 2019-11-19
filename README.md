@@ -1,4 +1,14 @@
-# ntl
+<div align="center">
+	<br>
+	<br>
+	<br>
+	<img alt="ntl" width="300" src="https://ruyadorno.github.io/svg-demos/ntl/logo.min.svg">
+	<br>
+	<br>
+	<br>
+</div>
+
+# Node Task List
 
 [![NPM version](https://badge.fury.io/js/ntl.svg)](https://npmjs.org/package/ntl)
 [![Build Status](https://travis-ci.org/ruyadorno/ntl.svg?branch=master)](https://travis-ci.org/ruyadorno/ntl)
@@ -6,8 +16,6 @@
 [![Join the chat at https://gitter.im/ipipeto/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipipeto/Lobby)
 
 Interactive cli tool that lists and run `package.json` scripts.
-
-![demo gif](http://i.imgur.com/ZjjQ7Vi.gif?1)
 
 > An [iPipeTo](https://github.com/ruyadorno/ipt) workflow
 
@@ -32,6 +40,8 @@ There's also a longhand command you can run if you experience conflicts:
 ```sh
 npx -p ntl npm-tasklist
 ```
+
+![demo gif](http://i.imgur.com/ZjjQ7Vi.gif?1)
 
 <br />
 
@@ -96,7 +106,7 @@ You can define a list of scripts to be excluded from the interactive menu:
 
 ```
 $ ntl --exclude coverall tasks
-✔  Npm Task List - v3.0.0
+⬢  Node Task List - v5.0.0
 ? Select a task to run: (Use arrow keys)
 ❯ test
   test:watch
@@ -107,7 +117,7 @@ You can also use a wildcard character to exclude multiple scripts with one strin
 
 ```
 $ ntl --exclude "test*"
-✔  Npm Task List - v3.0.0
+⬢  Node Task List - v5.0.0
 ? Select a task to run: (Use arrow keys)
 ❯ coveralls
   tasks
