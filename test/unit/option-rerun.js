@@ -8,6 +8,9 @@ function setup(t, env) {
 	const _env = process.env;
 	delete process.env.NTL_NO_RERUN_CACHE;
 
+	// avoid listeners warning
+	process.stdin.setMaxListeners(11);
+
 	process.env = {
 		...process.env,
 		...env
@@ -209,7 +212,6 @@ test("fails on retrieving commands", t => {
 			node: () => null,
 			success: () => null,
 			warn: msg => {
-				console.error(msg);
 				t.equal(
 					msg,
 					"Unable to retrieve commands to rerun",
