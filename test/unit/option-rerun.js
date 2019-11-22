@@ -9,7 +9,7 @@ function setup(t, env) {
 	delete process.env.NTL_NO_RERUN_CACHE;
 
 	// avoid listeners warning
-	process.stdin.setMaxListeners(12);
+	process.stdin.setMaxListeners(13);
 
 	process.env = {
 		...process.env,
@@ -377,7 +377,7 @@ test("use custom NTL_RERUN_CACHE_MAX option", t => {
 	});
 });
 
-test("use custom --rerun-cache option", t => {
+test("use custom --rerun-cache-dir option", t => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -406,7 +406,45 @@ test("use custom --rerun-cache option", t => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true,
-			rerunCache: "/foo/bar"
+			rerunCacheDir: "/foo/bar"
+		})
+	});
+});
+
+test("use custom --rerun-cache-name option", t => {
+	setup(t);
+	t.plan(1);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: "make build",
+					test: "make test"
+				}
+			})
+		},
+		"lru-cache-fs": class {
+			constructor({ cacheName }) {
+				t.equal(
+					cacheName,
+					"cache-filename",
+					"should use custom cache name in option"
+				);
+			}
+		},
+		child_process: {
+			execSync: () => null
+		},
+		ipt: () => Promise.resolve([]),
+		"simple-output": {
+			node: () => null,
+			success: () => null,
+			warn: () => null
+		},
+		"yargs/yargs": mockYargs({
+			_: [],
+			rerun: true,
+			rerunCacheName: "cache-filename"
 		})
 	});
 });

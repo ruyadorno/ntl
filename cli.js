@@ -47,14 +47,23 @@ const { argv } = yargs(getMainArgs())
 	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r", "no-rerun-cache"])
 	.number(["s"])
 	.array(["e"])
-	.string(["rerun-cache"])
-	.describe("rerun-cache", "Define a location for the rerun task cache")
+	.string(["rerun-cache-dir", "rerun-cache-name"])
+	.describe("rerun-cache-dir", "Define a location for the rerun task cache")
+	.describe("rerun-cache-name", "Define a filename for the rerun task cache")
 	.describe("no-rerun-cache", "Never write to or read from cache")
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
 let cache;
 const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
-const { autocomplete, multiple, noRerunCache, rerun, rerunCache, size } = argv;
+const {
+	autocomplete,
+	multiple,
+	noRerunCache,
+	rerun,
+	rerunCacheDir,
+	rerunCacheName,
+	size
+} = argv;
 const { ntl, scripts } = getCwdPackage() || {};
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
@@ -120,8 +129,9 @@ function retrieveCache() {
 
 	if (!cache) {
 		cache = new Cache({
-			cacheName: process.env.NTL_RERUN_CACHE_NAME || "ntl-rerun-cache",
-			cwd: rerunCache || process.env.NTL_RERUN_CACHE_DIR,
+			cacheName:
+				rerunCacheName || process.env.NTL_RERUN_CACHE_NAME || "ntl-rerun-cache",
+			cwd: rerunCacheDir || process.env.NTL_RERUN_CACHE_DIR,
 			max: process.env.NTL_RERUN_CACHE_MAX || 10
 		});
 	}
