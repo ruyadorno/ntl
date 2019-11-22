@@ -264,9 +264,9 @@ test("rerun multiple cached tasks", t => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE option", t => {
+test("use custom NTL_RERUN_CACHE_DIR option", t => {
 	setup(t, {
-		NTL_RERUN_CACHE: "/lorem"
+		NTL_RERUN_CACHE_DIR: "/lorem"
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {

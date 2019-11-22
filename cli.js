@@ -121,7 +121,7 @@ function retrieveCache() {
 	if (!cache) {
 		cache = new Cache({
 			cacheName: "ntl-rerun-cache",
-			cwd: rerunCache || process.env.NTL_RERUN_CACHE,
+			cwd: rerunCache || process.env.NTL_RERUN_CACHE_DIR,
 			max: process.env.NTL_RERUN_CACHE_MAX || 10
 		});
 	}
