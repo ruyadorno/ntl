@@ -19,7 +19,7 @@ const { argv } = yargs(getMainArgs())
 	.usage(
 		"Usage:\n  ntl [<path>]             Build an interactive interface and run any script"
 	)
-	.usage("  nt                       Rerun last executed script")
+	.usage("  nt [<path>]              Rerun last executed script")
 	.alias("a", "all")
 	.describe("a", "Includes pre and post scripts on the list")
 	.alias("A", "autocomplete")
@@ -48,8 +48,8 @@ const { argv } = yargs(getMainArgs())
 	.number(["s"])
 	.array(["e"])
 	.string(["rerun-cache-dir", "rerun-cache-name"])
-	.describe("rerun-cache-dir", "Define a location for the rerun task cache")
-	.describe("rerun-cache-name", "Define a filename for the rerun task cache")
+	.describe("rerun-cache-dir", "Defines the rerun task cache location")
+	.describe("rerun-cache-name", "Defines the rerun task cache filename")
 	.describe("no-rerun-cache", "Never write to or read from cache")
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
