@@ -9,7 +9,7 @@ function setup(t, env) {
 	delete process.env.NTL_NO_RERUN_CACHE;
 
 	// avoid listeners warning
-	process.stdin.setMaxListeners(11);
+	process.stdin.setMaxListeners(12);
 
 	process.env = {
 		...process.env,
@@ -283,7 +283,46 @@ test("use custom NTL_RERUN_CACHE_DIR option", t => {
 				t.equal(
 					cwd,
 					"/lorem",
-					"should use custom cache defined in env variable"
+					"should use custom cache location defined in env variable"
+				);
+			}
+		},
+		child_process: {
+			execSync: () => null
+		},
+		ipt: () => Promise.resolve([]),
+		"simple-output": {
+			node: () => null,
+			success: () => null,
+			warn: () => null
+		},
+		"yargs/yargs": mockYargs({
+			_: [],
+			rerun: true
+		})
+	});
+});
+
+test("use custom NTL_RERUN_CACHE_NAME option", t => {
+	setup(t, {
+		NTL_RERUN_CACHE_NAME: "cache"
+	});
+	t.plan(1);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: "make build",
+					test: "make test"
+				}
+			})
+		},
+		"lru-cache-fs": class {
+			constructor({ cacheName, cwd }) {
+				t.equal(
+					cacheName,
+					"cache",
+					"should use custom cache name defined in env variable"
 				);
 			}
 		},
