@@ -16,7 +16,10 @@
     }
   ],
   "bin": {
+    "nt": "rerun.js",
     "ntl": "cli.js",
+    "nodetask": "rerun.js",
+    "nodetasklist": "cli.js",
     "npm-tasklist": "cli.js"
   },
   "engines": {
@@ -30,7 +33,8 @@
     "start": "node cli.js"
   },
   "files": [
-    "cli.js"
+    "cli.js",
+    "rerun.js"
   ],
   "keywords": [
     "npm",

@@ -7,15 +7,11 @@ function readLastLine(res) {
 	return res[res.length - 1].toString().trim();
 }
 
-function run({ cwd, env } = {}, args = []) {
-	const cp = spawn("ntl", args, {
+function run({ alias, cwd, env } = {}, args = []) {
+	const cmd = path.join(path.resolve(__dirname, "../.."), alias || "cli.js");
+	const cp = spawn(cmd, args, {
 		cwd,
-		env: Object.assign({}, process.env, env, {
-			PATH: `${process.env.PATH}:${path.resolve(
-				__dirname,
-				"../../node_modules/.bin"
-			)}`
-		})
+		env: Object.assign({}, process.env, env)
 	});
 	const { stderr, stdin, stdout } = cp;
 
