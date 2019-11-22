@@ -9,7 +9,7 @@ function setup(t, env) {
 	delete process.env.NTL_NO_RERUN_CACHE;
 
 	process.env = {
-		..._env,
+		...process.env,
 		...env
 	};
 

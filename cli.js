@@ -167,6 +167,16 @@ function setCachedTasks(keys) {
 	}
 }
 
+function getDefaultTask() {
+	try {
+		return retrieveCache()
+			.get(cwd)
+			.join(sep);
+	} catch (e) {
+		return undefined;
+	}
+}
+
 function executeCommands(keys) {
 	keys.forEach(key => {
 		execSync(`${runner} run ${key}${getTrailingOptions()}`, {
@@ -248,6 +258,8 @@ function run() {
 	// creates interactive interface using ipt
 	ipt(input, {
 		autocomplete,
+		default: getDefaultTask(),
+		"default-separator": sep,
 		message,
 		multiple,
 		size

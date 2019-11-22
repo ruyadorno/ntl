@@ -1,5 +1,6 @@
 "use strict";
 
+const os = require("os");
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
@@ -18,6 +19,8 @@ test("build an interface using multiple selectable items", t => {
 				expected,
 				{
 					autocomplete: undefined,
+					default: undefined,
+					"default-separator": os.EOL,
 					message: "Select a task to run:",
 					multiple: true,
 					size: undefined
