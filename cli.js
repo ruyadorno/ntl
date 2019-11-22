@@ -10,7 +10,7 @@ const yargs = require("yargs/yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
 const readPkg = require("read-pkg");
-const Conf = require("conf");
+const Cache = require("lru-cache-fs");
 
 const sep = os.EOL;
 const defaultRunner = "npm";
@@ -52,6 +52,7 @@ const { argv } = yargs(getMainArgs())
 	.describe("no-rerun-cache", "Never write to or read from cache")
 	.epilog("Visit https://github.com/ruyadorno/ntl for more info");
 
+let cache;
 const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
 const { autocomplete, multiple, noRerunCache, rerun, rerunCache, size } = argv;
 const { ntl, scripts } = getCwdPackage() || {};
@@ -117,18 +118,21 @@ function retrieveCache() {
 		return;
 	}
 
-	return new Conf({
-		configName: "ntl-rerun-cache",
-		cwd: rerunCache || process.env.NTL_RERUN_CACHE
-	});
+	if (!cache) {
+		cache = new Cache({
+			cacheName: "ntl-rerun-cache",
+			cwd: rerunCache || process.env.NTL_RERUN_CACHE,
+			max: 10
+		});
+	}
+
+	return cache;
 }
 
 function hasCachedTasks() {
 	if (!shouldRerun) {
 		return;
 	}
-
-	const cache = retrieveCache();
 
 	function runCachedTask() {
 		let rerunCachedTasks;
@@ -138,7 +142,7 @@ function hasCachedTasks() {
 		};
 
 		try {
-			rerunCachedTasks = cache.get(`rerun:${cwd}`);
+			rerunCachedTasks = retrieveCache().get(cwd);
 		} catch (e) {
 			return warn();
 		}
@@ -156,7 +160,8 @@ function hasCachedTasks() {
 
 function setCachedTasks(keys) {
 	try {
-		retrieveCache().set(`rerun:${cwd}`, keys);
+		retrieveCache().set(cwd, keys);
+		retrieveCache().fsDump();
 	} catch (e) {
 		// should ignore rerun set cache errors
 	}

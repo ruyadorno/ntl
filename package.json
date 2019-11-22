@@ -1,6 +1,6 @@
 {
   "name": "ntl",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Interactive cli tool that lists and run package scripts",
   "repository": "ruyadorno/ntl",
   "author": {
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "hello": "echo \"Hello\"",
+    "bomdia": "echo \"Bom dia\"",
     "pretest": "eslint cli.js test",
     "test": "NTL_NO_RERUN_CACHE=1 tap",
     "start": "node cli.js"
@@ -49,8 +50,8 @@
     "menu"
   ],
   "dependencies": {
-    "conf": "^6.1.0",
     "ipt": "^3.0.0",
+    "lru-cache-fs": "^2.0.0",
     "read-pkg": "^5.2.0",
     "simple-output": "^2.1.0",
     "yargs": "^15.0.2"

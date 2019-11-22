@@ -29,7 +29,7 @@ test("skip build interface using --rerun option", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			get() {
 				return ["test"];
 			}
@@ -72,7 +72,7 @@ test("skip build interface using NTL_RERUN env variable", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			get() {
 				return ["test"];
 			}
@@ -113,7 +113,7 @@ test("no previous command using --rerun option", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			set() {}
 			get() {
 				return [];
@@ -160,9 +160,9 @@ test("fails on storing command", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			set() {
-				t.ok("should access conf.set command");
+				t.ok("should access 'lru-cache-fs'.set command");
 				throw new Error("ERR");
 			}
 			get() {}
@@ -198,7 +198,7 @@ test("fails on retrieving commands", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			set() {}
 			get() {
 				throw new Error("ERR");
@@ -237,14 +237,14 @@ test("rerun multiple cached tasks", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			get() {
 				return ["build", "test"];
 			}
 		},
 		child_process: {
 			execSync: cmd => {
-				t.ok(cmd.startsWith("npm run"), "should run multiple commands");
+				t.match(cmd, /npm run (build|test)/, "should run multiple commands");
 			}
 		},
 		ipt: expected => {
@@ -266,7 +266,7 @@ test("use custom NTL_RERUN_CACHE option", t => {
 	setup(t, {
 		NTL_RERUN_CACHE: "/lorem"
 	});
-	t.plan(2);
+	t.plan(1);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
@@ -276,7 +276,7 @@ test("use custom NTL_RERUN_CACHE option", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			constructor({ cwd }) {
 				t.equal(
 					cwd,
@@ -303,7 +303,7 @@ test("use custom NTL_RERUN_CACHE option", t => {
 
 test("use custom --rerun-cache option", t => {
 	setup(t);
-	t.plan(2);
+	t.plan(1);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
@@ -313,7 +313,7 @@ test("use custom --rerun-cache option", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			constructor({ cwd }) {
 				t.equal(cwd, "/foo/bar", "should use custom cache defined in option");
 			}
@@ -347,7 +347,7 @@ test("--no-rerun-cache option", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			constructor({ cwd }) {
 				t.fail("should not acess cache");
 			}
@@ -384,7 +384,7 @@ test("NTL_NO_RERUN_CACHE env variable", t => {
 				}
 			})
 		},
-		conf: class {
+		"lru-cache-fs": class {
 			constructor({ cwd }) {
 				t.fail("should not acess cache");
 			}
