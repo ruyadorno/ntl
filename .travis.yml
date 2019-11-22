@@ -1,4 +1,13 @@
+os:
+  - linux
+  - osx
+  - win
 language: node_js
 node_js:
   - '10'
   - 'node'
+jobs:
+  include:
+    - stage: Check Coverage
+      node_js: node
+      script: tap && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage
