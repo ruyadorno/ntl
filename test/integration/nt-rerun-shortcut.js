@@ -1,5 +1,6 @@
 "use strict";
 
+const path = require('path');
 const { test } = require("tap");
 const { readLastLine, run } = require("./helpers");
 
@@ -20,7 +21,7 @@ function setup(t, env) {
 test("ntl run and select first item", t => {
 	setup(t);
 	const cwd = t.testdir({
-		"ntl-rerun-cache": `[{"k": "${t.testdir()}", "v": [ "build" ], "e": 0 }]`,
+		"ntl-rerun-cache": `[{"k": "${path.join(t.testdir())}", "v": [ "build" ], "e": 0 }]`,
 		"package.json": JSON.stringify({
 			scripts: {
 				build: 'echo "build"'
