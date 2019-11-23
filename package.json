@@ -67,14 +67,14 @@
     "coveralls": "^3.0.8",
     "cross-env": "^6.0.3",
     "cross-spawn": "^7.0.1",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.6.0",
+    "eslint": "^6.7.0",
+    "eslint-config-prettier": "^6.7.0",
     "marked": "^0.7.0",
     "marked-man": "^0.7.0",
     "minipass": "^3.1.1",
     "prettier": "^1.19.1",
     "require-inject": "^1.4.4",
-    "tap": "^14.9.1"
+    "tap": "^14.10.1"
   },
   "tap": {
     "100": true
