@@ -31,7 +31,7 @@ test("ntl run and select first item", t => {
 	const cp = run({ alias: "rerun.js", cwd }, ["--rerun-cache-dir", cwd]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(readLastLine(res), "build", "should be able to run task");
+		t.match(readLastLine(res), /build/, "should be able to run task");
 		t.end();
 	});
 });

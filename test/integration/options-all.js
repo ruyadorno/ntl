@@ -19,7 +19,7 @@ test("run using --all option", t => {
 	const cp = run({ cwd }, ["--all"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(readLastLine(res), "prebuild", "should run selected pre/post task");
+		t.match(readLastLine(res), /prebuild/, "should run selected pre/post task");
 		t.end();
 	});
 

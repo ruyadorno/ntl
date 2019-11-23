@@ -21,7 +21,7 @@ test("ntl run using --descriptions-only option", t => {
 	const cp = run({ cwd }, ["--descriptions-only"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(readLastLine(res), "test", "should run test that has descriptions");
+		t.match(readLastLine(res), /test/, "should run test that has descriptions");
 		t.end();
 	});
 

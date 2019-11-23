@@ -17,9 +17,9 @@ test("ntl run using --autocomplete option", t => {
 	const cp = run({ cwd }, ["--autocomplete"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(
+		t.match(
 			readLastLine(res),
-			"test",
+			/test/,
 			"should be able to select using autocomplete"
 		);
 		t.end();

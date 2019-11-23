@@ -16,7 +16,7 @@ test("ntl run using --exclude option", t => {
 	const cp = run({ cwd }, ["--exclude", "build"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(readLastLine(res), "test", "should not list excluded tasks");
+		t.match(readLastLine(res), /test/, "should not list excluded tasks");
 		t.end();
 	});
 

@@ -20,7 +20,7 @@ test("ntl run using an absolute path argument", t => {
 	const cp = run({ cwd: __dirname }, [cwd]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
-		t.equal(readLastLine(res), "build", "should be able to run task");
+		t.match(readLastLine(res), /build/, "should be able to run task");
 		t.end();
 	});
 

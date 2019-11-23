@@ -16,7 +16,7 @@ test("ntl run using --version option", t => {
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
 		const taskOutput = res[0].toString().trim();
-		t.equal(
+		t.match(
 			taskOutput,
 			require("../../package.json").version,
 			"should match current version of package"
