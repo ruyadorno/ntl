@@ -152,7 +152,7 @@ function hasCachedTasks() {
 		};
 
 		try {
-			rerunCachedTasks = retrieveCache().get(cwd);
+			rerunCachedTasks = retrieveCache().get(cacheKey(cwd));
 		} catch (e) {
 			return warn();
 		}
@@ -168,9 +168,13 @@ function hasCachedTasks() {
 	return runCachedTask();
 }
 
+function cacheKey(str) {
+	return str.split("\\").join("/");
+}
+
 function setCachedTasks(keys) {
 	try {
-		retrieveCache().set(cwd, keys);
+		retrieveCache().set(cacheKey(cwd), keys);
 		retrieveCache().fsDump();
 	} catch (e) {
 		// should ignore rerun set cache errors
@@ -180,7 +184,7 @@ function setCachedTasks(keys) {
 function getDefaultTask() {
 	try {
 		return retrieveCache()
-			.get(cwd)
+			.get(cacheKey(cwd))
 			.join(sep);
 	} catch (e) {
 		return undefined;
