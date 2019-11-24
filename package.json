@@ -83,8 +83,10 @@
   },
   "ntl": {
     "descriptions": {
+      "generate-manual": "Generate man page from README, needs manual cleanup",
       "readme-toc": "Generates a TOC and put it on current clipboard",
-      "hello": "Prints a hello message :)"
+      "hello": "Prints a hello message :)",
+      "test": "Run all tests"
     }
   },
   "license": "MIT"
