@@ -22,6 +22,30 @@ Interactive cli tool that lists and run `package.json` scripts.
 
 <br />
 
+## Table of Contents
+  * [Install](#arrow_down-install)
+  * [Usage](#mag_right-usage)
+  * [Features](#heart_eyes-features)
+  * [Customize](#books-customize)
+    + [Custom runner](#custom-runner)
+    + [Using task descriptions](#using-task-descriptions)
+    + [Displaying task contents](#displaying-task-contents)
+    + [Exclude tasks from UI](#exclude-tasks-from-ui)
+    + [Exclude tasks with missing descriptions](#exclude-tasks-with-missing-descriptions)
+    + [Customize cache](#customize-cache)
+    + [UI Size](#ui-size)
+  * [Repeat the last ran task](#arrows_counterclockwise-repeat-the-last-ran-task)
+  * [Run multiple tasks](#m-run-multiple-tasks)
+  * [Run in autocomplete or fuzzy search mode](#fast_forward-run-in-autocomplete-or-fuzzy-search-mode)
+  * [Tips](#white_check_mark-tips)
+    + [ntl as default task](#ntl-as-default-task)
+    + [Exclude scripts](#exclude-scripts)
+    + [Included command aliases](#included-command-aliases)
+  * [Help](#information_source-help)
+  * [License](#license)
+
+<br />
+
 ## :arrow_down: Install
 
 ```

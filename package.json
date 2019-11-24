@@ -28,6 +28,7 @@
   },
   "scripts": {
     "generate-manual": "maked-man README.md > man/man1/ntl.1",
+    "readme-toc": "markdown-toc --no-firsth1 README.md | pbcopy",
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
     "pretest": "eslint cli.js rerun.js test",
@@ -69,6 +70,7 @@
     "cross-spawn": "^7.0.1",
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.7.0",
+    "markdown-toc": "^1.2.0",
     "marked": "^0.7.0",
     "marked-man": "^0.7.0",
     "minipass": "^3.1.1",
