@@ -1,7 +1,7 @@
 {
   "name": "ntl",
   "version": "5.0.0",
-  "description": "Interactive cli tool that lists and run package scripts",
+  "description": "Interactive cli tool to list and run package scripts",
   "repository": "ruyadorno/ntl",
   "author": {
     "name": "Ruy Adorno",
@@ -27,7 +27,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "generate-manual": "maked-man README.md > man/man1/ntl.1",
+    "generate-manual": "marked-man --version $npm_package_version --manual \"Node Task List\" README.md > man/man1/ntl.1",
     "readme-toc": "markdown-toc --no-firsth1 README.md | pbcopy",
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
@@ -83,6 +83,7 @@
   },
   "ntl": {
     "descriptions": {
+      "readme-toc": "Generates a TOC and put it on current clipboard",
       "hello": "Prints a hello message :)"
     }
   },

@@ -155,6 +155,7 @@ These descriptions will be shown anytime you run `ntl`.
 Use the `--info` or simply `-i` option in order to display the contents of each script task, like:
 
 ```sh
+$ ntl -i
 ⬢  Node Task List
 ? Select a task to run: (Use arrow keys)
 ❯ generate-manual › maked-man README.md > man/man1/ntl.1
