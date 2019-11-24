@@ -10,4 +10,4 @@ jobs:
   include:
     - stage: Check Coverage
       node_js: node
-      script: tap --coverage-report=text-lcov | coveralls && rm -rf ./coverage
+      script: tap && tap --coverage-report=text-lcov | coveralls && rm -rf ./coverage
