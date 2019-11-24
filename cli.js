@@ -237,9 +237,7 @@ function run() {
 			item =>
 				argv.all
 					? true
-					: ["pre", "post"].every(
-							prefix => item.name.slice(0, prefix.length) !== prefix
-					  )
+					: ["pre", "post"].every(prefix => !item.value.startsWith(prefix))
 		)
 		.filter(
 			// filter out scripts without a description if --descriptions-only option
