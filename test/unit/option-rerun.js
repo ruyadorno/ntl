@@ -377,6 +377,76 @@ test("use custom NTL_RERUN_CACHE_MAX option", t => {
 	});
 });
 
+test("use string NTL_RERUN_CACHE_MAX option", t => {
+	setup(t, {
+		NTL_RERUN_CACHE_MAX: "3"
+	});
+	t.plan(1);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: "make build",
+					test: "make test"
+				}
+			})
+		},
+		"lru-cache-fs": class {
+			constructor({ max }) {
+				t.equal(max, 3, "should use properly cast cache max value");
+			}
+		},
+		child_process: {
+			execSync: () => null
+		},
+		ipt: () => Promise.resolve([]),
+		"simple-output": {
+			node: () => null,
+			success: () => null,
+			warn: () => null
+		},
+		"yargs/yargs": mockYargs({
+			_: [],
+			rerun: true
+		})
+	});
+});
+
+test("use undefined NTL_RERUN_CACHE_MAX option", t => {
+	setup(t, {
+		NTL_RERUN_CACHE_MAX: undefined
+	});
+	t.plan(1);
+	const ntl = requireInject("../../cli", {
+		"read-pkg": {
+			sync: () => ({
+				scripts: {
+					build: "make build",
+					test: "make test"
+				}
+			})
+		},
+		"lru-cache-fs": class {
+			constructor({ max }) {
+				t.equal(max, 10, "should use default cast cache max value");
+			}
+		},
+		child_process: {
+			execSync: () => null
+		},
+		ipt: () => Promise.resolve([]),
+		"simple-output": {
+			node: () => null,
+			success: () => null,
+			warn: () => null
+		},
+		"yargs/yargs": mockYargs({
+			_: [],
+			rerun: true
+		})
+	});
+});
+
 test("use custom --rerun-cache-dir option", t => {
 	setup(t);
 	t.plan(1);

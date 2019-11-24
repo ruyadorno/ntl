@@ -42,7 +42,7 @@ const { argv } = yargs(getMainArgs())
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
-	.describe("rerun", "Rerun last executed script")
+	.describe("rerun", "Repeat last executed script")
 	.alias("r", "rerun")
 	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r", "no-rerun-cache"])
 	.number(["s"])
@@ -132,7 +132,7 @@ function retrieveCache() {
 			cacheName:
 				rerunCacheName || process.env.NTL_RERUN_CACHE_NAME || "ntl-rerun-cache",
 			cwd: rerunCacheDir || process.env.NTL_RERUN_CACHE_DIR,
-			max: process.env.NTL_RERUN_CACHE_MAX || 10
+			max: parseInt(process.env.NTL_RERUN_CACHE_MAX, 10) || 10
 		});
 	}
 
