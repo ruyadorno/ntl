@@ -28,10 +28,6 @@ Interactive cli tool that lists and run `package.json` scripts.
 $ npm install -g ntl
 ```
 
-<p align="center">
-<img alt="demo animation" width="540" src="https://ruyadorno.github.io/svg-demos/ntl/examples/intro.svg" />
-</p>
-
 <br />
 
 ## :mag_right: Usage
@@ -49,6 +45,13 @@ ntl ./my-node-project
 ```
 
 <br />
+<br />
+
+<p align="center">
+<img alt="demo animation" width="540" src="https://ruyadorno.github.io/svg-demos/ntl/examples/intro.svg" />
+</p>
+
+<br />
 
 ## :heart_eyes: Features
 
@@ -61,11 +64,13 @@ ntl ./my-node-project
 - Run multiple tasks (can also easily repeat multiple ran tasks)
 - Customize rerun cache options
 
+<br />
+
 ## :books: Customize
 
 ### Custom runner
 
-By default **Node Task List** tries to use [npm](https://github.com/npm/cli/) to run the configured `script` tasks. In case you want to use a custom runner (e.g: `yarn` or `pnpm`) you can set a environment variable.
+By default **Node Task List** tries to use [npm](https://github.com/npm/cli/) to run the configured `script` tasks. In case you want to use a custom runner (e.g: `yarn` or `pnpm`) you can configure **ntl** to use whatever runner you prefer.
 
 That can be configured system-wide by setting the environment variable in your profile file (`.bashrc` or `.bash_profile` for macos). In case you only want to ever use **yarn** as your node task runner, you should set:
 
@@ -80,7 +85,7 @@ Keep in mind environment variables are flexible enough that they can also be set
 NTL_RUNNER=yarn ntl
 ```
 
-You can also define a `runner` in a per-project basis using the `ntl` configuration within your `package.json`, e.g:
+:heavy_exclamation_mark: You can also define a `runner` in a per-project basis using the `ntl` configuration of your `package.json`, e.g:
 
 ```json
 {
@@ -92,12 +97,21 @@ You can also define a `runner` in a per-project basis using the `ntl` configurat
 }
 ```
 
+<br />
+
 ### Using task descriptions
 
-You can define descriptions for your tasks in your `package.json` file by defining a `ntl` section, e.g:
+:memo: You can define descriptions for your tasks in your `package.json` file by defining a `ntl` section, e.g:
 
 ```json
 {
+  "name": "<project>",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "make build",
+    "coverage": "jest --coverage",
+    "test": "jest"
+  },
   "ntl": {
     "descriptions": {
       "build": "Builds the project",
@@ -110,18 +124,7 @@ You can define descriptions for your tasks in your `package.json` file by defini
 
 These descriptions will be shown anytime you run `ntl`.
 
-### Run in autocomplete or fuzzy search mode
-
-Use `--autocomplete` or `-A` option in order to use an interface variation that allows you to type the name of the task instead of browsing through an arrow-based menu. This can be very useful when managing a long list of tasks.
-
-```sh
-$ ntl -A
-⬢  Node Task List
-? Select a task to run: t
-❯ pretest
-  test
-  start
-```
+<br />
 
 ### Displaying task contents
 
@@ -136,6 +139,8 @@ Use the `--info` or simply `-i` option in order to display the contents of each 
 ```
 
 Task contents will also be shown when using the `--descriptions` option and no description is available for a given item.
+
+<br />
 
 ### Exclude tasks from UI
 
@@ -159,9 +164,13 @@ $ ntl -e "test*"
   tasks
 ```
 
+<br />
+
 ### Exclude tasks with missing descriptions
 
 You can also filter out items that doesn't have a description using the `--descriptions-only` or `-o` option.
+
+<br />
 
 ### Customize cache
 
@@ -185,6 +194,8 @@ The cache can also be customized through command line options:
 - `--rerun-cache-dir` Defines a directory to store the cache file
 - `--rerun-cache-name`: Filename to use for the cache
 - `--no-rerun-cache`: Avoids the cache system completely
+
+<br />
 
 ### UI Size
 
@@ -220,6 +231,10 @@ The default size value is 7 items.
 - Using a `--rerun` or `-r` flag, e.g: `ntl -r`
 - Prepending the `NTL_RERUN` env variable, e.g: `NTL_RERUN=true ntl`
 
+<p align="center">
+<img alt="demo animation showing how to rerun a script using the nt command shorthand" width="540" src="https://ruyadorno.github.io/svg-demos/ntl/examples/option-rerun.svg" />
+</p>
+
 <br />
 
 ## :m: Run multiple tasks
@@ -235,7 +250,30 @@ $ ntl -m
 ❯◉ test:ci
 ```
 
+<p align="center">
+<img alt="demo animation showing how to use -m to have a checkbox interface allowing for selection of multiple tasks to be ran in serial" width="540" src="https://ruyadorno.github.io/svg-demos/ntl/examples/option-multiple.svg" />
+</p>
+
 Better yet, combine that with the **rerun** feature and you can repeat multiple tasks using the `nt` command.
+
+<br />
+
+## :fast_forward: Run in autocomplete or fuzzy search mode
+
+Use `--autocomplete` or `-A` option in order to use an interface variation that allows you to type the name of the task instead of browsing through an arrow-based menu. This mode can be very helpful when managing a long list of tasks.
+
+```sh
+$ ntl -A
+⬢  Node Task List
+? Select a task to run: t
+❯ pretest
+  test
+  start
+```
+
+<p align="center">
+<img alt="demo animation showing how to use -m to have a checkbox interface allowing for selection of multiple tasks to be ran in serial" width="540" src="https://ruyadorno.github.io/svg-demos/ntl/examples/option-autocomplete.svg" />
+</p>
 
 <br />
 
