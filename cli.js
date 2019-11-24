@@ -14,7 +14,6 @@ const Cache = require("lru-cache-fs");
 
 const sep = os.EOL;
 const defaultRunner = "npm";
-const pkg = require("./package");
 const { argv } = yargs(getMainArgs())
 	.usage(
 		"Usage:\n  ntl [<path>]             Build an interactive interface and run any script"
@@ -267,7 +266,7 @@ function run() {
 		return out.error("No tasks remained, maybe try less options?");
 	}
 
-	out.node("Node Task List - v" + pkg.version);
+	out.node("Node Task List");
 
 	// creates interactive interface using ipt
 	ipt(input, {
