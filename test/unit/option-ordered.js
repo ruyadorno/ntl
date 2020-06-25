@@ -5,7 +5,7 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build an interface using multiple selectable items", t => {
+test("build an interface using selectable items in order", t => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
@@ -22,11 +22,11 @@ test("build an interface using multiple selectable items", t => {
 					default: undefined,
 					"default-separator": os.EOL,
 					message: "Select a task to run:",
-					multiple: true,
-					ordered: undefined,
+					multiple: undefined,
+					ordered: true,
 					size: undefined
 				},
-				"should use multiple:true option while building the list"
+				"should use ordered:true option while building the list"
 			);
 			t.end();
 			return Promise.resolve([]);
@@ -37,12 +37,12 @@ test("build an interface using multiple selectable items", t => {
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			multiple: true
+			ordered: true
 		})
 	});
 });
 
-test("run multiple commands", t => {
+test("run multiple commands in order", t => {
 	t.plan(2);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
@@ -67,7 +67,7 @@ test("run multiple commands", t => {
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			multiple: true
+			ordered: true
 		})
 	});
 });

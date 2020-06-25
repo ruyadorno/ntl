@@ -38,12 +38,14 @@ const { argv } = yargs(getMainArgs())
 	.describe("e", "Excludes specific scripts")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
+	.alias("O", "ordered")
+	.describe("O", "Selects multiple items in order")
 	.alias("s", "size")
 	.describe("s", "Amount of lines to display at once")
 	.alias("v", "version")
 	.describe("rerun", "Repeat last executed script")
 	.alias("r", "rerun")
-	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "v", "r", "no-rerun-cache"])
+	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "O", "v", "r", "no-rerun-cache"])
 	.number(["s"])
 	.array(["e"])
 	.string(["rerun-cache-dir", "rerun-cache-name"])
@@ -57,6 +59,7 @@ const cwd = argv._[0] ? path.resolve(process.cwd(), argv._[0]) : process.cwd();
 const {
 	autocomplete,
 	multiple,
+	ordered,
 	noRerunCache,
 	rerun,
 	rerunCacheDir,
@@ -273,6 +276,7 @@ function run() {
 		"default-separator": sep,
 		message,
 		multiple,
+		ordered,
 		size
 	})
 		.then(keys => {
