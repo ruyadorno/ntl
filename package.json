@@ -80,7 +80,8 @@
     "tap": "^14.10.1"
   },
   "tap": {
-    "100": true
+    "100": true,
+    "test-ignore": "test/integration/helpers.js|test/unit/helpers.js"
   },
   "ntl": {
     "descriptions": {
