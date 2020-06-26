@@ -62,6 +62,7 @@ test("set default option on list", t => {
 					"default-separator": os.EOL,
 					message: "Select a task to run:",
 					multiple: undefined,
+					ordered: undefined,
 					size: undefined
 				},
 				"should set default option on ipt"
@@ -122,6 +123,7 @@ test("set multiple default options", t => {
 					"default-separator": os.EOL,
 					message: "Select a task to run:",
 					multiple: undefined,
+					ordered: undefined,
 					size: undefined
 				},
 				"should set default option on ipt"

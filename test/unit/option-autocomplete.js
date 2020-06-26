@@ -23,6 +23,7 @@ test("build an interface using autocomplete/fuzzyfinder", t => {
 					"default-separator": os.EOL,
 					message: "Select a task to run:",
 					multiple: undefined,
+					ordered: undefined,
 					size: undefined
 				},
 				"should use autocomplete:true option while building the list"

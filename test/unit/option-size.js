@@ -23,6 +23,7 @@ test("build an interface using a specific max number of lines to be displayed", 
 					"default-separator": os.EOL,
 					message: "Select a task to run:",
 					multiple: undefined,
+					ordered: undefined,
 					size: 10
 				},
 				"should use specific size option while building the list"
