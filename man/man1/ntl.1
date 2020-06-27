@@ -1,4 +1,4 @@
-.TH "ntl" "1" "November 2019" "5.0.0" "Node Task List"
+.TH "ntl" "1" "June 2020" "5.1.0" "Node Task List"
 .SH NAME
 ntl \- manual page for ntl 5.0.0
 .P
@@ -49,7 +49,14 @@ Many options to customize the UI (exclude scripts, amount of items, etc)
 .IP \(bu 2
 Easy to repeat last ran script (\fBnt\fP and \fBrerun\fP options)
 .IP \(bu 2
-Run multiple tasks (can also easily repeat multiple ran tasks)
+Run multiple tasks
+.RS
+.IP \(bu 2
+Repeat previously set of ran tasks
+.IP \(bu 2
+Preserve order of selection
+
+.RE
 .IP \(bu 2
 Customize rerun cache options
 
@@ -217,6 +224,16 @@ ntl \-m
 
 .P
 Better yet, combine that with the \fBrerun\fR feature and you can repeat multiple tasks using the \fBnt\fP command\.
+.SH RUN MULTIPLE TASKS IN ORDER OF SELECTION
+.P
+You can run multiple tasks in the order you pick them :sunglasses: Use the \fB\-\-ordered\fP or \fB\-O\fP option:
+.P
+.RS 2
+.nf
+$ ntl \-O
+.fi
+.RE
+
 .SH RUN IN AUTOCOMPLETE OR FUZZY SEARCH MODE
 .P
 Use \fB\-\-autocomplete\fP or \fB\-A\fP option in order to use an interface variation that allows you to type the name of the task instead of browsing through an arrow\-based menu\. This mode can be very helpful when managing a long list of tasks\.
@@ -309,4 +326,4 @@ Visit https://github\.com/ruyadorno/ntl for more info
 .RE
 .SH LICENSE
 .P
-MIT \fILICENSE\fR © 2019 Ruy Adorno \fIhttp://ruyadorno\.com\fR
+MIT \fILICENSE\fR © 2020 Ruy Adorno \fIhttp://ruyadorno\.com\fR
