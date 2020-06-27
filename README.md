@@ -36,6 +36,7 @@ Interactive cli tool that lists and run `package.json` scripts.
     + [UI Size](#ui-size)
   * [Repeat the last ran task](#arrows_counterclockwise-repeat-the-last-ran-task)
   * [Run multiple tasks](#m-run-multiple-tasks)
+    + [Preserve selection order](#run-multiple-tasks-in-order-of-selection)
   * [Run in autocomplete or fuzzy search mode](#fast_forward-run-in-autocomplete-or-fuzzy-search-mode)
   * [Tips](#white_check_mark-tips)
     + [ntl as default task](#ntl-as-default-task)
@@ -85,7 +86,9 @@ ntl ./my-node-project
 - Multiple interactive interfaces (menu list, autocomplete fuzzy search)
 - Many options to customize the UI (exclude scripts, amount of items, etc)
 - Easy to repeat last ran script (`nt` and `rerun` options)
-- Run multiple tasks (can also easily repeat multiple ran tasks)
+- Run multiple tasks
+  - Repeat previously set of ran tasks
+  - Preserve order of selection
 - Customize rerun cache options
 
 <br />
@@ -281,6 +284,22 @@ $ ntl -m
 
 Better yet, combine that with the **rerun** feature and you can repeat multiple tasks using the `nt` command.
 
+### Run multiple tasks in order of selection
+
+You can run multiple tasks in the order you pick them :sunglasses: Use the `--ordered` or `-O` option:
+
+```sh
+$ ntl -O
+⬢  Node Task List
+? Select a task to run: (Press <space> to select, <r> to res
+et)
+ ◯   bar › Test task
+ ◯   foo › Test task
+❯2 hello › Hello world
+ ◯ start › Start the development server
+ 1  test › Run all tests for the project
+```
+
 <br />
 
 ## :fast_forward: Run in autocomplete or fuzzy search mode
@@ -366,6 +385,7 @@ Options:
   -i, --info               Displays the contents of each script        [boolean]
   -e, --exclude            Excludes specific scripts                     [array]
   -m, --multiple           Allows the selection of multiple items      [boolean]
+  -O, --ordered            Selects multiple items in order             [boolean]
   -s, --size               Amount of lines to display at once           [number]
   --rerun-cache-dir        Defines the rerun task cache location        [string]
   --rerun-cache-name       Defines the rerun task cache filename        [string]
@@ -380,4 +400,4 @@ Visit https://github.com/ruyadorno/ntl for more info
 
 ## License
 
-[MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)
+[MIT](LICENSE) © 2020 [Ruy Adorno](http://ruyadorno.com)
