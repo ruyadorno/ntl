@@ -74,6 +74,9 @@ const noScriptsFound = !scripts || scriptKeys.length < 1;
 const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 
+// Set ps name
+process.title = 'ntl'
+
 // Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
 	if (key && key.name === "escape") {
