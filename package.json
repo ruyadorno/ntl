@@ -34,6 +34,7 @@
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
     "lint": "eslint cli.js rerun.js test",
+    "postlint": "npm run format",
     "pretest": "npm run lint",
     "test": "cross-env NTL_NO_RERUN_CACHE=1 tap",
     "start": "node cli.js"

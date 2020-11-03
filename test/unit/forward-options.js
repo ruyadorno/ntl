@@ -4,7 +4,7 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("forward an option past -- ", t => {
+test("forward an option past -- ", (t) => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat(["--", "--one-more-thing"]);
 	t.teardown(() => {
@@ -14,38 +14,38 @@ test("forward an option past -- ", t => {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
 		ipt: () => {
 			return Promise.resolve(["build"]);
 		},
 		child_process: {
-			execSync: cmd => {
+			execSync: (cmd) => {
 				t.equal(
 					cmd,
 					"npm run build -- --one-more-thing",
 					"should forward any trailing options"
 				);
 				t.end();
-			}
+			},
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
-		}
+			success: () => null,
+		},
 	});
 });
 
-test("forward many options past -- ", t => {
+test("forward many options past -- ", (t) => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat([
 		"--",
 		"--one-more-thing",
 		"package.json",
 		"--second-item",
-		"-foo"
+		"-foo",
 	]);
 	t.teardown(() => {
 		process.argv = _argv;
@@ -54,26 +54,26 @@ test("forward many options past -- ", t => {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
 		ipt: () => {
 			return Promise.resolve(["build"]);
 		},
 		child_process: {
-			execSync: cmd => {
+			execSync: (cmd) => {
 				t.equal(
 					cmd,
 					"npm run build -- --one-more-thing package.json --second-item -foo",
 					"should forward any trailing options"
 				);
 				t.end();
-			}
+			},
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
-		}
+			success: () => null,
+		},
 	});
 });

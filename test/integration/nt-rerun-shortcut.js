@@ -9,7 +9,7 @@ function setup(t, env) {
 
 	process.env = {
 		...process.env,
-		...env
+		...env,
 	};
 
 	t.teardown(() => {
@@ -17,7 +17,7 @@ function setup(t, env) {
 	});
 }
 
-test("ntl run and select first item", t => {
+test("ntl run and select first item", (t) => {
 	setup(t);
 	const cwd = t.testdir({
 		"ntl-rerun-cache": `[{"k": "${t
@@ -26,14 +26,14 @@ test("ntl run and select first item", t => {
 			.join("/")}", "v": [ "build" ], "e": 0 }]`,
 		"package.json": JSON.stringify({
 			scripts: {
-				build: 'echo "build"'
-			}
-		})
+				build: 'echo "build"',
+			},
+		}),
 	});
 
 	const cp = run({ alias: "rerun.js", cwd }, ["--rerun-cache-dir", cwd]);
 	cp.assertNotStderrData(t);
-	cp.getStdoutResult().then(res => {
+	cp.getStdoutResult().then((res) => {
 		t.match(readLastLine(res), /build/, "should be able to run task");
 		t.end();
 	});

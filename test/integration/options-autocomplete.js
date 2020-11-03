@@ -3,20 +3,20 @@
 const { test } = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run using --autocomplete option", t => {
+test("ntl run using --autocomplete option", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
 				build: 'echo "build"',
 				start: 'echo "start"',
-				test: 'echo "test"'
-			}
-		})
+				test: 'echo "test"',
+			},
+		}),
 	});
 
 	const cp = run({ cwd }, ["--autocomplete"]);
 	cp.assertNotStderrData(t);
-	cp.getStdoutResult().then(res => {
+	cp.getStdoutResult().then((res) => {
 		t.match(
 			readLastLine(res),
 			/test/,

@@ -5,25 +5,25 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list using --exclude option", t => {
+test("build a list using --exclude option", (t) => {
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: 'echo "build"',
-					test: 'echo "test"'
-				}
-			})
+					test: 'echo "test"',
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list with only non-excluded items"
 			);
@@ -32,16 +32,16 @@ test("build a list using --exclude option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			exclude: ["test"]
-		})
+			exclude: ["test"],
+		}),
 	});
 });
 
-test("build a list using --exclude option using *", t => {
+test("build a list using --exclude option using *", (t) => {
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
@@ -50,18 +50,18 @@ test("build a list using --exclude option using *", t => {
 					build: 'echo "build"',
 					test: 'echo "test"',
 					"test:unit": 'echo "test:unit"',
-					"test:integration": 'echo "test:integration"'
-				}
-			})
+					"test:integration": 'echo "test:integration"',
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list with only non-excluded items"
 			);
@@ -70,11 +70,11 @@ test("build a list using --exclude option using *", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			exclude: ["test*"]
-		})
+			exclude: ["test*"],
+		}),
 	});
 });

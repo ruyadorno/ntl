@@ -11,18 +11,18 @@ function run({ alias, cwd, env } = {}, args = []) {
 	const cmd = path.join(path.resolve(__dirname, "../.."), alias || "cli.js");
 	const cp = spawn(cmd, args, {
 		cwd,
-		env: Object.assign({}, process.env, env)
+		env: Object.assign({}, process.env, env),
 	});
 	const { stderr, stdin, stdout } = cp;
 
 	function assertExitCode(t, expectedCode, assertMsg) {
-		cp.on("close", function(code) {
+		cp.on("close", function (code) {
 			t.equal(code, expectedCode, assertMsg);
 		});
 	}
 
 	function assertNotStderrData(t) {
-		stderr.on("data", data => {
+		stderr.on("data", (data) => {
 			console.error(data.toString());
 			t.fail("should not have stderr output");
 		});
@@ -49,11 +49,11 @@ function run({ alias, cwd, env } = {}, args = []) {
 		getStdoutResult,
 		stderr,
 		stdin,
-		stdout
+		stdout,
 	};
 }
 
 module.exports = {
 	readLastLine,
-	run
+	run,
 };

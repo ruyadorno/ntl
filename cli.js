@@ -45,7 +45,20 @@ const { argv } = yargs(getMainArgs())
 	.alias("v", "version")
 	.describe("rerun", "Repeat last executed script")
 	.alias("r", "rerun")
-	.boolean(["a", "A", "D", "d", "o", "h", "i", "m", "O", "v", "r", "no-rerun-cache"])
+	.boolean([
+		"a",
+		"A",
+		"D",
+		"d",
+		"o",
+		"h",
+		"i",
+		"m",
+		"O",
+		"v",
+		"r",
+		"no-rerun-cache",
+	])
 	.number(["s"])
 	.array(["e"])
 	.string(["rerun-cache-dir", "rerun-cache-name"])
@@ -64,7 +77,7 @@ const {
 	rerun,
 	rerunCacheDir,
 	rerunCacheName,
-	size
+	size,
 } = argv;
 const { ntl, scripts } = getCwdPackage() || {};
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
@@ -75,7 +88,7 @@ const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 
 // Set ps name
-process.title = 'ntl'
+process.title = "ntl";
 
 // Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
@@ -137,7 +150,7 @@ function retrieveCache() {
 			cacheName:
 				rerunCacheName || process.env.NTL_RERUN_CACHE_NAME || "ntl-rerun-cache",
 			cwd: rerunCacheDir || process.env.NTL_RERUN_CACHE_DIR,
-			max: parseInt(process.env.NTL_RERUN_CACHE_MAX, 10) || 10
+			max: parseInt(process.env.NTL_RERUN_CACHE_MAX, 10) || 10,
 		});
 	}
 
@@ -188,19 +201,17 @@ function setCachedTasks(keys) {
 
 function getDefaultTask() {
 	try {
-		return retrieveCache()
-			.get(cacheKey(cwd))
-			.join(sep);
+		return retrieveCache().get(cacheKey(cwd)).join(sep);
 	} catch (e) {
 		return undefined;
 	}
 }
 
 function executeCommands(keys) {
-	keys.forEach(key => {
+	keys.forEach((key) => {
 		execSync(`${runner} run ${key}${getTrailingOptions()}`, {
 			cwd,
-			stdio: [process.stdin, process.stdout, process.stderr]
+			stdio: [process.stdin, process.stdout, process.stderr],
 		});
 	});
 }
@@ -208,7 +219,7 @@ function executeCommands(keys) {
 function run() {
 	const descriptionsKeys = Object.keys(descriptions);
 	const hasDescriptions =
-		descriptionsKeys.length > 0 && descriptionsKeys.some(key => scripts[key]);
+		descriptionsKeys.length > 0 && descriptionsKeys.some((key) => scripts[key]);
 	const shouldWarnNoDescriptions = argv.descriptions && !hasDescriptions;
 	if (shouldWarnNoDescriptions) {
 		out.warn(`No descriptions for your ${runner} scripts found`);
@@ -224,7 +235,7 @@ function run() {
 
 	// defines the items that will be printed to the user
 	const input = scriptKeys
-		.map(key => ({
+		.map((key) => ({
 			name:
 				argv.info || argv.descriptions
 					? getLongName(
@@ -236,24 +247,24 @@ function run() {
 					: hasDescriptions
 					? getLongName(key, descriptions[key])
 					: key,
-			value: key
+			value: key,
 		}))
 		.filter(
 			// filter out prefixed scripts
-			item =>
+			(item) =>
 				argv.all
 					? true
-					: ["pre", "post"].every(prefix => !item.value.startsWith(prefix))
+					: ["pre", "post"].every((prefix) => !item.value.startsWith(prefix))
 		)
 		.filter(
 			// filter out scripts without a description if --descriptions-only option
-			item => (argv.descriptionsOnly ? descriptions[item.value] : true)
+			(item) => (argv.descriptionsOnly ? descriptions[item.value] : true)
 		)
 		.filter(
 			// filter excluded scripts
-			item =>
+			(item) =>
 				!argv.exclude ||
-				!argv.exclude.some(e =>
+				!argv.exclude.some((e) =>
 					new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
 				)
 		);
@@ -280,13 +291,13 @@ function run() {
 		message,
 		multiple,
 		ordered,
-		size
+		size,
 	})
-		.then(keys => {
+		.then((keys) => {
 			setCachedTasks(keys);
 			executeCommands(keys);
 		})
-		.catch(err => {
+		.catch((err) => {
 			error(err, "Error building interactive interface");
 		});
 }

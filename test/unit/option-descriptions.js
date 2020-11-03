@@ -4,33 +4,33 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list using default options", t => {
+test("build a list using default options", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					"automated:build": "make automated-build",
-					test: "make test"
+					test: "make test",
 				},
 				ntl: {
 					descriptions: {
-						"automated:build": "Run build steps"
-					}
-				}
-			})
+						"automated:build": "Run build steps",
+					},
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "automated:build › Run build steps",
-						value: "automated:build"
+						value: "automated:build",
 					},
 					{
 						name: "           test › ",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a list using descriptions if they're present"
 			);
@@ -39,41 +39,41 @@ test("build a list using default options", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("build a list in which descriptions key is missing", t => {
+test("build a list in which descriptions key is missing", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					"automated:build": "make automated-build",
-					test: "make test"
+					test: "make test",
 				},
 				ntl: {
 					descriptions: {
-						"some-other-task-name": "foo"
-					}
-				}
-			})
+						"some-other-task-name": "foo",
+					},
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "automated:build",
-						value: "automated:build"
+						value: "automated:build",
 					},
 					{
 						name: "test",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a regular list if there's no description matching actual tasks"
 			);
@@ -82,41 +82,41 @@ test("build a list in which descriptions key is missing", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("build a list using --descriptions option", t => {
+test("build a list using --descriptions option", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
+					test: "make test",
 				},
 				ntl: {
 					descriptions: {
-						build: "Run build steps"
-					}
-				}
-			})
+						build: "Run build steps",
+					},
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build › Run build steps",
-						value: "build"
+						value: "build",
 					},
 					{
 						name: " test › make test",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a list using the descriptions"
 			);
@@ -125,11 +125,11 @@ test("build a list using --descriptions option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			descriptions: true
-		})
+			descriptions: true,
+		}),
 	});
 });

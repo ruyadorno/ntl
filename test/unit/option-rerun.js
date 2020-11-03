@@ -13,7 +13,7 @@ function setup(t, env) {
 
 	process.env = {
 		...process.env,
-		...env
+		...env,
 	};
 
 	t.teardown(() => {
@@ -21,16 +21,16 @@ function setup(t, env) {
 	});
 }
 
-test("skip build interface using --rerun option", t => {
+test("skip build interface using --rerun option", (t) => {
 	setup(t);
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			get() {
@@ -38,42 +38,42 @@ test("skip build interface using --rerun option", t => {
 			}
 		},
 		child_process: {
-			execSync: cmd => {
+			execSync: (cmd) => {
 				t.equal(
 					cmd,
 					"npm run test",
 					"should skip interface and simply rerun previous command"
 				);
 				t.end();
-			}
+			},
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.fail("should not build interactive interface");
 			return Promise.resolve([]);
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("skip build interface using NTL_RERUN env variable", t => {
+test("skip build interface using NTL_RERUN env variable", (t) => {
 	setup(t, {
-		NTL_RERUN: "true"
+		NTL_RERUN: "true",
 	});
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			get() {
@@ -81,30 +81,30 @@ test("skip build interface using NTL_RERUN env variable", t => {
 			}
 		},
 		child_process: {
-			execSync: cmd => {
+			execSync: (cmd) => {
 				t.equal(
 					cmd,
 					"npm run test",
 					"should skip interface and simply rerun previous command"
 				);
 				t.end();
-			}
+			},
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.fail("should not build interactive interface");
 			return Promise.resolve([]);
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("no previous command using --rerun option", t => {
+test("no previous command using --rerun option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -112,9 +112,9 @@ test("no previous command using --rerun option", t => {
 			sync: () => ({
 				scripts: {
 					test: "make test",
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			set() {}
@@ -122,18 +122,18 @@ test("no previous command using --rerun option", t => {
 				return [];
 			}
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "test",
-						value: "test"
+						value: "test",
 					},
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a regular interface"
 			);
@@ -142,16 +142,16 @@ test("no previous command using --rerun option", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("fails on storing command", t => {
+test("fails on storing command", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -159,9 +159,9 @@ test("fails on storing command", t => {
 			sync: () => ({
 				scripts: {
 					test: "make test",
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			set() {
@@ -170,26 +170,26 @@ test("fails on storing command", t => {
 			}
 			get() {}
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: msg => {
+			warn: (msg) => {
 				t.fail("should not warn");
 			},
 			error: () => {
 				t.fail("should not error");
-			}
+			},
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("fails on retrieving commands", t => {
+test("fails on retrieving commands", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -197,9 +197,9 @@ test("fails on retrieving commands", t => {
 			sync: () => ({
 				scripts: {
 					test: "make test",
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			set() {}
@@ -207,27 +207,27 @@ test("fails on retrieving commands", t => {
 				throw new Error("ERR");
 			}
 		},
-		ipt: expected => Promise.resolve([]),
+		ipt: (expected) => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: msg => {
+			warn: (msg) => {
 				t.equal(
 					msg,
 					"Unable to retrieve commands to rerun",
 					"should print warning message"
 				);
 			},
-			error: () => null
+			error: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("rerun multiple cached tasks", t => {
+test("rerun multiple cached tasks", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = requireInject("../../cli", {
@@ -235,9 +235,9 @@ test("rerun multiple cached tasks", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			get() {
@@ -245,28 +245,28 @@ test("rerun multiple cached tasks", t => {
 			}
 		},
 		child_process: {
-			execSync: cmd => {
+			execSync: (cmd) => {
 				t.match(cmd, /npm run (build|test)/, "should run multiple commands");
-			}
+			},
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.fail("should not build interactive interface");
 			return Promise.resolve([]);
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_DIR option", t => {
+test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
 	setup(t, {
-		NTL_RERUN_CACHE_DIR: "/lorem"
+		NTL_RERUN_CACHE_DIR: "/lorem",
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -274,9 +274,9 @@ test("use custom NTL_RERUN_CACHE_DIR option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
@@ -288,24 +288,24 @@ test("use custom NTL_RERUN_CACHE_DIR option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_NAME option", t => {
+test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
 	setup(t, {
-		NTL_RERUN_CACHE_NAME: "cache"
+		NTL_RERUN_CACHE_NAME: "cache",
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -313,9 +313,9 @@ test("use custom NTL_RERUN_CACHE_NAME option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cacheName, cwd }) {
@@ -327,24 +327,24 @@ test("use custom NTL_RERUN_CACHE_NAME option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_MAX option", t => {
+test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
-		NTL_RERUN_CACHE_MAX: 3
+		NTL_RERUN_CACHE_MAX: 3,
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -352,9 +352,9 @@ test("use custom NTL_RERUN_CACHE_MAX option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ max }) {
@@ -362,24 +362,24 @@ test("use custom NTL_RERUN_CACHE_MAX option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use string NTL_RERUN_CACHE_MAX option", t => {
+test("use string NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
-		NTL_RERUN_CACHE_MAX: "3"
+		NTL_RERUN_CACHE_MAX: "3",
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -387,9 +387,9 @@ test("use string NTL_RERUN_CACHE_MAX option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ max }) {
@@ -397,24 +397,24 @@ test("use string NTL_RERUN_CACHE_MAX option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use undefined NTL_RERUN_CACHE_MAX option", t => {
+test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
-		NTL_RERUN_CACHE_MAX: undefined
+		NTL_RERUN_CACHE_MAX: undefined,
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -422,9 +422,9 @@ test("use undefined NTL_RERUN_CACHE_MAX option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ max }) {
@@ -432,22 +432,22 @@ test("use undefined NTL_RERUN_CACHE_MAX option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			rerun: true
-		})
+			rerun: true,
+		}),
 	});
 });
 
-test("use custom --rerun-cache-dir option", t => {
+test("use custom --rerun-cache-dir option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -455,9 +455,9 @@ test("use custom --rerun-cache-dir option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
@@ -465,23 +465,23 @@ test("use custom --rerun-cache-dir option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true,
-			rerunCacheDir: "/foo/bar"
-		})
+			rerunCacheDir: "/foo/bar",
+		}),
 	});
 });
 
-test("use custom --rerun-cache-name option", t => {
+test("use custom --rerun-cache-name option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -489,9 +489,9 @@ test("use custom --rerun-cache-name option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cacheName }) {
@@ -503,23 +503,23 @@ test("use custom --rerun-cache-name option", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true,
-			rerunCacheName: "cache-filename"
-		})
+			rerunCacheName: "cache-filename",
+		}),
 	});
 });
 
-test("--no-rerun-cache option", t => {
+test("--no-rerun-cache option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -527,9 +527,9 @@ test("--no-rerun-cache option", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
@@ -543,20 +543,20 @@ test("--no-rerun-cache option", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
 			noRerunCache: true,
 			rerun: true,
-			rerunCache: "/foo/bar"
-		})
+			rerunCache: "/foo/bar",
+		}),
 	});
 });
 
-test("NTL_NO_RERUN_CACHE env variable", t => {
+test("NTL_NO_RERUN_CACHE env variable", (t) => {
 	setup(t, {
-		NTL_NO_RERUN_CACHE: "true"
+		NTL_NO_RERUN_CACHE: "true",
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
@@ -564,9 +564,9 @@ test("NTL_NO_RERUN_CACHE env variable", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
@@ -580,12 +580,12 @@ test("NTL_NO_RERUN_CACHE env variable", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true,
-			rerunCache: "/foo/bar"
-		})
+			rerunCache: "/foo/bar",
+		}),
 	});
 });

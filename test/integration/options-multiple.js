@@ -3,19 +3,19 @@
 const { test } = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run using --multiple option", t => {
+test("ntl run using --multiple option", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
 				build: 'echo "BUILD TASK"',
-				test: 'echo "TEST TASK"'
-			}
-		})
+				test: 'echo "TEST TASK"',
+			},
+		}),
 	});
 
 	const cp = run({ cwd }, ["--multiple"]);
 	cp.assertNotStderrData(t);
-	cp.getStdoutResult().then(res => {
+	cp.getStdoutResult().then((res) => {
 		const taskOutput = res.toString().trim();
 		t.contains(
 			taskOutput,

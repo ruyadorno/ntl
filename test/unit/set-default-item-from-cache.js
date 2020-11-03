@@ -11,7 +11,7 @@ function setup(t, env) {
 
 	process.env = {
 		...process.env,
-		...env
+		...env,
 	};
 
 	t.teardown(() => {
@@ -19,7 +19,7 @@ function setup(t, env) {
 	});
 }
 
-test("set default option on list", t => {
+test("set default option on list", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = requireInject("../../cli", {
@@ -27,9 +27,9 @@ test("set default option on list", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			get() {
@@ -37,7 +37,7 @@ test("set default option on list", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: (expected, opts) => {
 			t.deepEqual(
@@ -45,12 +45,12 @@ test("set default option on list", t => {
 				[
 					{
 						name: "build",
-						value: "build"
+						value: "build",
 					},
 					{
 						name: "test",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a regular interface"
 			);
@@ -63,7 +63,7 @@ test("set default option on list", t => {
 					message: "Select a task to run:",
 					multiple: undefined,
 					ordered: undefined,
-					size: undefined
+					size: undefined,
 				},
 				"should set default option on ipt"
 			);
@@ -72,15 +72,15 @@ test("set default option on list", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("set multiple default options", t => {
+test("set multiple default options", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = requireInject("../../cli", {
@@ -88,9 +88,9 @@ test("set multiple default options", t => {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
 		"lru-cache-fs": class {
 			get() {
@@ -98,7 +98,7 @@ test("set multiple default options", t => {
 			}
 		},
 		child_process: {
-			execSync: () => null
+			execSync: () => null,
 		},
 		ipt: (expected, opts) => {
 			t.deepEqual(
@@ -106,12 +106,12 @@ test("set multiple default options", t => {
 				[
 					{
 						name: "build",
-						value: "build"
+						value: "build",
 					},
 					{
 						name: "test",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a regular interface"
 			);
@@ -124,7 +124,7 @@ test("set multiple default options", t => {
 					message: "Select a task to run:",
 					multiple: undefined,
 					ordered: undefined,
-					size: undefined
+					size: undefined,
 				},
 				"should set default option on ipt"
 			);
@@ -133,10 +133,10 @@ test("set multiple default options", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			warn: () => null
+			warn: () => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });

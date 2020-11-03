@@ -8,12 +8,12 @@ function mockYargs(argv) {
 				} else {
 					return () => yargs;
 				}
-			}
+			},
 		}
 	);
 	return () => yargs;
 }
 
 module.exports = {
-	mockYargs
+	mockYargs,
 };

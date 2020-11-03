@@ -4,24 +4,24 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list withouth using --all option", t => {
+test("build a list withouth using --all option", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					prebuild: "make prebuild",
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list excluding prefixed tasks"
 			);
@@ -30,36 +30,36 @@ test("build a list withouth using --all option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: []
-		})
+			_: [],
+		}),
 	});
 });
 
-test("build a list using --all option", t => {
+test("build a list using --all option", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					prebuild: "make prebuild",
-					build: "make build"
-				}
-			})
+					build: "make build",
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "prebuild",
-						value: "prebuild"
+						value: "prebuild",
 					},
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list including prefixed tasks"
 			);
@@ -68,11 +68,11 @@ test("build a list using --all option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			all: true
-		})
+			all: true,
+		}),
 	});
 });

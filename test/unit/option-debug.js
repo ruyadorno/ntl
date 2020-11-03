@@ -4,9 +4,9 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("error while use --debug option", t => {
+test("error while use --debug option", (t) => {
 	const _exit = process.exit;
-	process.exit = code => {
+	process.exit = (code) => {
 		t.equal(code, 1, "should exit with error signal");
 	};
 	t.teardown(() => {
@@ -17,23 +17,23 @@ test("error while use --debug option", t => {
 		"read-pkg": {
 			sync: () => {
 				throw new Error("ERR");
-			}
+			},
 		},
 		"simple-output": {
-			error: msg => {
+			error: (msg) => {
 				t.match(
 					msg,
 					{
-						message: "ERR"
+						message: "ERR",
 					},
 					"should forward original error message"
 				);
 			},
-			info: () => null
+			info: () => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			debug: true
-		})
+			debug: true,
+		}),
 	});
 });

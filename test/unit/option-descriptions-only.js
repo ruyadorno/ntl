@@ -4,29 +4,29 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list using --descriptions-only option", t => {
+test("build a list using --descriptions-only option", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
+					test: "make test",
 				},
 				ntl: {
 					descriptions: {
-						build: "Run build steps"
-					}
-				}
-			})
+						build: "Run build steps",
+					},
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build › Run build steps",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list with the task names"
 			);
@@ -35,38 +35,38 @@ test("build a list using --descriptions-only option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			descriptionsOnly: true
-		})
+			descriptionsOnly: true,
+		}),
 	});
 });
 
-test("build a list using --descriptions-only option along with --description", t => {
+test("build a list using --descriptions-only option along with --description", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
+					test: "make test",
 				},
 				ntl: {
 					descriptions: {
-						build: "Run build steps"
-					}
-				}
-			})
+						build: "Run build steps",
+					},
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build › Run build steps",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a list with the task names"
 			);
@@ -75,12 +75,12 @@ test("build a list using --descriptions-only option along with --description", t
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
 			descriptions: true,
-			descriptionsOnly: true
-		})
+			descriptionsOnly: true,
+		}),
 	});
 });

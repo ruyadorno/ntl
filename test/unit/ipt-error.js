@@ -3,9 +3,9 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 
-test("error while use --debug option", t => {
+test("error while use --debug option", (t) => {
 	const _exit = process.exit;
-	process.exit = code => {
+	process.exit = (code) => {
 		t.equal(code, 1, "should exit with error signal");
 	};
 	t.teardown(() => {
@@ -17,14 +17,14 @@ test("error while use --debug option", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			error: msg => {
+			error: (msg) => {
 				t.equal(
 					msg,
 					"Error building interactive interface",
 					"should forward original error message"
 				);
 			},
-			info: () => null
-		}
+			info: () => null,
+		},
 	});
 });

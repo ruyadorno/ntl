@@ -3,21 +3,21 @@
 const { test } = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run and select first item", t => {
+test("ntl run and select first item", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
-				build: 'echo "build"'
+				build: 'echo "build"',
 			},
 			ntl: {
-				runner: "echo"
-			}
-		})
+				runner: "echo",
+			},
+		}),
 	});
 
 	const cp = run({ cwd });
 	cp.assertNotStderrData(t);
-	cp.getStdoutResult().then(res => {
+	cp.getStdoutResult().then((res) => {
 		t.equal(
 			readLastLine(res),
 			"run build",

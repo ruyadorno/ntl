@@ -4,28 +4,28 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list using --info option", t => {
+test("build a list using --info option", (t) => {
 	const ntl = requireInject("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
 					build: "make build",
-					test: "make test"
-				}
-			})
+					test: "make test",
+				},
+			}),
 		},
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build › make build",
-						value: "build"
+						value: "build",
 					},
 					{
 						name: " test › make test",
-						value: "test"
-					}
+						value: "test",
+					},
 				],
 				"should build a list showing each script content"
 			);
@@ -34,11 +34,11 @@ test("build a list using --info option", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: msg => null
+			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			info: true
-		})
+			info: true,
+		}),
 	});
 });

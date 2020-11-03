@@ -3,10 +3,10 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 
-test("press esc key", t => {
+test("press esc key", (t) => {
 	const _exit = process.exit;
 	const _stdin = process.stdin;
-	process.exit = code => {
+	process.exit = (code) => {
 		t.equal(code, 0, "should exit with error signal");
 		t.end();
 	};
@@ -18,15 +18,15 @@ test("press esc key", t => {
 		"simple-output": {
 			node: () => null,
 			success: () => null,
-			error: msg => {
+			error: (msg) => {
 				t.equal(
 					msg,
 					"Error building interactive interface",
 					"should forward original error message"
 				);
 			},
-			info: () => null
-		}
+			info: () => null,
+		},
 	});
 
 	// simulate esc key

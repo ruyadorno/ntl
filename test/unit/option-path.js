@@ -4,24 +4,24 @@ const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
-test("build a list from a specific path", t => {
+test("build a list from a specific path", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
-				build: 'echo "build"'
-			}
-		})
+				build: 'echo "build"',
+			},
+		}),
 	});
 
 	const ntl = requireInject("../../cli", {
-		ipt: expected => {
+		ipt: (expected) => {
 			t.deepEqual(
 				expected,
 				[
 					{
 						name: "build",
-						value: "build"
-					}
+						value: "build",
+					},
 				],
 				"should build a valid list"
 			);
@@ -30,10 +30,10 @@ test("build a list from a specific path", t => {
 		},
 		"simple-output": {
 			node: () => null,
-			success: () => null
+			success: () => null,
 		},
 		"yargs/yargs": mockYargs({
-			_: [cwd]
-		})
+			_: [cwd],
+		}),
 	});
 });
