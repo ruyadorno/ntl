@@ -28,14 +28,13 @@
   },
   "scripts": {
     "format": "prettier --write cli.js rerun.js test",
-    "preversion": "npm run format",
+    "preversion": "npm test",
     "generate-manual": "marked-man --version $npm_package_version --manual \"Node Task List\" README.md > man/man1/ntl.1",
     "readme-toc": "markdown-toc --no-firsth1 README.md | pbcopy",
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
     "lint": "eslint cli.js rerun.js test",
     "pretest": "npm run lint",
-    "prepublish": "npm test",
     "test": "cross-env NTL_NO_RERUN_CACHE=1 tap",
     "start": "node cli.js"
   },
