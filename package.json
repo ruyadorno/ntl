@@ -27,11 +27,14 @@
     "node": ">=10"
   },
   "scripts": {
+    "format": "prettier --write cli.js rerun.js test",
+    "preversion": "npm run format",
     "generate-manual": "marked-man --version $npm_package_version --manual \"Node Task List\" README.md > man/man1/ntl.1",
     "readme-toc": "markdown-toc --no-firsth1 README.md | pbcopy",
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
-    "pretest": "eslint cli.js rerun.js test",
+    "lint": "eslint cli.js rerun.js test",
+    "pretest": "npm run lint",
     "prepublish": "npm test",
     "test": "cross-env NTL_NO_RERUN_CACHE=1 tap",
     "start": "node cli.js"
@@ -85,6 +88,8 @@
   },
   "ntl": {
     "descriptions": {
+      "format": "Auto-format code, fixing lint issues",
+      "lint": "Lint code using eslint",
       "generate-manual": "Generate man page from README, needs manual cleanup",
       "readme-toc": "Generates a TOC and put it on current clipboard",
       "hello": "Prints a hello message :)",
