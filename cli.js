@@ -2,6 +2,7 @@
 
 "use strict";
 
+const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { execSync } = require("child_process");
@@ -10,6 +11,7 @@ const yargs = require("yargs/yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
 const readPkg = require("read-pkg");
+const writePkg = require("write-pkg");
 const Cache = require("lru-cache-fs");
 
 const sep = os.EOL;
@@ -79,26 +81,37 @@ const {
 	rerunCacheName,
 	size,
 } = argv;
-const { ntl, scripts } = getCwdPackage() || {};
+const pkgJsonContent = getCwdPackage() || {};
+const { ntl, scripts } = pkgJsonContent;
 const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
 const scriptKeys = Object.keys(scripts || {});
 const noScriptsFound = !scripts || scriptKeys.length < 1;
 const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
+let editTask = () => null;
+let editing = false;
 
 // Set ps name
 process.title = "ntl";
 
 // Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
-	if (key && key.name === "escape") {
-		process.exit(0);
+	if (!key || !key.name) return;
+
+	switch (key.name) {
+		case "escape":
+			process.exit(0);
+		case "e":
+			return editTask();
 	}
 });
 
 function error(e, msg) {
-	out.error(argv.debug ? e : msg);
+	out.error(msg);
+	if (argv.debug) {
+		throw e;
+	}
 	process.exit(1);
 }
 
@@ -195,7 +208,7 @@ function setCachedTasks(keys) {
 		retrieveCache().set(cacheKey(cwd), keys);
 		retrieveCache().fsDump();
 	} catch (e) {
-		// should ignore rerun set cache errors
+		if (argv.debug) console.warn(e);
 	}
 }
 
@@ -207,13 +220,36 @@ function getDefaultTask() {
 	}
 }
 
+function exec(name) {
+	execSync(`${runner} run ${name}`, {
+		cwd,
+		stdio: [process.stdin, process.stdout, process.stderr],
+	});
+}
+
 function executeCommands(keys) {
 	keys.forEach((key) => {
-		execSync(`${runner} run ${key}${getTrailingOptions()}`, {
-			cwd,
-			stdio: [process.stdin, process.stdout, process.stderr],
-		});
+		exec(`${key}${getTrailingOptions()}`);
 	});
+}
+
+function executeTempCommand(name, cmd) {
+	const pkgJsonFilename = path.resolve(cwd, "package.json");
+	const tmpFilename = path.resolve(cwd, "tmp-package.json.bkp");
+
+	fs.renameSync(pkgJsonFilename, tmpFilename);
+	writePkg.sync(cwd, {
+		...pkgJsonContent,
+		scripts: {
+			...scripts,
+			[`${name}(1)`]: cmd,
+		},
+	});
+
+	exec(`${name}\\(1\\)`);
+
+	fs.unlinkSync(pkgJsonFilename);
+	fs.renameSync(tmpFilename, pkgJsonFilename);
 }
 
 function run() {
@@ -282,24 +318,50 @@ function run() {
 	}
 
 	out.node("Node Task List");
+	out.hint("Press (E) to edit the current script or its arguments");
+	let prompt = {};
 
 	// creates interactive interface using ipt
-	ipt(input, {
-		autocomplete,
-		default: getDefaultTask(),
-		"default-separator": sep,
-		message,
-		multiple,
-		ordered,
-		size,
-	})
+	ipt(
+		input,
+		{
+			autocomplete,
+			default: getDefaultTask(),
+			"default-separator": sep,
+			message,
+			multiple,
+			ordered,
+			size,
+		},
+		prompt
+	)
 		.then((keys) => {
-			setCachedTasks(keys);
-			executeCommands(keys);
+			if (editing) {
+				const [selected] = keys;
+				return ipt([], {
+					message: "Edit the script or its arguments",
+					default: scripts[selected],
+					input: true,
+					unquoted: true,
+				}).then((res) => {
+					const [cmd] = res;
+					return executeTempCommand(selected, cmd);
+				});
+			} else {
+				setCachedTasks(keys);
+				executeCommands(keys);
+			}
 		})
 		.catch((err) => {
 			error(err, "Error building interactive interface");
 		});
+
+	if (!multiple) {
+		editTask = () => {
+			editing = true;
+			prompt.ui.rl.emit("line");
+		};
+	}
 }
 
 if (noScriptsFound) {
