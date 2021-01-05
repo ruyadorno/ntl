@@ -66,6 +66,7 @@
     "lru-cache-fs": "^2.0.1",
     "read-pkg": "^5.2.0",
     "simple-output": "^2.1.1",
+    "write-pkg": "^4.0.0",
     "yargs": "^16.1.0"
   },
   "devDependencies": {
