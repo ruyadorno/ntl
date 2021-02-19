@@ -2,6 +2,7 @@
 
 const { test } = require("tap");
 const requireInject = require("require-inject");
+const noop = () => null
 
 test("press esc key", (t) => {
 	const _exit = process.exit;
@@ -16,8 +17,9 @@ test("press esc key", (t) => {
 	const ntl = requireInject("../../cli", {
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 			error: (msg) => {
 				t.equal(
 					msg,
@@ -25,7 +27,7 @@ test("press esc key", (t) => {
 					"should forward original error message"
 				);
 			},
-			info: () => null,
+			info: noop,
 		},
 	});
 

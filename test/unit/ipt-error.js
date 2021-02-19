@@ -2,6 +2,7 @@
 
 const { test } = require("tap");
 const requireInject = require("require-inject");
+const noop = () => null
 
 test("error while use --debug option", (t) => {
 	const _exit = process.exit;
@@ -15,8 +16,9 @@ test("error while use --debug option", (t) => {
 	const ntl = requireInject("../../cli", {
 		ipt: () => Promise.reject(new Error("ERR")),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 			error: (msg) => {
 				t.equal(
 					msg,
@@ -24,7 +26,7 @@ test("error while use --debug option", (t) => {
 					"should forward original error message"
 				);
 			},
-			info: () => null,
+			info: noop,
 		},
 	});
 });

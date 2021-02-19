@@ -13,6 +13,7 @@ const out = require("simple-output");
 const readPkg = require("read-pkg");
 const writePkg = require("write-pkg");
 const Cache = require("lru-cache-fs");
+const onExit = require("signal-exit");
 
 const sep = os.EOL;
 const defaultRunner = "npm";
@@ -89,6 +90,9 @@ const scriptKeys = Object.keys(scripts || {});
 const noScriptsFound = !scripts || scriptKeys.length < 1;
 const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
+const pkgJsonFilename = path.resolve(cwd, "package.json");
+const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
+
 let editTask = () => null;
 let editing = false;
 
@@ -101,7 +105,7 @@ process.stdin.on("keypress", (ch, key) => {
 
 	switch (key.name) {
 		case "escape":
-			process.exit(0);
+			return process.exit(0);
 		case "e":
 			return editTask();
 	}
@@ -114,6 +118,20 @@ function error(e, msg) {
 	}
 	process.exit(1);
 }
+
+// exit handler, makes sure to put package.json
+// back in place in case it's running a tmp one
+onExit(function (code, signal) {
+	try {
+		fs.statSync(tmpFilename);
+		fs.unlinkSync(pkgJsonFilename);
+		fs.renameSync(tmpFilename, pkgJsonFilename);
+	} catch (err) {
+		if (err.code !== "ENOENT") {
+			error("error cleaning up ntl tmp files", err);
+		}
+	}
+});
 
 function getMainArgs() {
 	let i = -1;
@@ -234,9 +252,6 @@ function executeCommands(keys) {
 }
 
 function executeTempCommand(name, cmd) {
-	const pkgJsonFilename = path.resolve(cwd, "package.json");
-	const tmpFilename = path.resolve(cwd, "tmp-package.json.bkp");
-
 	fs.renameSync(pkgJsonFilename, tmpFilename);
 	writePkg.sync(cwd, {
 		...pkgJsonContent,
@@ -246,7 +261,7 @@ function executeTempCommand(name, cmd) {
 		},
 	});
 
-	exec(`${name}\\(1\\)`);
+	exec(`${name}(1)`);
 
 	fs.unlinkSync(pkgJsonFilename);
 	fs.renameSync(tmpFilename, pkgJsonFilename);
@@ -318,7 +333,9 @@ function run() {
 	}
 
 	out.node("Node Task List");
-	out.hint("Press (E) to edit the current script or its arguments");
+	if (!multiple && !autocomplete) {
+		out.hint("Press (E) to edit the current script or its arguments");
+	}
 	let prompt = {};
 
 	// creates interactive interface using ipt
@@ -356,7 +373,7 @@ function run() {
 			error(err, "Error building interactive interface");
 		});
 
-	if (!multiple) {
+	if (!multiple && !autocomplete) {
 		editTask = () => {
 			editing = true;
 			prompt.ui.rl.emit("line");

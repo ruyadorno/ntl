@@ -4,6 +4,7 @@ const os = require("os");
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 function setup(t, env) {
 	const _env = process.env;
@@ -70,9 +71,10 @@ test("set default option on list", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -131,9 +133,10 @@ test("set multiple default options", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],

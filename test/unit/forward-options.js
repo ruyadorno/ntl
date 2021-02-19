@@ -3,6 +3,7 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 test("forward an option past -- ", (t) => {
 	const _argv = process.argv;
@@ -32,8 +33,9 @@ test("forward an option past -- ", (t) => {
 			},
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 	});
 });
@@ -72,8 +74,9 @@ test("forward many options past -- ", (t) => {
 			},
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 	});
 });

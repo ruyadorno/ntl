@@ -3,6 +3,7 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 test("build a list from a specific path", (t) => {
 	const cwd = t.testdir({
@@ -29,8 +30,9 @@ test("build a list from a specific path", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [cwd],

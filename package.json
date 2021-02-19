@@ -34,7 +34,6 @@
     "hello": "echo \"Hello\"",
     "bomdia": "echo \"Bom dia\"",
     "lint": "eslint cli.js rerun.js test",
-    "postlint": "echo \"You may also want to auto-format: npm run format\"",
     "pretest": "npm run lint",
     "test": "cross-env NTL_NO_RERUN_CACHE=1 tap",
     "start": "node cli.js"
@@ -66,6 +65,7 @@
     "lru-cache-fs": "^2.0.1",
     "read-pkg": "^5.2.0",
     "simple-output": "^2.1.1",
+    "signal-exit": "^3.0.3",
     "write-pkg": "^4.0.0",
     "yargs": "^16.1.0"
   },

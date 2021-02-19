@@ -3,6 +3,7 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 test("build a list using default options", (t) => {
 	const ntl = requireInject("../../cli", {
@@ -38,7 +39,8 @@ test("build a list using default options", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
+			hint: noop,
+			node: noop,
 			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
@@ -81,7 +83,8 @@ test("build a list in which descriptions key is missing", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
+			hint: noop,
+			node: noop,
 			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({
@@ -124,7 +127,8 @@ test("build a list using --descriptions option", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
+			hint: noop,
+			node: noop,
 			success: (msg) => null,
 		},
 		"yargs/yargs": mockYargs({

@@ -3,6 +3,7 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 function setup(t, env) {
 	const _env = process.env;
@@ -52,8 +53,9 @@ test("skip build interface using --rerun option", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -95,8 +97,9 @@ test("skip build interface using NTL_RERUN env variable", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -140,9 +143,10 @@ test("no previous command using --rerun option", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -174,8 +178,9 @@ test("fails on storing command", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 			warn: (msg) => {
 				t.fail("should not warn");
 			},
@@ -209,8 +214,9 @@ test("fails on retrieving commands", (t) => {
 		},
 		ipt: (expected) => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 			warn: (msg) => {
 				t.equal(
 					msg,
@@ -254,8 +260,9 @@ test("rerun multiple cached tasks", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -288,13 +295,14 @@ test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -327,13 +335,14 @@ test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -362,13 +371,14 @@ test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -397,13 +407,14 @@ test("use string NTL_RERUN_CACHE_MAX option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -432,13 +443,14 @@ test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -465,13 +477,14 @@ test("use custom --rerun-cache-dir option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -503,13 +516,14 @@ test("use custom --rerun-cache-name option", (t) => {
 			}
 		},
 		child_process: {
-			execSync: () => null,
+			execSync: noop,
 		},
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -541,9 +555,10 @@ test("--no-rerun-cache option", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
@@ -578,9 +593,10 @@ test("NTL_NO_RERUN_CACHE env variable", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
-			warn: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
+			warn: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],

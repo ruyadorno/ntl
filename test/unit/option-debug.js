@@ -5,35 +5,36 @@ const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 
 test("error while use --debug option", (t) => {
-	const _exit = process.exit;
-	process.exit = (code) => {
-		t.equal(code, 1, "should exit with error signal");
-	};
-	t.teardown(() => {
-		process.exit = _exit;
-	});
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
-		"read-pkg": {
-			sync: () => {
-				throw new Error("ERR");
+	try {
+		const ntl = requireInject("../../cli", {
+			"read-pkg": {
+				sync: () => {
+					throw new Error("ERR");
+				},
 			},
-		},
-		"simple-output": {
-			error: (msg) => {
-				t.match(
-					msg,
-					{
-						message: "ERR",
-					},
-					"should forward original error message"
-				);
+			"simple-output": {
+				error: (msg) => {
+					t.match(
+						msg,
+						"No package.json found",
+						"should forward internal error message"
+					);
+				},
+				info: () => null,
 			},
-			info: () => null,
-		},
-		"yargs/yargs": mockYargs({
-			_: [],
-			debug: true,
-		}),
-	});
+			"yargs/yargs": mockYargs({
+				_: [],
+				debug: true,
+			}),
+		});
+	} catch (err) {
+		t.match(
+			err,
+			{
+				message: "ERR",
+			},
+			"should throw with original error"
+		)
+	}
 });

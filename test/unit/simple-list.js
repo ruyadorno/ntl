@@ -2,6 +2,7 @@
 
 const { test } = require("tap");
 const requireInject = require("require-inject");
+const noop = () => null
 
 test("build a simple list of items", (t) => {
 	const ntl = requireInject("../../cli", {
@@ -32,8 +33,9 @@ test("build a simple list of items", (t) => {
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 	});
 });
@@ -58,8 +60,9 @@ test("select one item from the list", (t) => {
 			},
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 	});
 });

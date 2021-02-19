@@ -4,6 +4,7 @@ const os = require("os");
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
+const noop = () => null
 
 test("build an interface using a specific max number of lines to be displayed", (t) => {
 	const ntl = requireInject("../../cli", {
@@ -32,8 +33,9 @@ test("build an interface using a specific max number of lines to be displayed", 
 			return Promise.resolve([]);
 		},
 		"simple-output": {
-			node: () => null,
-			success: () => null,
+			hint: noop,
+			node: noop,
+			success: noop,
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
