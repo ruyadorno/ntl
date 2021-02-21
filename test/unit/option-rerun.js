@@ -1,6 +1,7 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
+const { test } = t;
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 const noop = () => null
@@ -8,9 +9,6 @@ const noop = () => null
 function setup(t, env) {
 	const _env = process.env;
 	delete process.env.NTL_NO_RERUN_CACHE;
-
-	// avoid listeners warning
-	process.stdin.setMaxListeners(13);
 
 	process.env = {
 		...process.env,
@@ -22,9 +20,16 @@ function setup(t, env) {
 	});
 }
 
+t.beforeEach(cb => {
+	const listeners = process.stdin.getMaxListeners()
+	process.stdin.setMaxListeners(listeners + 1)
+	cb()
+})
+
 test("skip build interface using --rerun option", (t) => {
 	setup(t);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -42,7 +47,7 @@ test("skip build interface using --rerun option", (t) => {
 			execSync: (cmd) => {
 				t.equal(
 					cmd,
-					"npm run test",
+					"npm run \"test\"",
 					"should skip interface and simply rerun previous command"
 				);
 				t.end();
@@ -69,6 +74,7 @@ test("skip build interface using NTL_RERUN env variable", (t) => {
 		NTL_RERUN: "true",
 	});
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -86,7 +92,7 @@ test("skip build interface using NTL_RERUN env variable", (t) => {
 			execSync: (cmd) => {
 				t.equal(
 					cmd,
-					"npm run test",
+					"npm run \"test\"",
 					"should skip interface and simply rerun previous command"
 				);
 				t.end();
@@ -111,6 +117,7 @@ test("no previous command using --rerun option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -159,6 +166,7 @@ test("fails on storing command", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -198,6 +206,7 @@ test("fails on retrieving commands", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -237,6 +246,7 @@ test("rerun multiple cached tasks", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -252,7 +262,7 @@ test("rerun multiple cached tasks", (t) => {
 		},
 		child_process: {
 			execSync: (cmd) => {
-				t.match(cmd, /npm run (build|test)/, "should run multiple commands");
+				t.match(cmd, /npm run \"(build|test)\"/, "should run multiple commands");
 			},
 		},
 		ipt: (expected) => {
@@ -277,6 +287,7 @@ test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -317,6 +328,7 @@ test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -357,6 +369,7 @@ test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -393,6 +406,7 @@ test("use string NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -429,6 +443,7 @@ test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -463,6 +478,7 @@ test("use custom --rerun-cache-dir option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -498,6 +514,7 @@ test("use custom --rerun-cache-name option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -537,6 +554,7 @@ test("--no-rerun-cache option", (t) => {
 	setup(t);
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -575,6 +593,7 @@ test("NTL_NO_RERUN_CACHE env variable", (t) => {
 	});
 	t.plan(1);
 	const ntl = requireInject("../../cli", {
+		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
