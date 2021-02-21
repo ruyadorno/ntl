@@ -238,8 +238,8 @@ function getDefaultTask() {
 	}
 }
 
-function exec(name) {
-	execSync(`${runner} run "${name}"`, {
+function exec(name, trailingOptions = "") {
+	execSync(`${runner} run "${name}"${trailingOptions}`, {
 		cwd,
 		stdio: [process.stdin, process.stdout, process.stderr],
 	});
@@ -247,7 +247,7 @@ function exec(name) {
 
 function executeCommands(keys) {
 	keys.forEach((key) => {
-		exec(`${key}${getTrailingOptions()}`);
+		exec(key, getTrailingOptions());
 	});
 }
 

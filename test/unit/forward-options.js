@@ -3,7 +3,7 @@
 const { test } = require("tap");
 const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 test("forward an option past -- ", (t) => {
 	const _argv = process.argv;
@@ -26,7 +26,7 @@ test("forward an option past -- ", (t) => {
 			execSync: (cmd) => {
 				t.equal(
 					cmd,
-					"npm run build -- --one-more-thing",
+					'npm run "build" -- --one-more-thing',
 					"should forward any trailing options"
 				);
 				t.end();
@@ -67,7 +67,7 @@ test("forward many options past -- ", (t) => {
 			execSync: (cmd) => {
 				t.equal(
 					cmd,
-					"npm run build -- --one-more-thing package.json --second-item -foo",
+					'npm run "build" -- --one-more-thing package.json --second-item -foo',
 					"should forward any trailing options"
 				);
 				t.end();
