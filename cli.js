@@ -76,7 +76,7 @@ const {
 	autocomplete,
 	multiple,
 	ordered,
-	noRerunCache,
+	rerunCache,
 	rerun,
 	rerunCacheDir,
 	rerunCacheName,
@@ -88,7 +88,7 @@ const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 const { descriptions = {} } = ntl || {};
 const scriptKeys = Object.keys(scripts || {});
 const noScriptsFound = !scripts || scriptKeys.length < 1;
-const avoidCache = noRerunCache || process.env.NTL_NO_RERUN_CACHE;
+const avoidCache = rerunCache === false || process.env.NTL_NO_RERUN_CACHE;
 const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 const pkgJsonFilename = path.resolve(cwd, "package.json");
 const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
