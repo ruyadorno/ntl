@@ -55,7 +55,11 @@ test("select one item from the list", (t) => {
 		},
 		child_process: {
 			execSync: (cmd) => {
-				t.equal(cmd, "npm run build", "should run the selected task");
+				t.equal(
+					cmd,
+					"npm run \"build\"",
+					"should run the selected task"
+				);
 				t.end();
 			},
 		},

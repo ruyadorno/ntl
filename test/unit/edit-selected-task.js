@@ -22,7 +22,10 @@ test("edit a currently selected task pressing E", (t) => {
 	const ntl = requireInject("../../cli", {
 		child_process: {
 			execSync(cmd) {
-				t.equal(cmd, "npm run foo(1)", "should run temp edited task");
+				t.equal(
+					cmd,
+					"npm run \"foo(1)\"", "should run temp edited task"
+				);
 				t.end();
 			},
 		},
