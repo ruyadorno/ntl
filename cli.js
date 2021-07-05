@@ -60,7 +60,7 @@ const { argv } = yargs(getMainArgs())
 		"O",
 		"v",
 		"r",
-		"no-rerun-cache",
+		"rerun-cache",
 	])
 	.number(["s"])
 	.array(["e"])
