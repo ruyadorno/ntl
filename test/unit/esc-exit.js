@@ -1,10 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const noop = () => null
 
-test("press esc key", (t) => {
+t.test("press esc key", (t) => {
 	const _exit = process.exit;
 	const _stdin = process.stdin;
 	process.exit = (code) => {
@@ -14,7 +13,7 @@ test("press esc key", (t) => {
 	t.teardown(() => {
 		process.exit = _exit;
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		ipt: () => Promise.resolve([]),
 		"simple-output": {
 			hint: noop,

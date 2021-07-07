@@ -1,6 +1,6 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
 function setup(t, env) {
@@ -17,7 +17,7 @@ function setup(t, env) {
 	});
 }
 
-test("ntl run and select first item", (t) => {
+t.test("ntl run and select first item", (t) => {
 	setup(t);
 	const cwd = t.testdir({
 		"ntl-rerun-cache": `[{"k": "${t

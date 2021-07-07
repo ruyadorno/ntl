@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run using --version option", (t) => {
+t.test("ntl run using --version option", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {

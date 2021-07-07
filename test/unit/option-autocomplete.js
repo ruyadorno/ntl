@@ -1,13 +1,12 @@
 "use strict";
 
 const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build an interface using autocomplete/fuzzyfinder", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build an interface using autocomplete/fuzzyfinder", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -16,7 +15,7 @@ test("build an interface using autocomplete/fuzzyfinder", (t) => {
 			}),
 		},
 		ipt: (items, expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				{
 					autocomplete: true,
@@ -40,6 +39,7 @@ test("build an interface using autocomplete/fuzzyfinder", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			autocomplete: true,
+			rerunCache: false,
 		}),
 	});
 });

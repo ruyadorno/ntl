@@ -1,12 +1,11 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build a list using default options", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a list using default options", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -21,7 +20,7 @@ test("build a list using default options", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -49,8 +48,8 @@ test("build a list using default options", (t) => {
 	});
 });
 
-test("build a list in which descriptions key is missing", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a list in which descriptions key is missing", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -65,7 +64,7 @@ test("build a list in which descriptions key is missing", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -93,8 +92,8 @@ test("build a list in which descriptions key is missing", (t) => {
 	});
 });
 
-test("build a list using --descriptions option", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a list using --descriptions option", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -109,7 +108,7 @@ test("build a list using --descriptions option", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{

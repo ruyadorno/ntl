@@ -1,11 +1,10 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const noop = () => null
 
-test("build a simple list of items", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a simple list of items", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -15,7 +14,7 @@ test("build a simple list of items", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -40,8 +39,8 @@ test("build a simple list of items", (t) => {
 	});
 });
 
-test("select one item from the list", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("select one item from the list", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {

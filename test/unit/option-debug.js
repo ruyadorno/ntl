@@ -1,13 +1,12 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 
-test("error while use --debug option", (t) => {
+t.test("error while use --debug option", (t) => {
 	t.plan(2);
 	try {
-		const ntl = requireInject("../../cli", {
+		const ntl = t.mock("../../cli", {
 			"read-pkg": {
 				sync: () => {
 					throw new Error("ERR");
@@ -26,6 +25,7 @@ test("error while use --debug option", (t) => {
 			"yargs/yargs": mockYargs({
 				_: [],
 				debug: true,
+				rerunCache: false,
 			}),
 		});
 	} catch (err) {

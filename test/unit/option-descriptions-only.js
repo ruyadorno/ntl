@@ -1,12 +1,11 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build a list using --descriptions-only option", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a list using --descriptions-only option", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -21,7 +20,7 @@ test("build a list using --descriptions-only option", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -46,8 +45,8 @@ test("build a list using --descriptions-only option", (t) => {
 	});
 });
 
-test("build a list using --descriptions-only option along with --description", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build a list using --descriptions-only option along with --description", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -62,7 +61,7 @@ test("build a list using --descriptions-only option along with --description", (
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{

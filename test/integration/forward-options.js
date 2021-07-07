@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl forward trailing options", (t) => {
+t.test("ntl forward trailing options", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {

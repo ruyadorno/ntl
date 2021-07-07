@@ -1,13 +1,12 @@
 "use strict";
 
 const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build an interface using multiple selectable items", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build an interface using multiple selectable items", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -16,7 +15,7 @@ test("build an interface using multiple selectable items", (t) => {
 			}),
 		},
 		ipt: (items, expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				{
 					autocomplete: undefined,
@@ -40,13 +39,14 @@ test("build an interface using multiple selectable items", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			multiple: true,
+			rerunCache: false,
 		}),
 	});
 });
 
-test("run multiple commands", (t) => {
+t.test("run multiple commands", (t) => {
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -71,6 +71,7 @@ test("run multiple commands", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			multiple: true,
+			rerunCache: false,
 		}),
 	});
 });

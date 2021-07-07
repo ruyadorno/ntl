@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("run using --all option", (t) => {
+t.test("run using --all option", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -16,7 +16,7 @@ test("run using --all option", (t) => {
 		}),
 	});
 
-	const cp = run({ cwd }, ["--all"]);
+	const cp = run({ cwd }, ["--all", "--no-rerun-cache"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then((res) => {
 		t.match(readLastLine(res), /prebuild/, "should run selected pre/post task");

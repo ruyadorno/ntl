@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run and select first item", (t) => {
+t.test("ntl run and select first item", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {

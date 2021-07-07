@@ -2,12 +2,11 @@
 
 const os = require("os");
 const path = require("path");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null;
 
-test("edit a currently selected task pressing E", (t) => {
+t.test("edit a currently selected task pressing E", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			name: "test-pkg",
@@ -19,14 +18,13 @@ test("edit a currently selected task pressing E", (t) => {
 	});
 	const pkgJsonFilename = path.resolve(cwd, "package.json");
 	const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		child_process: {
 			execSync(cmd) {
 				t.equal(
 					cmd,
 					"npm run \"foo(1)\"", "should run temp edited task"
 				);
-				t.end();
 			},
 		},
 		fs: {
@@ -37,13 +35,14 @@ test("edit a currently selected task pressing E", (t) => {
 				if (path.basename(src) === "package.json") return; // skips initial renaming
 				t.equal(src, tmpFilename, "should move bkp file...");
 				t.equal(dst, pkgJsonFilename, "...back to package.json");
+				t.end();
 			},
 		},
 		"signal-exit": noop,
 		"write-pkg": {
 			sync: (path, pkg) => {
 				t.equal(path, cwd, "should use expected cwd");
-				t.deepEqual(
+				t.strictSame(
 					pkg,
 					{
 						scripts: {
@@ -67,7 +66,7 @@ test("edit a currently selected task pressing E", (t) => {
 		ipt: (items, expected, prompt) => {
 			// this is the argument edit prompt
 			if (!items.length) {
-				t.deepEqual(
+				t.strictSame(
 					expected,
 					{
 						message: "Edit the script or its arguments",
@@ -80,7 +79,7 @@ test("edit a currently selected task pressing E", (t) => {
 				return Promise.resolve(["make foo --bar"]);
 			}
 
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				{
 					autocomplete: undefined,

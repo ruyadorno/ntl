@@ -1,11 +1,10 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build a list from a specific path", (t) => {
+t.test("build a list from a specific path", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -14,9 +13,9 @@ test("build a list from a specific path", (t) => {
 		}),
 	});
 
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{

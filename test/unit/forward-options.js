@@ -1,17 +1,16 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null;
 
-test("forward an option past -- ", (t) => {
+t.test("forward an option past -- ", (t) => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat(["--", "--one-more-thing"]);
 	t.teardown(() => {
 		process.argv = _argv;
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -40,7 +39,7 @@ test("forward an option past -- ", (t) => {
 	});
 });
 
-test("forward many options past -- ", (t) => {
+t.test("forward many options past -- ", (t) => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat([
 		"--",
@@ -52,7 +51,7 @@ test("forward many options past -- ", (t) => {
 	t.teardown(() => {
 		process.argv = _argv;
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {

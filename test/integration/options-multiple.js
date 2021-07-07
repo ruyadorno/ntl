@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+const t = require("tap");
+const { run } = require("./helpers");
 
-test("ntl run using --multiple option", (t) => {
+t.test("ntl run using --multiple option", (t) => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -13,18 +13,18 @@ test("ntl run using --multiple option", (t) => {
 		}),
 	});
 
-	const cp = run({ cwd }, ["--multiple"]);
+	const cp = run({ cwd }, ["--multiple", "--no-rerun-cache"]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then((res) => {
-		const taskOutput = res.toString().trim();
-		t.contains(
-			taskOutput,
-			"BUILD TASK",
+		const out = res.join('').trim();
+		t.match(
+			out,
+			/BUILD TASK/,
 			"should be able to run first selected task"
 		);
-		t.contains(
-			taskOutput,
-			"TEST TASK",
+		t.match(
+			out,
+			/TEST TASK/,
 			"should be able to run last selected task"
 		);
 		t.end();

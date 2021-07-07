@@ -1,7 +1,6 @@
 "use strict";
 
 const { test } = require("tap");
-const requireInject = require("require-inject");
 const noop = () => null
 
 test("error while use --debug option", (t) => {
@@ -13,7 +12,7 @@ test("error while use --debug option", (t) => {
 		process.exit = _exit;
 	});
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		ipt: () => Promise.reject(new Error("ERR")),
 		"simple-output": {
 			hint: noop,

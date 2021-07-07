@@ -1,8 +1,7 @@
 "use strict";
 
 const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
@@ -20,10 +19,10 @@ function setup(t, env) {
 	});
 }
 
-test("set default option on list", (t) => {
+t.test("set default option on list", (t) => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -41,7 +40,7 @@ test("set default option on list", (t) => {
 			execSync: () => null,
 		},
 		ipt: (expected, opts) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -55,7 +54,7 @@ test("set default option on list", (t) => {
 				],
 				"should build a regular interface"
 			);
-			t.deepEqual(
+			t.strictSame(
 				opts,
 				{
 					autocomplete: undefined,
@@ -82,10 +81,10 @@ test("set default option on list", (t) => {
 	});
 });
 
-test("set multiple default options", (t) => {
+t.test("set multiple default options", (t) => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -103,7 +102,7 @@ test("set multiple default options", (t) => {
 			execSync: () => null,
 		},
 		ipt: (expected, opts) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -117,7 +116,7 @@ test("set multiple default options", (t) => {
 				],
 				"should build a regular interface"
 			);
-			t.deepEqual(
+			t.strictSame(
 				opts,
 				{
 					autocomplete: undefined,

@@ -1,8 +1,6 @@
 "use strict";
 
 const t = require("tap");
-const { test } = t;
-const requireInject = require("require-inject");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
@@ -20,15 +18,14 @@ function setup(t, env) {
 	});
 }
 
-t.beforeEach(cb => {
+t.beforeEach(() => {
 	const listeners = process.stdin.getMaxListeners()
 	process.stdin.setMaxListeners(listeners + 1)
-	cb()
 })
 
-test("skip build interface using --rerun option", (t) => {
+t.test("skip build interface using --rerun option", (t) => {
 	setup(t);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -69,11 +66,11 @@ test("skip build interface using --rerun option", (t) => {
 	});
 });
 
-test("skip build interface using NTL_RERUN env variable", (t) => {
+t.test("skip build interface using NTL_RERUN env variable", (t) => {
 	setup(t, {
 		NTL_RERUN: "true",
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -113,10 +110,10 @@ test("skip build interface using NTL_RERUN env variable", (t) => {
 	});
 });
 
-test("no previous command using --rerun option", (t) => {
+t.test("no previous command using --rerun option", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -133,7 +130,7 @@ test("no previous command using --rerun option", (t) => {
 			}
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -162,10 +159,10 @@ test("no previous command using --rerun option", (t) => {
 	});
 });
 
-test("fails on storing command", (t) => {
+t.test("fails on storing command", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -202,10 +199,10 @@ test("fails on storing command", (t) => {
 	});
 });
 
-test("fails on retrieving commands", (t) => {
+t.test("fails on retrieving commands", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -242,10 +239,10 @@ test("fails on retrieving commands", (t) => {
 	});
 });
 
-test("rerun multiple cached tasks", (t) => {
+t.test("rerun multiple cached tasks", (t) => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -281,12 +278,12 @@ test("rerun multiple cached tasks", (t) => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
+t.test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
 	setup(t, {
 		NTL_RERUN_CACHE_DIR: "/lorem",
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -322,12 +319,12 @@ test("use custom NTL_RERUN_CACHE_DIR option", (t) => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
+t.test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
 	setup(t, {
 		NTL_RERUN_CACHE_NAME: "cache",
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -363,12 +360,12 @@ test("use custom NTL_RERUN_CACHE_NAME option", (t) => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
+t.test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: 3,
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -400,12 +397,12 @@ test("use custom NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 });
 
-test("use string NTL_RERUN_CACHE_MAX option", (t) => {
+t.test("use string NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: "3",
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -437,12 +434,12 @@ test("use string NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 });
 
-test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
+t.test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: undefined,
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -474,10 +471,10 @@ test("use undefined NTL_RERUN_CACHE_MAX option", (t) => {
 	});
 });
 
-test("use custom --rerun-cache-dir option", (t) => {
+t.test("use custom --rerun-cache-dir option", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -510,10 +507,10 @@ test("use custom --rerun-cache-dir option", (t) => {
 	});
 });
 
-test("use custom --rerun-cache-name option", (t) => {
+t.test("use custom --rerun-cache-name option", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -550,10 +547,10 @@ test("use custom --rerun-cache-name option", (t) => {
 	});
 });
 
-test("--no-rerun-cache option", (t) => {
+t.test("--no-rerun-cache option", (t) => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -565,7 +562,7 @@ test("--no-rerun-cache option", (t) => {
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
-				t.fail("should not acess cache");
+				t.fail("should not access cache");
 			}
 		},
 		ipt: () => {
@@ -580,19 +577,18 @@ test("--no-rerun-cache option", (t) => {
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
-			noRerunCache: true,
+			rerunCache: false,
 			rerun: true,
-			rerunCache: "/foo/bar",
 		}),
 	});
 });
 
-test("NTL_NO_RERUN_CACHE env variable", (t) => {
+t.test("NTL_NO_RERUN_CACHE env variable", (t) => {
 	setup(t, {
 		NTL_NO_RERUN_CACHE: "true",
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-pkg": {
 			sync: () => ({
@@ -604,7 +600,7 @@ test("NTL_NO_RERUN_CACHE env variable", (t) => {
 		},
 		"lru-cache-fs": class {
 			constructor({ cwd }) {
-				t.fail("should not acess cache");
+				t.fail("should not access cache");
 			}
 		},
 		ipt: () => {
@@ -620,7 +616,7 @@ test("NTL_NO_RERUN_CACHE env variable", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			rerun: true,
-			rerunCache: "/foo/bar",
+			rerunCache: "1",
 		}),
 	});
 });

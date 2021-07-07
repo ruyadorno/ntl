@@ -1,13 +1,12 @@
 "use strict";
 
 const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build an interface using a specific max number of lines to be displayed", (t) => {
-	const ntl = requireInject("../../cli", {
+t.test("build an interface using a specific max number of lines to be displayed", (t) => {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -16,7 +15,7 @@ test("build an interface using a specific max number of lines to be displayed", 
 			}),
 		},
 		ipt: (items, expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				{
 					autocomplete: undefined,
@@ -39,6 +38,7 @@ test("build an interface using a specific max number of lines to be displayed", 
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
+			rerunCache: false,
 			size: 10,
 		}),
 	});

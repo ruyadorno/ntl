@@ -1,7 +1,6 @@
 const path = require("path");
 
 const spawn = require("cross-spawn");
-const Minipass = require("minipass");
 
 function readLastLine(res) {
 	return res[res.length - 1].toString().trim();
@@ -29,9 +28,14 @@ function run({ alias, cwd, env } = {}, args = []) {
 	}
 
 	function getStreamResult(stream) {
-		const ministream = new Minipass();
-		stream.pipe(ministream);
-		return ministream.collect();
+		return new Promise((res, rej) => {
+			let result = []
+			stream.on('error', rej)
+			stream.on('data', data => {
+				result.push(data.toString())
+			})
+			stream.on('end', () => res(result))
+		})
 	}
 
 	function getStderrResult() {

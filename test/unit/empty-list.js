@@ -1,13 +1,12 @@
 "use strict";
 
 const { Passthrough } = require("minipass");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 
-test("build a list of items that gets all items filtered out using --descriptions-only", (t) => {
+t.test("build a list of items that gets all items filtered out using --descriptions-only", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -40,9 +39,9 @@ test("build a list of items that gets all items filtered out using --description
 	});
 });
 
-test("build a list of items that gets all items filtered out from --exclude option", (t) => {
+t.test("build a list of items that gets all items filtered out from --exclude option", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -71,9 +70,9 @@ test("build a list of items that gets all items filtered out from --exclude opti
 	});
 });
 
-test("build a list of items that gets items filtered out using --descriptions-only, --excluded and prefixed scripts", (t) => {
+t.test("build a list of items that gets items filtered out using --descriptions-only, --excluded and prefixed scripts", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -109,9 +108,9 @@ test("build a list of items that gets items filtered out using --descriptions-on
 	});
 });
 
-test("build a list of items that gets all items filtered out as prefixed scripts", (t) => {
+t.test("build a list of items that gets all items filtered out as prefixed scripts", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {

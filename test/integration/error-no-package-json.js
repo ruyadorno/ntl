@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run but not package.json in current dir", (t) => {
+t.test("ntl run but not package.json in current dir", (t) => {
 	const cwd = t.testdir({
 		"README.md": "# empty folder",
 	});

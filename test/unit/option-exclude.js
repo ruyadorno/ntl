@@ -1,14 +1,13 @@
 "use strict";
 
 const { Passthrough } = require("minipass");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null
 
-test("build a list using --exclude option", (t) => {
+t.test("build a list using --exclude option", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -18,7 +17,7 @@ test("build a list using --exclude option", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -39,13 +38,14 @@ test("build a list using --exclude option", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			exclude: ["test"],
+			rerunCache: false,
 		}),
 	});
 });
 
-test("build a list using --exclude option using *", (t) => {
+t.test("build a list using --exclude option using *", (t) => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		"read-pkg": {
 			sync: () => ({
 				scripts: {
@@ -57,7 +57,7 @@ test("build a list using --exclude option using *", (t) => {
 			}),
 		},
 		ipt: (expected) => {
-			t.deepEqual(
+			t.strictSame(
 				expected,
 				[
 					{
@@ -78,6 +78,7 @@ test("build a list using --exclude option using *", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 			exclude: ["test*"],
+			rerunCache: false,
 		}),
 	});
 });

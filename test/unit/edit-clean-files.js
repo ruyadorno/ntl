@@ -2,12 +2,15 @@
 
 const os = require("os");
 const path = require("path");
-const { test } = require("tap");
-const requireInject = require("require-inject");
+const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null;
 
-test("clean up tmp files on run error", (t) => {
+t.test("clean up tmp files on run error", (t) => {
+	const _processExit = process.exit;
+	t.teardown(() => {
+		process.exit = _processExit;
+	});
 	t.plan(6);
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
@@ -20,10 +23,17 @@ test("clean up tmp files on run error", (t) => {
 	let exitHandler;
 	const pkgJsonFilename = path.resolve(cwd, "package.json");
 	const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
-	const ntl = requireInject("../../cli", {
+	const ntl = t.mock("../../cli", {
 		child_process: {
 			execSync(cmd) {
-				exitHandler();
+				// here we're simulating an exec sync that throws,
+				// this will in turn exit the program with an thrown
+				// error and the exit handler will be called with code 1
+				// (which is what we ultimately want to test here, since
+				// the exitHandler will be cleaning up the tmp files)
+				process.exit = () => {
+					exitHandler(1, null);
+				};
 				throw new Error("ERR");
 			},
 		},
@@ -46,7 +56,7 @@ test("clean up tmp files on run error", (t) => {
 		"write-pkg": {
 			sync: (path, pkg) => {
 				t.equal(path, cwd, "should use expected cwd");
-				t.deepEqual(
+				t.strictSame(
 					pkg,
 					{
 						name: "test-pkg",

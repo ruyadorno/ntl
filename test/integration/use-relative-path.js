@@ -2,10 +2,10 @@
 
 const path = require("path");
 
-const { test } = require("tap");
+const t = require("tap");
 const { readLastLine, run } = require("./helpers");
 
-test("ntl run using an absolute path argument", (t) => {
+t.test("ntl run using an absolute path argument", (t) => {
 	const cwd = path.relative(
 		__dirname,
 		t.testdir({
