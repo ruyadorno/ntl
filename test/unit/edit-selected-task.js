@@ -18,13 +18,14 @@ t.test("edit a currently selected task pressing E", (t) => {
 	});
 	const pkgJsonFilename = path.resolve(cwd, "package.json");
 	const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
+	let iptResolve;
+	const iptInitialPromise = new Promise((res, rej) => {
+		iptResolve = res;
+	});
 	const ntl = t.mock("../../cli", {
 		child_process: {
 			execSync(cmd) {
-				t.equal(
-					cmd,
-					"npm run \"foo(1)\"", "should run temp edited task"
-				);
+				t.equal(cmd, 'npm run "foo(1)"', "should run temp edited task");
 			},
 		},
 		fs: {
@@ -55,14 +56,12 @@ t.test("edit a currently selected task pressing E", (t) => {
 				);
 			},
 		},
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					foo: "make foo",
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				foo: "make foo",
+				test: "make test",
+			},
+		}),
 		ipt: (items, expected, prompt) => {
 			// this is the argument edit prompt
 			if (!items.length) {
@@ -100,10 +99,11 @@ t.test("edit a currently selected task pressing E", (t) => {
 							"line",
 							"should emit signal to quit task list prompt"
 						);
+						iptResolve(["foo"]);
 					},
 				},
 			};
-			return Promise.resolve(["foo"]);
+			return iptInitialPromise;
 		},
 		"simple-output": {
 			error: console.error,
@@ -114,9 +114,12 @@ t.test("edit a currently selected task pressing E", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [cwd],
 			debug: true,
+			rerunCache: false,
 		}),
 	});
 
 	// simulate pressing E key to edit
-	process.stdin.emit("keypress", "", { name: "e" });
+	setTimeout(() => {
+		process.stdin.emit("keypress", "", { name: "e" });
+	}, 10);
 });

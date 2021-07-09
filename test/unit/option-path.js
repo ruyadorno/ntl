@@ -2,7 +2,7 @@
 
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build a list from a specific path", (t) => {
 	const cwd = t.testdir({
@@ -36,5 +36,6 @@ t.test("build a list from a specific path", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [cwd],
 		}),
+		"signal-exit": noop,
 	});
 });

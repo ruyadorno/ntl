@@ -1,7 +1,7 @@
 "use strict";
 
 const { test } = require("tap");
-const noop = () => null
+const noop = () => null;
 
 test("error while use --debug option", (t) => {
 	const _exit = process.exit;
@@ -27,5 +27,6 @@ test("error while use --debug option", (t) => {
 			},
 			info: noop,
 		},
+		"signal-exit": noop,
 	});
 });

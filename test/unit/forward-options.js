@@ -11,13 +11,11 @@ t.test("forward an option past -- ", (t) => {
 		process.argv = _argv;
 	});
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+			},
+		}),
 		ipt: () => {
 			return Promise.resolve(["build"]);
 		},
@@ -36,6 +34,7 @@ t.test("forward an option past -- ", (t) => {
 			node: noop,
 			success: noop,
 		},
+		"signal-exit": noop,
 	});
 });
 
@@ -52,13 +51,11 @@ t.test("forward many options past -- ", (t) => {
 		process.argv = _argv;
 	});
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+			},
+		}),
 		ipt: () => {
 			return Promise.resolve(["build"]);
 		},
@@ -77,5 +74,6 @@ t.test("forward many options past -- ", (t) => {
 			node: noop,
 			success: noop,
 		},
+		"signal-exit": noop,
 	});
 });

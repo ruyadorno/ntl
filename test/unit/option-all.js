@@ -2,18 +2,16 @@
 
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build a list withouth using --all option", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					prebuild: "make prebuild",
-					build: "make build",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				prebuild: "make prebuild",
+				build: "make build",
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -36,19 +34,18 @@ t.test("build a list withouth using --all option", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 		}),
+		"signal-exit": noop,
 	});
 });
 
 t.test("build a list using --all option", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					prebuild: "make prebuild",
-					build: "make build",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				prebuild: "make prebuild",
+				build: "make build",
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -76,5 +73,6 @@ t.test("build a list using --all option", (t) => {
 			_: [],
 			all: true,
 		}),
+		"signal-exit": noop,
 	});
 });

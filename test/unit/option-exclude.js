@@ -3,19 +3,17 @@
 const { Passthrough } = require("minipass");
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build a list using --exclude option", (t) => {
 	t.plan(1);
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: 'echo "build"',
-					test: 'echo "test"',
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: 'echo "build"',
+				test: 'echo "test"',
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -40,22 +38,21 @@ t.test("build a list using --exclude option", (t) => {
 			exclude: ["test"],
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });
 
 t.test("build a list using --exclude option using *", (t) => {
 	t.plan(1);
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: 'echo "build"',
-					test: 'echo "test"',
-					"test:unit": 'echo "test:unit"',
-					"test:integration": 'echo "test:integration"',
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: 'echo "build"',
+				test: 'echo "test"',
+				"test:unit": 'echo "test:unit"',
+				"test:integration": 'echo "test:integration"',
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -80,5 +77,6 @@ t.test("build a list using --exclude option using *", (t) => {
 			exclude: ["test*"],
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });

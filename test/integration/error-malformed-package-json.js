@@ -5,7 +5,7 @@ const { readLastLine, run } = require("./helpers");
 
 t.test("ntl found malformed package.json on current dir", (t) => {
 	const cwd = t.testdir({
-		"package.json": '{"name": "foo" "version": "1.0.0"}',
+		"package.json": "!!! not json",
 	});
 
 	t.plan(2);
@@ -15,10 +15,10 @@ t.test("ntl found malformed package.json on current dir", (t) => {
 	});
 	cp.assertExitCode(t, 1, "should exit with error code");
 	cp.getStderrResult().then((res) => {
-		console.error({ res });
 		const taskOutput = res.join("").toString().trim();
-		t.ok(
-			taskOutput.endsWith("package.json contains malformed JSON"),
+		t.match(
+			taskOutput,
+			/package.json contains malformed JSON/,
 			"should print malformed package.json msg to stderr"
 		);
 	});

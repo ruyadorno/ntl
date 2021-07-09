@@ -7,8 +7,8 @@ function readLastLine(res) {
 }
 
 function run({ alias, cwd, env } = {}, args = []) {
-	const cmd = path.join(path.resolve(__dirname, "../.."), alias || "cli.js");
-	const cp = spawn(cmd, args, {
+	args = [path.resolve(__dirname, "../..", alias || "cli.js"), ...args];
+	const cp = spawn(process.execPath, args, {
 		cwd,
 		env: Object.assign({}, process.env, env),
 	});
@@ -29,13 +29,13 @@ function run({ alias, cwd, env } = {}, args = []) {
 
 	function getStreamResult(stream) {
 		return new Promise((res, rej) => {
-			let result = []
-			stream.on('error', rej)
-			stream.on('data', data => {
-				result.push(data.toString())
-			})
-			stream.on('end', () => res(result))
-		})
+			let result = [];
+			stream.on("error", rej);
+			stream.on("data", (data) => {
+				result.push(data.toString());
+			});
+			stream.on("end", () => res(result));
+		});
 	}
 
 	function getStderrResult() {

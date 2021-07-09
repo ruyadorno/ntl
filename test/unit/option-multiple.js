@@ -3,17 +3,15 @@
 const os = require("os");
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build an interface using multiple selectable items", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				test: "make test",
+			},
+		}),
 		ipt: (items, expected) => {
 			t.strictSame(
 				expected,
@@ -41,20 +39,19 @@ t.test("build an interface using multiple selectable items", (t) => {
 			multiple: true,
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });
 
 t.test("run multiple commands", (t) => {
 	t.plan(2);
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+				test: "make test",
+			},
+		}),
 		ipt: (items) => {
 			return Promise.resolve(items.map((item) => item.name));
 		},
@@ -73,5 +70,6 @@ t.test("run multiple commands", (t) => {
 			multiple: true,
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });

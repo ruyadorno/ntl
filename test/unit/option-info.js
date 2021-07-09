@@ -2,18 +2,16 @@
 
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build a list using --info option", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+				test: "make test",
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -42,5 +40,6 @@ t.test("build a list using --info option", (t) => {
 			info: true,
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });

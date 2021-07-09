@@ -24,7 +24,7 @@
   },
   "man": "./man/man1/ntl.1",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "scripts": {
     "format": "prettier --write cli.js rerun.js test",
@@ -63,7 +63,7 @@
   "dependencies": {
     "ipt": "^3.2.0",
     "lru-cache-fs": "^2.0.1",
-    "read-pkg": "^5.2.0",
+    "read-package-json-fast": "^2.0.2",
     "signal-exit": "^3.0.3",
     "simple-output": "^2.2.1",
     "write-pkg": "^4.0.0",

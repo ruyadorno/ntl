@@ -2,23 +2,21 @@
 
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build a list using default options", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					"automated:build": "make automated-build",
-					test: "make test",
+		"read-package-json-fast": async () => ({
+			scripts: {
+				"automated:build": "make automated-build",
+				test: "make test",
+			},
+			ntl: {
+				descriptions: {
+					"automated:build": "Run build steps",
 				},
-				ntl: {
-					descriptions: {
-						"automated:build": "Run build steps",
-					},
-				},
-			}),
-		},
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -45,24 +43,23 @@ t.test("build a list using default options", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 		}),
+		"signal-exit": noop,
 	});
 });
 
 t.test("build a list in which descriptions key is missing", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					"automated:build": "make automated-build",
-					test: "make test",
+		"read-package-json-fast": async () => ({
+			scripts: {
+				"automated:build": "make automated-build",
+				test: "make test",
+			},
+			ntl: {
+				descriptions: {
+					"some-other-task-name": "foo",
 				},
-				ntl: {
-					descriptions: {
-						"some-other-task-name": "foo",
-					},
-				},
-			}),
-		},
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -89,24 +86,23 @@ t.test("build a list in which descriptions key is missing", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 		}),
+		"signal-exit": noop,
 	});
 });
 
 t.test("build a list using --descriptions option", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-					test: "make test",
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+				test: "make test",
+			},
+			ntl: {
+				descriptions: {
+					build: "Run build steps",
 				},
-				ntl: {
-					descriptions: {
-						build: "Run build steps",
-					},
-				},
-			}),
-		},
+			},
+		}),
 		ipt: (expected) => {
 			t.strictSame(
 				expected,
@@ -134,5 +130,6 @@ t.test("build a list using --descriptions option", (t) => {
 			_: [],
 			descriptions: true,
 		}),
+		"signal-exit": noop,
 	});
 });

@@ -10,10 +10,60 @@ const { execSync } = require("child_process");
 const yargs = require("yargs/yargs");
 const ipt = require("ipt");
 const out = require("simple-output");
-const readPkg = require("read-pkg");
+const readPkg = require("read-package-json-fast");
 const writePkg = require("write-pkg");
 const Cache = require("lru-cache-fs");
 const onExit = require("signal-exit");
+
+let editTask = () => null;
+
+const getMainArgs = () => {
+	let i = -1;
+	const result = [];
+	const mainArgs = process.argv.slice(2);
+	while (++i < mainArgs.length) {
+		if (mainArgs[i] === "--") break;
+		result.push(mainArgs[i]);
+	}
+	return result;
+};
+
+const getCwdPackage = async () => {
+	try {
+		const res = await readPkg(pkgJsonFilename);
+		return res;
+	} catch (e) {
+		error(
+			e,
+			e.code === "EJSONPARSE"
+				? "package.json contains malformed JSON"
+				: "No package.json found"
+		);
+	}
+};
+
+const error = (e, msg) => {
+	out.error(msg);
+	if (argv.debug) {
+		throw e;
+	}
+	process.exit(1);
+};
+
+// Set ps name
+process.title = "ntl";
+
+// Exits program execution on ESC
+process.stdin.on("keypress", (ch, key) => {
+	if (!key || !key.name) return;
+
+	switch (key.name) {
+		case "escape":
+			return process.exit(0);
+		case "e":
+			return editTask();
+	}
+});
 
 const sep = os.EOL;
 const defaultRunner = "npm";
@@ -82,280 +132,241 @@ const {
 	rerunCacheName,
 	size,
 } = argv;
-const pkgJsonContent = getCwdPackage() || {};
-const { ntl, scripts } = pkgJsonContent;
-const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
-const { descriptions = {} } = ntl || {};
-const scriptKeys = Object.keys(scripts || {});
-const noScriptsFound = !scripts || scriptKeys.length < 1;
-const avoidCache = rerunCache === false || process.env.NTL_NO_RERUN_CACHE;
-const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 const pkgJsonFilename = path.resolve(cwd, "package.json");
 const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
 
-let editTask = () => null;
-let editing = false;
-
-// Set ps name
-process.title = "ntl";
-
-// Exits program execution on ESC
-process.stdin.on("keypress", (ch, key) => {
-	if (!key || !key.name) return;
-
-	switch (key.name) {
-		case "escape":
-			return process.exit(0);
-		case "e":
-			return editTask();
-	}
-});
-
-function error(e, msg) {
-	out.error(msg);
-	if (argv.debug) {
-		throw e;
-	}
-	process.exit(1);
-}
-
 // exit handler, makes sure to put package.json
 // back in place in case it's running a tmp one
-onExit(function (code, signal) {
+onExit((code, signal) => {
 	try {
 		fs.statSync(tmpFilename);
 		fs.unlinkSync(pkgJsonFilename);
 		fs.renameSync(tmpFilename, pkgJsonFilename);
 	} catch (err) {
 		if (err.code !== "ENOENT") {
-			error("error cleaning up ntl tmp files", err);
+			error(err, "error cleaning up ntl tmp files");
 		}
 	}
 });
 
-function getMainArgs() {
-	let i = -1;
-	const result = [];
-	const mainArgs = process.argv.slice(2);
-	while (++i < mainArgs.length) {
-		if (mainArgs[i] === "--") break;
-		result.push(mainArgs[i]);
-	}
-	return result;
-}
+(async () => {
+	const pkgJsonContent = (await getCwdPackage()) || {};
+	const { ntl, scripts } = pkgJsonContent;
+	const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
+	const { descriptions = {} } = ntl || {};
+	const scriptKeys = Object.keys(scripts || {});
+	const noScriptsFound = !scripts || scriptKeys.length < 1;
+	const avoidCache = rerunCache === false || process.env.NTL_NO_RERUN_CACHE;
+	const shouldRerun = !avoidCache && (rerun || process.env.NTL_RERUN);
 
-function getTrailingOptions() {
-	let sepFound = false;
-	return process.argv.slice(2).reduce((res, i) => {
-		if (i === "--") {
-			sepFound = true;
+	let editing = false;
+
+	const getTrailingOptions = () => {
+		let sepFound = false;
+		return process.argv.slice(2).reduce((res, i) => {
+			if (i === "--") {
+				sepFound = true;
+			}
+			if (sepFound) {
+				return `${res} ${i}`;
+			}
+			return res;
+		}, "");
+	};
+
+	const retrieveCache = () => {
+		if (avoidCache) {
+			return;
 		}
-		if (sepFound) {
-			return `${res} ${i}`;
+
+		if (!cache) {
+			cache = new Cache({
+				cacheName:
+					rerunCacheName ||
+					process.env.NTL_RERUN_CACHE_NAME ||
+					"ntl-rerun-cache",
+				cwd: rerunCacheDir || process.env.NTL_RERUN_CACHE_DIR,
+				max: parseInt(process.env.NTL_RERUN_CACHE_MAX, 10) || 10,
+			});
 		}
-		return res;
-	}, "");
-}
 
-function getCwdPackage() {
-	try {
-		return readPkg.sync({ cwd });
-	} catch (e) {
-		const [errorType] = Object.values(e);
-		error(
-			e,
-			errorType === "JSONError"
-				? "package.json contains malformed JSON"
-				: "No package.json found"
-		);
-	}
-}
+		return cache;
+	};
 
-function retrieveCache() {
-	if (avoidCache) {
-		return;
-	}
+	const hasCachedTasks = () => {
+		if (!shouldRerun) {
+			return;
+		}
 
-	if (!cache) {
-		cache = new Cache({
-			cacheName:
-				rerunCacheName || process.env.NTL_RERUN_CACHE_NAME || "ntl-rerun-cache",
-			cwd: rerunCacheDir || process.env.NTL_RERUN_CACHE_DIR,
-			max: parseInt(process.env.NTL_RERUN_CACHE_MAX, 10) || 10,
-		});
-	}
+		const runCachedTask = () => {
+			let rerunCachedTasks;
+			const warn = () => {
+				out.warn("Unable to retrieve commands to rerun");
+				return false;
+			};
 
-	return cache;
-}
+			try {
+				rerunCachedTasks = retrieveCache().get(cacheKey(cwd));
+			} catch (e) {
+				return warn();
+			}
 
-function hasCachedTasks() {
-	if (!shouldRerun) {
-		return;
-	}
+			if (!rerunCachedTasks || !rerunCachedTasks.length) {
+				return warn();
+			}
 
-	function runCachedTask() {
-		let rerunCachedTasks;
-		const warn = () => {
-			out.warn("Unable to retrieve commands to rerun");
-			return false;
+			executeCommands(rerunCachedTasks);
+			return true;
 		};
 
+		return runCachedTask();
+	};
+
+	const cacheKey = (str) => str.split("\\").join("/");
+
+	const setCachedTasks = (keys) => {
 		try {
-			rerunCachedTasks = retrieveCache().get(cacheKey(cwd));
+			retrieveCache().set(cacheKey(cwd), keys);
+			retrieveCache().fsDump();
 		} catch (e) {
-			return warn();
+			if (argv.debug) console.warn(e);
+		}
+	};
+
+	const getDefaultTask = () => {
+		try {
+			return retrieveCache().get(cacheKey(cwd)).join(sep);
+		} catch (e) {
+			return undefined;
+		}
+	};
+
+	const exec = (name, trailingOptions = "") => {
+		execSync(`${runner} run "${name}"${trailingOptions}`, {
+			cwd,
+			stdio: [process.stdin, process.stdout, process.stderr],
+		});
+	};
+
+	const executeCommands = (keys) => {
+		keys.forEach((key) => {
+			exec(key, getTrailingOptions());
+		});
+	};
+
+	const executeTempCommand = (name, cmd) => {
+		fs.renameSync(pkgJsonFilename, tmpFilename);
+		writePkg.sync(cwd, {
+			...pkgJsonContent,
+			scripts: {
+				...scripts,
+				[`${name}(1)`]: cmd,
+			},
+		});
+
+		exec(`${name}(1)`);
+
+		fs.unlinkSync(pkgJsonFilename);
+		fs.renameSync(tmpFilename, pkgJsonFilename);
+	};
+
+	const run = async () => {
+		const descriptionsKeys = Object.keys(descriptions);
+		const hasDescriptions =
+			descriptionsKeys.length > 0 &&
+			descriptionsKeys.some((key) => scripts[key]);
+		const shouldWarnNoDescriptions = argv.descriptions && !hasDescriptions;
+		if (shouldWarnNoDescriptions) {
+			out.warn(`No descriptions for your ${runner} scripts found`);
 		}
 
-		if (!rerunCachedTasks || !rerunCachedTasks.length) {
-			return warn();
+		const longestScriptName = scriptKeys.reduce(
+			(acc, curr) => (curr.length > acc.length ? curr : acc),
+			""
+		).length;
+
+		const getLongName = (name, message = "", pad) =>
+			`${name.padStart(longestScriptName)} › ${message}`;
+
+		// defines the items that will be printed to the user
+		const input = scriptKeys
+			.map((key) => ({
+				name:
+					argv.info || argv.descriptions
+						? getLongName(
+								key,
+								argv.descriptions && descriptions[key]
+									? descriptions[key]
+									: scripts[key]
+						  )
+						: hasDescriptions
+						? getLongName(key, descriptions[key])
+						: key,
+				value: key,
+			}))
+			.filter(
+				// filter out prefixed scripts
+				(item) =>
+					argv.all
+						? true
+						: ["pre", "post"].every((prefix) => !item.value.startsWith(prefix))
+			)
+			.filter(
+				// filter out scripts without a description if --descriptions-only option
+				(item) => (argv.descriptionsOnly ? descriptions[item.value] : true)
+			)
+			.filter(
+				// filter excluded scripts
+				(item) =>
+					!argv.exclude ||
+					!argv.exclude.some((e) =>
+						new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
+					)
+			);
+
+		const message = `Select a task to run${
+			runner !== defaultRunner ? ` (using ${runner})` : ""
+		}:`;
+
+		if (hasCachedTasks()) {
+			return;
 		}
 
-		executeCommands(rerunCachedTasks);
-		return true;
-	}
+		if (!input || input.length === 0) {
+			return out.error("No tasks remained, maybe try less options?");
+		}
 
-	return runCachedTask();
-}
+		out.node("Node Task List");
+		if (!multiple && !autocomplete) {
+			out.hint("Press (E) to edit the current script or its arguments");
+		}
+		let prompt = {};
 
-function cacheKey(str) {
-	return str.split("\\").join("/");
-}
+		if (!multiple && !autocomplete) {
+			editTask = () => {
+				editing = true;
+				prompt.ui.rl.emit("line");
+			};
+		}
+		// creates interactive interface using ipt
+		try {
+			const keys = await ipt(
+				input,
+				{
+					autocomplete,
+					default: getDefaultTask(),
+					"default-separator": sep,
+					message,
+					multiple,
+					ordered,
+					size,
+				},
+				prompt
+			);
 
-function setCachedTasks(keys) {
-	try {
-		retrieveCache().set(cacheKey(cwd), keys);
-		retrieveCache().fsDump();
-	} catch (e) {
-		if (argv.debug) console.warn(e);
-	}
-}
-
-function getDefaultTask() {
-	try {
-		return retrieveCache().get(cacheKey(cwd)).join(sep);
-	} catch (e) {
-		return undefined;
-	}
-}
-
-function exec(name, trailingOptions = "") {
-	execSync(`${runner} run "${name}"${trailingOptions}`, {
-		cwd,
-		stdio: [process.stdin, process.stdout, process.stderr],
-	});
-}
-
-function executeCommands(keys) {
-	keys.forEach((key) => {
-		exec(key, getTrailingOptions());
-	});
-}
-
-function executeTempCommand(name, cmd) {
-	fs.renameSync(pkgJsonFilename, tmpFilename);
-	writePkg.sync(cwd, {
-		...pkgJsonContent,
-		scripts: {
-			...scripts,
-			[`${name}(1)`]: cmd,
-		},
-	});
-
-	exec(`${name}(1)`);
-
-	fs.unlinkSync(pkgJsonFilename);
-	fs.renameSync(tmpFilename, pkgJsonFilename);
-}
-
-function run() {
-	const descriptionsKeys = Object.keys(descriptions);
-	const hasDescriptions =
-		descriptionsKeys.length > 0 && descriptionsKeys.some((key) => scripts[key]);
-	const shouldWarnNoDescriptions = argv.descriptions && !hasDescriptions;
-	if (shouldWarnNoDescriptions) {
-		out.warn(`No descriptions for your ${runner} scripts found`);
-	}
-
-	const longestScriptName = scriptKeys.reduce(
-		(acc, curr) => (curr.length > acc.length ? curr : acc),
-		""
-	).length;
-
-	const getLongName = (name, message = "", pad) =>
-		`${name.padStart(longestScriptName)} › ${message}`;
-
-	// defines the items that will be printed to the user
-	const input = scriptKeys
-		.map((key) => ({
-			name:
-				argv.info || argv.descriptions
-					? getLongName(
-							key,
-							argv.descriptions && descriptions[key]
-								? descriptions[key]
-								: scripts[key]
-					  )
-					: hasDescriptions
-					? getLongName(key, descriptions[key])
-					: key,
-			value: key,
-		}))
-		.filter(
-			// filter out prefixed scripts
-			(item) =>
-				argv.all
-					? true
-					: ["pre", "post"].every((prefix) => !item.value.startsWith(prefix))
-		)
-		.filter(
-			// filter out scripts without a description if --descriptions-only option
-			(item) => (argv.descriptionsOnly ? descriptions[item.value] : true)
-		)
-		.filter(
-			// filter excluded scripts
-			(item) =>
-				!argv.exclude ||
-				!argv.exclude.some((e) =>
-					new RegExp(e + (e.includes("*") ? "" : "$"), "i").test(item.value)
-				)
-		);
-
-	const message = `Select a task to run${
-		runner !== defaultRunner ? ` (using ${runner})` : ""
-	}:`;
-
-	if (hasCachedTasks()) {
-		return;
-	}
-
-	if (!input || input.length === 0) {
-		return out.error("No tasks remained, maybe try less options?");
-	}
-
-	out.node("Node Task List");
-	if (!multiple && !autocomplete) {
-		out.hint("Press (E) to edit the current script or its arguments");
-	}
-	let prompt = {};
-
-	// creates interactive interface using ipt
-	ipt(
-		input,
-		{
-			autocomplete,
-			default: getDefaultTask(),
-			"default-separator": sep,
-			message,
-			multiple,
-			ordered,
-			size,
-		},
-		prompt
-	)
-		.then((keys) => {
 			if (editing) {
 				const [selected] = keys;
-				return ipt([], {
+				await ipt([], {
 					message: "Edit the script or its arguments",
 					default: scripts[selected],
 					input: true,
@@ -368,21 +379,14 @@ function run() {
 				setCachedTasks(keys);
 				executeCommands(keys);
 			}
-		})
-		.catch((err) => {
+		} catch (err) {
 			error(err, "Error building interactive interface");
-		});
+		}
+	};
 
-	if (!multiple && !autocomplete) {
-		editTask = () => {
-			editing = true;
-			prompt.ui.rl.emit("line");
-		};
+	if (noScriptsFound) {
+		out.info(`No ${runner} scripts available in cwd`);
+	} else {
+		await run();
 	}
-}
-
-if (noScriptsFound) {
-	out.info(`No ${runner} scripts available in cwd`);
-} else {
-	run();
-}
+})();

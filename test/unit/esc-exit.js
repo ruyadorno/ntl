@@ -1,7 +1,7 @@
 "use strict";
 
 const t = require("tap");
-const noop = () => null
+const noop = () => null;
 
 t.test("press esc key", (t) => {
 	const _exit = process.exit;
@@ -28,6 +28,7 @@ t.test("press esc key", (t) => {
 			},
 			info: noop,
 		},
+		"signal-exit": noop,
 	});
 
 	// simulate esc key

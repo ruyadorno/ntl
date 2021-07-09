@@ -3,7 +3,7 @@
 const os = require("os");
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 function setup(t, env) {
 	const _env = process.env;
@@ -23,14 +23,12 @@ t.test("set default option on list", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+				test: "make test",
+			},
+		}),
 		"lru-cache-fs": class {
 			get() {
 				return ["test"];
@@ -78,6 +76,7 @@ t.test("set default option on list", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 		}),
+		"signal-exit": noop,
 	});
 });
 
@@ -85,14 +84,12 @@ t.test("set multiple default options", (t) => {
 	setup(t);
 	t.plan(2);
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					build: "make build",
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				build: "make build",
+				test: "make test",
+			},
+		}),
 		"lru-cache-fs": class {
 			get() {
 				return ["build", "test"];
@@ -140,5 +137,6 @@ t.test("set multiple default options", (t) => {
 		"yargs/yargs": mockYargs({
 			_: [],
 		}),
+		"signal-exit": noop,
 	});
 });

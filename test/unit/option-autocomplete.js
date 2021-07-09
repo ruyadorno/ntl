@@ -3,17 +3,15 @@
 const os = require("os");
 const t = require("tap");
 const { mockYargs } = require("./helpers");
-const noop = () => null
+const noop = () => null;
 
 t.test("build an interface using autocomplete/fuzzyfinder", (t) => {
 	const ntl = t.mock("../../cli", {
-		"read-pkg": {
-			sync: () => ({
-				scripts: {
-					test: "make test",
-				},
-			}),
-		},
+		"read-package-json-fast": async () => ({
+			scripts: {
+				test: "make test",
+			},
+		}),
 		ipt: (items, expected) => {
 			t.strictSame(
 				expected,
@@ -41,5 +39,6 @@ t.test("build an interface using autocomplete/fuzzyfinder", (t) => {
 			autocomplete: true,
 			rerunCache: false,
 		}),
+		"signal-exit": noop,
 	});
 });
