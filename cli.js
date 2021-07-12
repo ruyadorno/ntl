@@ -144,7 +144,7 @@ onExit((code, signal) => {
 		fs.renameSync(tmpFilename, pkgJsonFilename);
 	} catch (err) {
 		if (err.code !== "ENOENT") {
-			error(err, "error cleaning up ntl tmp files");
+			error(err, "Error cleaning up ntl tmp files");
 		}
 	}
 });
@@ -242,10 +242,15 @@ onExit((code, signal) => {
 	};
 
 	const exec = (name, trailingOptions = "") => {
-		execSync(`${runner} run "${name}"${trailingOptions}`, {
-			cwd,
-			stdio: [process.stdin, process.stdout, process.stderr],
-		});
+		const cmd = `${runner} run "${name}"${trailingOptions}`;
+		try {
+			execSync(cmd, {
+				cwd,
+				stdio: [process.stdin, process.stdout, process.stderr],
+			});
+		} catch (err) {
+			error(err, `Failed to run command:${os.EOL}  ${cmd}`);
+		}
 	};
 
 	const executeCommands = (keys) => {
@@ -255,19 +260,37 @@ onExit((code, signal) => {
 	};
 
 	const executeTempCommand = (name, cmd) => {
-		fs.renameSync(pkgJsonFilename, tmpFilename);
-		writePkg.sync(cwd, {
-			...pkgJsonContent,
-			scripts: {
-				...scripts,
-				[`${name}(1)`]: cmd,
-			},
-		});
+		let renamed;
+		try {
+			fs.renameSync(pkgJsonFilename, tmpFilename);
+			renamed = true;
 
-		exec(`${name}(1)`);
+			writePkg.sync(cwd, {
+				...pkgJsonContent,
+				scripts: {
+					...scripts,
+					[`${name}(1)`]: cmd,
+				},
+			});
 
-		fs.unlinkSync(pkgJsonFilename);
-		fs.renameSync(tmpFilename, pkgJsonFilename);
+			// exec won't throw so any errors here are only
+			// relative to managing temp files
+			exec(`${name}(1)`);
+
+			fs.unlinkSync(pkgJsonFilename);
+			fs.renameSync(tmpFilename, pkgJsonFilename);
+		} catch (err) {
+			// in case the package.json file was moved around prior
+			// to the error, then try puttting it back to its place
+			if (renamed) {
+				try {
+					fs.renameSync(tmpFilename, pkgJsonFilename);
+				} catch (errr) {
+					out.warn("Failed to move .ntl-tmp-bkp-package.json to package.json");
+				}
+			}
+			error(err, "Error while managing ntl tmp files");
+		}
 	};
 
 	const run = async () => {
@@ -349,8 +372,9 @@ onExit((code, signal) => {
 			};
 		}
 		// creates interactive interface using ipt
+		let keys;
 		try {
-			const keys = await ipt(
+			keys = await ipt(
 				input,
 				{
 					autocomplete,
@@ -363,25 +387,25 @@ onExit((code, signal) => {
 				},
 				prompt
 			);
-
-			if (editing) {
-				const [selected] = keys;
-				await ipt([], {
-					message: "Edit the script or its arguments",
-					default: scripts[selected],
-					input: true,
-					unquoted: true,
-				}).then((res) => {
-					const [cmd] = res;
-					return executeTempCommand(selected, cmd);
-				});
-			} else {
-				setCachedTasks(keys);
-				executeCommands(keys);
-			}
 		} catch (err) {
-			error(err, "Error building interactive interface");
+			return error(err, "Error building interactive interface");
 		}
+
+		if (editing) {
+			const [selected] = keys;
+			const editedResult = await ipt([], {
+				message: "Edit the script or its arguments",
+				default: scripts[selected],
+				input: true,
+				unquoted: true,
+			});
+
+			const [cmd] = editedResult;
+			return executeTempCommand(selected, cmd);
+		}
+
+		setCachedTasks(keys);
+		executeCommands(keys);
 	};
 
 	if (noScriptsFound) {

@@ -6,123 +6,6 @@ const t = require("tap");
 const { mockYargs } = require("./helpers");
 const noop = () => null;
 
-t.test("clean up tmp files on run error", (t) => {
-	const _processExit = process.exit;
-	t.teardown(() => {
-		process.exit = _processExit;
-	});
-	t.plan(6);
-	const cwd = t.testdir({
-		"package.json": JSON.stringify({
-			name: "test-pkg",
-			scripts: {
-				foo: "make foo",
-			},
-		}),
-		".ntl-tmp-bkp-package.json": JSON.stringify({
-			name: "test-pkg",
-			scripts: {
-				foo: "make foo",
-				"foo(1)": "make foo --bar",
-			},
-		}),
-	});
-	let exitHandler;
-	let iptResolve;
-	const iptPromise = new Promise((res) => {
-		iptResolve = res;
-	});
-	const pkgJsonFilename = path.resolve(cwd, "package.json");
-	const tmpFilename = path.resolve(cwd, ".ntl-tmp-bkp-package.json");
-	const ntl = t.mock("../../cli", {
-		child_process: {
-			execSync(cmd) {
-				// here we're simulating an exec sync that throws,
-				// this will in turn exit the program with an thrown
-				// error and the exit handler will be called with code 1
-				// (which is what we ultimately want to test here, since
-				// the exitHandler will be cleaning up the tmp files)
-				process.exit = () => {
-					process.exit = noop;
-					exitHandler(1, null);
-				};
-				throw new Error("ERR");
-			},
-		},
-		fs: {
-			statSync: (filename) => {
-				t.equal(filename, tmpFilename, "should check for file");
-			},
-			unlinkSync: (filename) => {
-				t.equal(filename, pkgJsonFilename, "should remove tmp file");
-			},
-			renameSync: (src, dst) => {
-				if (path.basename(src) === "package.json") return; // skips initial renaming
-				t.equal(src, tmpFilename, "should move bkp file...");
-				t.equal(dst, pkgJsonFilename, "...back to package.json");
-			},
-		},
-		"signal-exit": (fn) => {
-			exitHandler = fn;
-		},
-		"write-pkg": {
-			sync: (path, pkg) => {
-				t.equal(path, cwd, "should use expected cwd");
-				t.strictSame(
-					pkg,
-					{
-						name: "test-pkg",
-						scripts: {
-							foo: "make foo",
-							"foo(1)": "make foo --bar",
-						},
-					},
-					"should store edited task"
-				);
-			},
-		},
-		"read-package-json-fast": async () => ({
-			name: "test-pkg",
-			scripts: {
-				foo: "make foo",
-			},
-		}),
-		ipt: (items, expected, prompt) => {
-			// this is the argument edit prompt
-			if (!items.length) {
-				return Promise.resolve(["make foo --bar"]);
-			}
-
-			// mocks API that triggers the resolving of the original promise
-			// ipt interface that in turns starts the editing prompt
-			return new Promise((res) => {
-				prompt.ui = {
-					rl: {
-						emit() {
-							res(["foo"]);
-						},
-					},
-				};
-			});
-		},
-		"simple-output": {
-			error: noop,
-			hint: noop,
-			node: noop,
-			success: noop,
-		},
-		"yargs/yargs": mockYargs({
-			_: [cwd],
-			rerunCache: false,
-		}),
-	});
-
-	// simulate pressing E key to edit
-	setTimeout(() => {
-		process.stdin.emit("keypress", "", { name: "e" });
-	}, 10);
-});
-
 t.test("clean up tmp files on exit", (t) => {
 	const _processExit = process.exit;
 	// process.exit has to be the last thing to run
@@ -151,7 +34,7 @@ t.test("clean up tmp files on exit", (t) => {
 			error: (msg) => {
 				t.match(
 					msg,
-					/error cleaning up ntl tmp files/,
+					/Error cleaning up ntl tmp files/,
 					"should output error cleaning up files msg"
 				);
 			},
@@ -173,4 +56,166 @@ t.test("clean up tmp files on exit", (t) => {
 			_: [t.testdirName],
 		}),
 	});
+});
+
+t.test("move back package.json file on write error", (t) => {
+	const _processExit = process.exit;
+	// process.exit has to be the last thing to run
+	// otherwise teardown might run prior to process.exit(1)
+	// from ./cli.js error handler
+	process.exit = () => {
+		t.end();
+	};
+	t.teardown(() => {
+		process.exit = _processExit;
+	});
+	const ntl = t.mock("../../cli", {
+		fs: {
+			renameSync: (src, dest) => {
+				if (path.basename(src) === "package.json") {
+					t.ok(1, "should move package.json to temp file");
+					return;
+				}
+				t.equal(
+					path.basename(src),
+					".ntl-tmp-bkp-package.json",
+					"should move temp file..."
+				);
+				t.equal(path.basename(dest), "package.json", "...back to package.json");
+			},
+		},
+		"signal-exit": noop,
+		"read-package-json-fast": async () => ({
+			name: "test-pkg",
+			scripts: {
+				foo: "make foo",
+			},
+		}),
+		"write-pkg": {
+			sync(path, pkg) {
+				throw new Error("ERR");
+			},
+		},
+		ipt: (items, expected, prompt) => {
+			// this is the argument edit prompt
+			if (!items.length) {
+				return Promise.resolve(["make foo --bar"]);
+			}
+
+			// mocks API that triggers the resolving of the original promise
+			// ipt interface that in turns starts the editing prompt
+			return new Promise((res) => {
+				prompt.ui = {
+					rl: {
+						emit() {
+							res(["foo"]);
+						},
+					},
+				};
+			});
+		},
+		"simple-output": {
+			error: (msg) => {
+				t.match(
+					msg,
+					/Error while managing ntl tmp files/,
+					"should output error managing files msg"
+				);
+			},
+			hint: noop,
+			node: noop,
+			success: noop,
+			info: noop,
+		},
+		"yargs/yargs": mockYargs({
+			_: [t.testdirName],
+		}),
+	});
+
+	// simulate pressing E key to edit
+	setTimeout(() => {
+		process.stdin.emit("keypress", "", { name: "e" });
+	}, 10);
+});
+
+t.test("fails to move back package.json during error", (t) => {
+	const _processExit = process.exit;
+	// process.exit has to be the last thing to run
+	// otherwise teardown might run prior to process.exit(1)
+	// from ./cli.js error handler
+	process.exit = () => {
+		t.end();
+	};
+	t.teardown(() => {
+		process.exit = _processExit;
+	});
+	const ntl = t.mock("../../cli", {
+		fs: {
+			renameSync: (src, dest) => {
+				if (path.basename(src) === "package.json") {
+					t.ok(1, "should move package.json to temp file");
+					return;
+				}
+				throw new Error("ERR");
+			},
+		},
+		"signal-exit": noop,
+		"read-package-json-fast": async () => ({
+			name: "test-pkg",
+			scripts: {
+				foo: "make foo",
+			},
+		}),
+		"write-pkg": {
+			sync(path, pkg) {
+				throw new Error("ERR");
+			},
+		},
+		ipt: (items, expected, prompt) => {
+			// this is the argument edit prompt
+			if (!items.length) {
+				return Promise.resolve(["make foo --bar"]);
+			}
+
+			// mocks API that triggers the resolving of the original promise
+			// ipt interface that in turns starts the editing prompt
+			return new Promise((res) => {
+				prompt.ui = {
+					rl: {
+						emit() {
+							res(["foo"]);
+						},
+					},
+				};
+			});
+		},
+		"simple-output": {
+			error: (msg) => {
+				t.match(
+					msg,
+					/Error while managing ntl tmp files/,
+					"should output error managing files msg"
+				);
+			},
+			warn: (msg) => {
+				t.match(
+					msg,
+					/Failed to move .ntl-tmp-bkp-package.json to package.json/,
+					"should output files failed to move warning message"
+				);
+			},
+			hint: noop,
+			node: noop,
+			success: noop,
+			info: noop,
+		},
+		"yargs/yargs": mockYargs({
+			_: [t.testdirName],
+		}),
+	});
+
+	// simulate pressing E key to edit
+	setTimeout(() => {
+		process.stdin.emit("keypress", "", { name: "e" });
+	}, 10);
 });
