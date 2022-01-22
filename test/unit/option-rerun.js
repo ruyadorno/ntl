@@ -158,7 +158,7 @@ t.test("no previous command using --rerun option", (t) => {
 
 t.test("fails on storing command", (t) => {
 	setup(t);
-	t.plan(1);
+	t.plan(2);
 	const ntl = t.mock("../../cli.js", {
 		"signal-exit": noop,
 		"read-package-json-fast": async () => ({
@@ -182,7 +182,7 @@ t.test("fails on storing command", (t) => {
 			node: noop,
 			success: noop,
 			warn: (msg) => {
-				t.fail("should not warn");
+				t.match(msg, /ERR/, "should warn error message on debug=true");
 			},
 			error: () => {
 				t.fail("should not error");
@@ -190,6 +190,7 @@ t.test("fails on storing command", (t) => {
 		},
 		"yargs/yargs": mockYargs({
 			_: [],
+			debug: true,
 		}),
 		"signal-exit": noop,
 	});

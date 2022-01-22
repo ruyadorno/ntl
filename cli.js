@@ -53,13 +53,15 @@ const error = (e, msg) => {
 // Set ps name
 process.title = "ntl";
 
-// Exits program execution on ESC
 process.stdin.on("keypress", (ch, key) => {
+	/* istanbul ignore next */
 	if (!key || !key.name) return;
 
 	switch (key.name) {
+		// Exits program execution on ESC
 		case "escape":
 			return process.exit(0);
+		// Edit current selected task when hitting E
 		case "e":
 			return editTask();
 	}
@@ -150,7 +152,7 @@ onExit((code, signal) => {
 });
 
 (async () => {
-	const pkgJsonContent = (await getCwdPackage()) || {};
+	const pkgJsonContent = await getCwdPackage();
 	const { ntl, scripts } = pkgJsonContent;
 	const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
 	const { descriptions = {} } = ntl || {};
@@ -229,7 +231,7 @@ onExit((code, signal) => {
 			retrieveCache().set(cacheKey(cwd), keys);
 			retrieveCache().fsDump();
 		} catch (e) {
-			if (argv.debug) console.warn(e);
+			if (argv.debug) out.warn(e);
 		}
 	};
 

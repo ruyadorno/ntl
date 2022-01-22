@@ -11,6 +11,85 @@ t.test("clean up tmp files on exit", (t) => {
 	// process.exit has to be the last thing to run
 	// otherwise teardown might run prior to process.exit(1)
 	// from ./cli.js error handler
+	process.exit = noop;
+	t.teardown(() => {
+		process.exit = _processExit;
+	});
+	let exitHandler;
+	const cwd = t.testdir({
+		"package.json": JSON.stringify({
+			name: "test-pkg",
+			scripts: {
+				foo: "make foo",
+			},
+		}),
+		".ntl-tmp-bkp-package.json": JSON.stringify({
+			name: "test-pkg",
+			scripts: {
+				foo: "make foo",
+				"foo(1)": "make foo --bar",
+			},
+		}),
+	});
+	const ntl = t.mock("../../cli", {
+		fs: {
+			statSync: (filename) => {
+				t.equal(
+					path.basename(filename),
+					".ntl-tmp-bkp-package.json",
+					"should stat temp file"
+				);
+			},
+			unlinkSync: (filename) => {
+				t.equal(
+					path.basename(filename),
+					"package.json",
+					"should remove tmp file"
+				);
+			},
+			renameSync: (src, dest) => {
+				t.equal(
+					path.basename(src),
+					".ntl-tmp-bkp-package.json",
+					"should move temp file..."
+				);
+				t.equal(path.basename(dest), "package.json", "...back to package.json");
+				t.end();
+			},
+		},
+		"signal-exit": (fn) => {
+			exitHandler = fn;
+		},
+		"read-package-json-fast": async () => ({
+			name: "test-pkg",
+		}),
+		"simple-output": {
+			error: noop,
+			hint: noop,
+			node: noop,
+			success: noop,
+			info: (msg) => {
+				t.match(
+					msg,
+					"No npm scripts available in cwd",
+					"should end with no scripts available msg"
+				);
+				// simulates calling the signal-exit handler
+				// that should happen after the info msg being printed
+				exitHandler(0, null);
+			},
+		},
+		"yargs/yargs": mockYargs({
+			_: [cwd],
+		}),
+	});
+});
+
+t.test("unexpected error while cleaning up tmp files on exit", (t) => {
+	const _processExit = process.exit;
+	// process.exit has to be the last thing to run
+	// otherwise teardown might run prior to process.exit(1)
+	// from ./cli.js error handler
 	process.exit = () => {
 		t.end();
 	};
@@ -35,7 +114,7 @@ t.test("clean up tmp files on exit", (t) => {
 				t.match(
 					msg,
 					/Error cleaning up ntl tmp files/,
-					"should output error cleaning up files msg"
+					"should print error message cleaning up tmp files"
 				);
 			},
 			hint: noop,

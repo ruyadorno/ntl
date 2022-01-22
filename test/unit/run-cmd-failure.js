@@ -29,6 +29,12 @@ t.test("fail to run a task", (t) => {
 		ipt: (expected) => {
 			return Promise.resolve(["error"]);
 		},
+		child_process: {
+			execSync: (cmd) => {
+				t.equal(cmd, 'npm run "error"', "should run error script");
+				throw new Error("ERR");
+			},
+		},
 		"simple-output": {
 			error: (msg) => {
 				t.match(msg, /Failed to run command:/, "should print error message");
