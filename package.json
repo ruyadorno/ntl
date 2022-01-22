@@ -6,7 +6,7 @@
   "author": {
     "name": "Ruy Adorno",
     "twitter": "ruyadorno",
-    "url": "http://ruyadorno.com"
+    "url": "https://ruyadorno.com"
   },
   "contributors": [
     {
@@ -22,7 +22,7 @@
     "nodetasklist": "cli.js",
     "npm-tasklist": "cli.js"
   },
-  "man": "./man/man1/ntl.1",
+  "man": ["./man/man1/ntl.1"],
   "engines": {
     "node": ">=12"
   },
@@ -45,6 +45,8 @@
   ],
   "keywords": [
     "npm",
+    "yarn",
+    "pnpm",
     "task",
     "scripts",
     "list",
